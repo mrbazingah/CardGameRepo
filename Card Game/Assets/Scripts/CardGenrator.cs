@@ -1,0 +1,145 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CardGenrator : MonoBehaviour
+{
+    [SerializeField] GameObject cardPrefab;
+    [SerializeField] GameObject backCardPrefab;
+    [SerializeField] GameObject deckImage;
+    [SerializeField] List<Sprite> cardSprites;
+    [SerializeField] GameObject cardParent;
+    [SerializeField] int cardsPerPlayer;
+    
+    List<string> cardSuits;
+
+    List<GameObject> deck;
+    int numberOfCards = 52;
+    int playerCount = 1;
+
+    PlayerHand player;
+
+    private void Awake()
+    {
+        player = FindFirstObjectByType<PlayerHand>();
+    }
+
+    void Start()
+    {
+        GenerateCards();
+        DealCards();
+    }
+
+    void GenerateCards()
+    {
+        int suit = 0;
+
+        cardSuits = new List<string>(4);
+        cardSuits.Add("Hearts");
+        cardSuits.Add("Diamond");
+        cardSuits.Add("Spades");
+        cardSuits.Add("Clubs");
+
+        deck = new List<GameObject>(numberOfCards);
+        int currentValue = 0;
+
+        for (int i = 0; i < numberOfCards; i++)
+        {
+            currentValue++;
+
+            GameObject card = Instantiate(cardPrefab);
+
+            card.GetComponent<SpriteRenderer>().sprite = cardSprites[i];
+
+            if (currentValue == 1)
+            {
+                card.GetComponent<Card>().SetValue(14);
+            }
+            else
+            {
+                card.GetComponent<Card>().SetValue(currentValue);
+            }
+
+            card.name = currentValue.ToString() + " of " + cardSuits[suit];
+
+            if (currentValue == 13)
+            {
+                currentValue = 0;
+                suit++;
+            }
+
+            deck.Add(card);
+            card.transform.SetParent(cardParent.transform);
+            card.transform.localPosition = Vector3.zero;
+        }
+    }
+
+    void DealCards()
+    {
+        for (int i = 0; i < playerCount; i++)
+        {
+            for (int ii = 0; ii < cardsPerPlayer; ii++)
+            {
+                int randomNumber = Random.Range(0, deck.Count);
+                GameObject obj = deck[randomNumber];
+
+                player.AddHandCards(obj);
+                deck.Remove(obj);
+            }
+
+
+            List<GameObject> underSideCards = new List<GameObject>(3);
+            List<GameObject> overSideCards = new List<GameObject>(3);
+
+            for (int ii = 0; ii < 6; ii++)
+            {
+                int randomNumber = Random.Range(0, deck.Count);
+                GameObject obj = deck[randomNumber];
+
+                obj.GetComponent<SpriteRenderer>().sortingOrder = ii;
+
+                if (ii <= 2)
+                {
+                    underSideCards.Add(obj);
+
+                    GameObject card = Instantiate(backCardPrefab);
+                    card.transform.SetParent(obj.transform);
+                    card.transform.localPosition = Vector3.zero;
+                    card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
+                }
+                else
+                {
+                    overSideCards.Add(obj);
+                }
+
+                deck.Remove(obj);
+            }
+
+            player.SetUnderSideCards(underSideCards);
+            player.SetOverSideCards(overSideCards);
+
+            player.SortCards();
+        }
+    }
+
+    public void DrawNewCard(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            int randomNumber = Random.Range(0, deck.Count);
+            GameObject obj = deck[randomNumber];
+
+            player.AddHandCards(obj);
+            deck.Remove(obj);
+
+            if (deck.Count == 0)
+            {
+                Destroy(deckImage);
+            }
+        }
+    }
+
+    public List<GameObject> GetDeck()
+    {
+        return deck;
+    }
+}
