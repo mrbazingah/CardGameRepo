@@ -9,7 +9,6 @@ public class CardGenrator : MonoBehaviour
     [SerializeField] List<Sprite> cardSprites;
     [SerializeField] GameObject cardParent;
     [Space]
-    [SerializeField] int playerCount = 1;
     [SerializeField] int cardsPerPlayer;
     [SerializeField] int numberOfCards = 52;
     [Space]
@@ -17,15 +16,21 @@ public class CardGenrator : MonoBehaviour
 
     List<string> cardSuits;
 
+    int playerCount;
+
     PlayerHand player;
+    GameManager gameManager;
 
     void Awake()
     {
         player = FindFirstObjectByType<PlayerHand>();
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
     void Start()
     {
+        playerCount = gameManager.GetPlayerCount();
+
         GenerateCards();
         DealCards();
     }
@@ -120,6 +125,8 @@ public class CardGenrator : MonoBehaviour
 
             player.SortCards();
         }
+
+        gameManager.AsignStartPlayer();
     }
 
     public void DrawNewCard(int amount)

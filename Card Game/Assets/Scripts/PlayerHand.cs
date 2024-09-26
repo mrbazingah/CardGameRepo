@@ -19,6 +19,8 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] float sideVerticalSpacing = 50f;
     [SerializeField] float sideMaxHandWidth = 1000f;
     [SerializeField] float overSideOffset;
+    [Space]
+    [SerializeField] bool isTurn;
 
     GameObject hoveredCard;
 
@@ -27,11 +29,13 @@ public class PlayerHand : MonoBehaviour
 
     Pile pile;
     CardGenrator cardGenerator;
+    GameManager gameManager;
 
     void Start()
     {
         pile = FindFirstObjectByType<Pile>();
         cardGenerator = FindFirstObjectByType<CardGenrator>();
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
     public void AddHandCards(GameObject newCard)
@@ -185,6 +189,8 @@ public class PlayerHand : MonoBehaviour
 
     void PlayCard(GameObject cardInHand)
     {
+        if (!isTurn) { return; }
+
         int cardInPile = pile.GetCurrentCard();
         int cardInHandValue = cardInHand.GetComponent<Card>().GetValue();
 
@@ -214,6 +220,8 @@ public class PlayerHand : MonoBehaviour
             {
                 pile.DiscardCardsInPile();
             }
+
+            gameManager.NextTurn(handCards, cardInHand);
         }
         else
         {
@@ -258,15 +266,28 @@ public class PlayerHand : MonoBehaviour
                 if (usingOverSideCards)
                 {
                     overSideCards.Remove(cardInHand);
+                    gameManager.NextTurn(overSideCards, cardInHand);
                 }
                 else if (usingUnderSideCards)
                 {
                     underSideCards.Remove(cardInHand);
+                    gameManager.NextTurn(underSideCards, cardInHand);
                 }
                 else
                 {
                     handCards.Remove(cardInHand);
+                    gameManager.NextTurn(handCards, cardInHand);
                 }
+
+                Debug.Log(cardInHand);
+
+
+                pile.AddCardsToPile(cardInHand);
+                PickUpPile();
+            }
+            else if (usingUnderSideCards)
+            {
+                underSideCards.Remove(cardInHand);
 
                 pile.AddCardsToPile(cardInHand);
                 PickUpPile();
@@ -298,4 +319,25 @@ public class PlayerHand : MonoBehaviour
 
         pile.ClearPile();
     }
+
+    public void SetTurn(bool b)
+    {
+        isTurn = b;
+    }
+
+    public List<GameObject> GetCards()
+    {
+        if (usingOverSideCards)
+        {
+            return overSideCards;
+        }
+        else if (usingUnderSideCards)
+        {
+            return underSideCards;
+        }
+        else
+        {
+            return handCards;
+        }
+    } 
 }

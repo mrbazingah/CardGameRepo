@@ -235,7 +235,6 @@ MonoBehaviour:
   - {fileID: -3634500373200017416, guid: 8ac089a7492649446b0eb776147ba166, type: 3}
   - {fileID: -5191531806552453709, guid: 8ac089a7492649446b0eb776147ba166, type: 3}
   cardParent: {fileID: 1379739153}
-  playerCount: 1
   cardsPerPlayer: 3
   numberOfCards: 10
   deck: []
@@ -297,6 +296,7 @@ MonoBehaviour:
   sideVerticalSpacing: 0
   sideMaxHandWidth: 15
   overSideOffset: 0.3
+  isTurn: 0
 --- !u!4 &321392017
 Transform:
   m_ObjectHideFlags: 0
@@ -765,6 +765,54 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &926891387
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 926891389}
+  - component: {fileID: 926891388}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &926891388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926891387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9792c9d8c582de645aac318b069f547f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCount: 1
+  turn: 0
+  allPlayers:
+  - {fileID: 321392016}
+--- !u!4 &926891389
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926891387}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.44, y: -0.56, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1231275423
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,3 +1024,4 @@ SceneRoots:
   - {fileID: 618160155}
   - {fileID: 902786054}
   - {fileID: 542320425}
+  - {fileID: 926891389}
