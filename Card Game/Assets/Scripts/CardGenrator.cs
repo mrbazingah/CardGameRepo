@@ -8,17 +8,18 @@ public class CardGenrator : MonoBehaviour
     [SerializeField] GameObject deckImage;
     [SerializeField] List<Sprite> cardSprites;
     [SerializeField] GameObject cardParent;
+    [Space]
+    [SerializeField] int playerCount = 1;
     [SerializeField] int cardsPerPlayer;
-    
-    List<string> cardSuits;
+    [SerializeField] int numberOfCards = 52;
+    [Space]
+    [SerializeField] List<GameObject> deck;
 
-    List<GameObject> deck;
-    int numberOfCards = 52;
-    int playerCount = 1;
+    List<string> cardSuits;
 
     PlayerHand player;
 
-    private void Awake()
+    void Awake()
     {
         player = FindFirstObjectByType<PlayerHand>();
     }

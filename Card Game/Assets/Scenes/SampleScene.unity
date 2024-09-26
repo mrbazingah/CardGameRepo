@@ -235,7 +235,10 @@ MonoBehaviour:
   - {fileID: -3634500373200017416, guid: 8ac089a7492649446b0eb776147ba166, type: 3}
   - {fileID: -5191531806552453709, guid: 8ac089a7492649446b0eb776147ba166, type: 3}
   cardParent: {fileID: 1379739153}
-  cardsPerPlayer: 10
+  playerCount: 1
+  cardsPerPlayer: 3
+  numberOfCards: 10
+  deck: []
 --- !u!4 &232554793
 Transform:
   m_ObjectHideFlags: 0
@@ -293,7 +296,7 @@ MonoBehaviour:
   sideBaseCardSpacing: 2
   sideVerticalSpacing: 0
   sideMaxHandWidth: 15
-  overSideOffset: 0.2
+  overSideOffset: 0.3
 --- !u!4 &321392017
 Transform:
   m_ObjectHideFlags: 0

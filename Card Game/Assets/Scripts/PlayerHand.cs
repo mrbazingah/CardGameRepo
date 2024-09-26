@@ -21,6 +21,10 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] float overSideOffset;
 
     GameObject hoveredCard;
+
+    bool usingOverSideCards;
+    bool usingUnderSideCards;
+
     Pile pile;
     CardGenrator cardGenerator;
 
@@ -54,15 +58,20 @@ public class PlayerHand : MonoBehaviour
         SortCards();
         DetectHover();
 
-        if (!CanPlayAnyCard() && handCards.Count != 0)
+        if (handCards.Count == 0 && overSideCards.Count != 0)
         {
-            PickUpPile();
+            usingOverSideCards = true;
+            usingUnderSideCards = false;
         }
-
-        // Check if hand and deck are empty, then allow playing over-side cards
-        if (handCards.Count == 0 && cardGenerator.GetDeck().Count == 0 && Input.GetKeyDown(KeyCode.Mouse0))
+        else if (handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count != 0)
         {
-            UseOverSideCards();
+            usingOverSideCards = false;
+            usingUnderSideCards = true; 
+        }
+        else if (handCards.Count != 0)
+        {
+            usingOverSideCards = false;
+            usingUnderSideCards = false;
         }
     }
 
@@ -139,12 +148,28 @@ public class PlayerHand : MonoBehaviour
         if (hit.collider != null)
         {
             GameObject hitObject = hit.collider.gameObject;
-            if (handCards.Contains(hitObject))
+            if (handCards.Contains(hitObject) && !usingOverSideCards && !usingUnderSideCards)
             {
                 hoveredCard = hitObject;
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {
                     PlayCard(hitObject);
+                }
+            }
+            else if (overSideCards.Contains(hitObject) && usingOverSideCards && !usingUnderSideCards)
+            {
+                hoveredCard = hitObject;
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    PlayCard(hitObject);
+                }
+            }
+            else if (underSideCards.Contains(hitObject) && usingUnderSideCards)
+            {
+                hoveredCard = hitObject;
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    PlayCard(hitObject); 
                 }
             }
             else
@@ -162,10 +187,23 @@ public class PlayerHand : MonoBehaviour
     {
         int cardInPile = pile.GetCurrentCard();
         int cardInHandValue = cardInHand.GetComponent<Card>().GetValue();
-        if (cardInPile <= cardInHandValue || cardInHandValue == 10 || cardInHandValue == 2)
+
+        if (CanPlayCard(cardInHandValue))
         {
             pile.AddCardsToPile(cardInHand);
-            handCards.Remove(cardInHand);
+
+            if (usingOverSideCards)
+            {
+                overSideCards.Remove(cardInHand);
+            }
+            else if (usingUnderSideCards)
+            {
+                underSideCards.Remove(cardInHand); 
+            }
+            else
+            {
+                handCards.Remove(cardInHand);
+            }
 
             if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
             {
@@ -177,19 +215,76 @@ public class PlayerHand : MonoBehaviour
                 pile.DiscardCardsInPile();
             }
         }
-    }
-
-    bool CanPlayAnyCard()
-    {
-        int cardInPile = pile.GetCurrentCard();
-        foreach (GameObject card in handCards)
+        else
         {
-            int cardValue = card.GetComponent<Card>().GetValue();
-            if (cardValue >= cardInPile || cardValue == 10 || cardValue == 2)
+            int cardsToPlay = 0;
+
+            if (usingOverSideCards)
             {
-                return true;
+                foreach (GameObject card in overSideCards)
+                {
+                    int value = card.GetComponent<Card>().GetValue();
+                    if (CanPlayCard(value))
+                    {
+                        cardsToPlay++;
+                    }
+                }
+            }
+            else if (usingUnderSideCards)
+            {
+                foreach (GameObject card in underSideCards)
+                {
+                    int value = card.GetComponent<Card>().GetValue();
+                    if (CanPlayCard(value))
+                    {
+                        cardsToPlay++;
+                    }
+                }
+            }
+            else
+            {
+                foreach (GameObject card in handCards)
+                {
+                    int value = card.GetComponent<Card>().GetValue();
+                    if (CanPlayCard(value))
+                    {
+                        cardsToPlay++;
+                    }
+                }
+            }
+
+            if (cardsToPlay <= 0)
+            {
+                if (usingOverSideCards)
+                {
+                    overSideCards.Remove(cardInHand);
+                }
+                else if (usingUnderSideCards)
+                {
+                    underSideCards.Remove(cardInHand);
+                }
+                else
+                {
+                    handCards.Remove(cardInHand);
+                }
+
+                pile.AddCardsToPile(cardInHand);
+                PickUpPile();
             }
         }
+
+        Debug.Log(cardInHand);
+    }
+
+    bool CanPlayCard(float cardValue)
+    {
+        int cardInPile = pile.GetCurrentCard();
+
+        if (cardValue >= cardInPile || cardValue == 10 || cardValue == 2)
+        {
+            return true;
+        }
+
         return false;
     }
 
@@ -200,42 +295,7 @@ public class PlayerHand : MonoBehaviour
         {
             AddHandCards(card);
         }
+
         pile.ClearPile();
-    }
-
-    // New function to use over-side cards
-    void UseOverSideCards()
-    {
-        // Allow playing over-side cards
-        foreach (GameObject sideCard in overSideCards)
-        {
-            int cardInPile = pile.GetCurrentCard();
-            int cardValue = sideCard.GetComponent<Card>().GetValue();
-            if (cardValue >= cardInPile || cardValue == 10 || cardValue == 2)
-            {
-                PlaySideCard(sideCard, overSideCards);
-                return;
-            }
-            else
-            {
-                PickUpPile();
-            }
-        }
-    }
-
-    // Play an over-side card but keep it in the list
-    void PlaySideCard(GameObject sideCard, List<GameObject> sideCardsList)
-    {
-        int cardInPile = pile.GetCurrentCard();
-        int cardValue = sideCard.GetComponent<Card>().GetValue();
-        if (cardInPile <= cardValue || cardValue == 10 || cardValue == 2)
-        {
-            pile.AddCardsToPile(sideCard);
-
-            if (cardValue == 10)
-            {
-                pile.DiscardCardsInPile();
-            }
-        }
     }
 }
