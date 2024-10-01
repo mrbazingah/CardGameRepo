@@ -19,6 +19,8 @@ public class Pile : MonoBehaviour
         {
             cardsInPile[i].GetComponent<SpriteRenderer>().sortingOrder = i;
         }
+
+        newCard.GetComponent<Card>().RemoveChild();
     }
 
     public int GetCurrentCard()

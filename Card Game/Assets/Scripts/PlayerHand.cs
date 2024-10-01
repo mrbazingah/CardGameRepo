@@ -3,29 +3,19 @@ using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
 {
-    [Header("Hand")]
+    [Header("Hand Settings")]
     [SerializeField] List<GameObject> handCards;
     [SerializeField] Transform handTransform;
-    [SerializeField] float baseCardSpacing = 150f;
-    [SerializeField] float verticalSpacing = 50f;
-    [SerializeField] float maxHandWidth = 1000f;
-    [SerializeField] float popUpHeight = 50f;
-    [Header("Side")]
-    [SerializeField] List<GameObject> underSideCards;
-    [SerializeField] List<GameObject> overSideCards;
-    [SerializeField] Transform underSideTransform;
-    [SerializeField] Transform overSideTransform;
-    [SerializeField] float sideBaseCardSpacing = 150f;
-    [SerializeField] float sideVerticalSpacing = 50f;
-    [SerializeField] float sideMaxHandWidth = 1000f;
-    [SerializeField] float overSideOffset;
-    [Space]
+    [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f, popUpHeight = 50f;
+    [Header("Side Settings")]
+    [SerializeField] List<GameObject> underSideCards, overSideCards;
+    [SerializeField] Transform underSideTransform, overSideTransform;
+    [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
+
     [SerializeField] bool isTurn;
 
     GameObject hoveredCard;
-
-    bool usingOverSideCards;
-    bool usingUnderSideCards;
+    bool usingOverSideCards, usingUnderSideCards;
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -41,303 +31,209 @@ public class PlayerHand : MonoBehaviour
     public void AddHandCards(GameObject newCard)
     {
         handCards.Add(newCard);
-        for (int i = 0; i < handCards.Count; i++)
+        UpdateCardSortingOrder(handCards);
+    }
+
+    void UpdateCardSortingOrder(List<GameObject> cards)
+    {
+        for (int i = 0; i < cards.Count; i++)
         {
-            handCards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+            cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
         }
     }
 
-    public void SetUnderSideCards(List<GameObject> newCards)
-    {
-        underSideCards = newCards;
-    }
-
-    public void SetOverSideCards(List<GameObject> newCards)
-    {
-        overSideCards = newCards;
-    }
+    public void SetUnderSideCards(List<GameObject> newCards) => underSideCards = newCards;
+    public void SetOverSideCards(List<GameObject> newCards) => overSideCards = newCards;
 
     void Update()
     {
-        SortCards();
+        SortCards(false);
         DetectHover();
-
-        if (handCards.Count == 0 && overSideCards.Count != 0)
-        {
-            usingOverSideCards = true;
-            usingUnderSideCards = false;
-        }
-        else if (handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count != 0)
-        {
-            usingOverSideCards = false;
-            usingUnderSideCards = true; 
-        }
-        else if (handCards.Count != 0)
-        {
-            usingOverSideCards = false;
-            usingUnderSideCards = false;
-        }
+        UpdateSideUsage();
     }
 
-    public void SortCards()
+    void UpdateSideUsage()
     {
-        if (handCards.Count == 0) return;
+        usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
+        usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
+    }
 
-        float cardSpacing = Mathf.Min(baseCardSpacing, maxHandWidth / handCards.Count);
-
-        for (int i = 0; i < handCards.Count; i++)
+    public void SortCards(bool sortSideCards)
+    {
+        if (handCards.Count > 0)
         {
-            handCards[i].transform.SetParent(handTransform);
+            ArrangeCards(handCards, handTransform, baseCardSpacing, verticalSpacing, maxHandWidth);
+        }
 
-            float horizontalOffset = cardSpacing * (i - (handCards.Count - 1) / 2f);
-            float normalizedPosition = 2f * i / (handCards.Count - 1) - 1f;
-            float verticalOffset = verticalSpacing * (1 - normalizedPosition * normalizedPosition);
+        if (sortSideCards)
+        {
+            ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
+            ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
+        }
 
-            Vector3 basePosition = new Vector3(horizontalOffset, verticalOffset, 0);
+        ApplyHoverEffect(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
+        ApplyHoverEffect(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
+    }
 
-            if (handCards[i] == hoveredCard)
+    void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float verticalSpace, float maxWidth, float offset = 0)
+    {
+        if (cards.Count == 0) return;
+
+        float cardSpacing = Mathf.Min(spacing, maxWidth / cards.Count);
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            cards[i].transform.SetParent(parent);
+
+            if (cards.Count > 1)
             {
-                if (handCards.Count == 1)
-                {
-                    handCards[i].transform.localPosition = new Vector2(0, 0);
-                }
-                else
-                {
-                    handCards[i].transform.localPosition = basePosition + new Vector3(0, popUpHeight, 0);
-                }
+                float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
+                float normalizedPosition = 2f * i / (cards.Count - 1) - 1f;
+                float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
+                Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
+
+                cards[i].transform.localPosition = cards[i] == hoveredCard ? cardPosition + new Vector3(0, popUpHeight, 0) : cardPosition;
             }
             else
             {
-                if (handCards.Count == 1)
-                {
-                    handCards[i].transform.localPosition = new Vector2(0, 0);
-                }
-                else
-                {
-                    handCards[i].transform.localPosition = basePosition;
-                }
+                cards[i].transform.localPosition = Vector3.zero;
             }
         }
+    }
 
-        float sideCardSpacing = Mathf.Min(sideBaseCardSpacing, sideMaxHandWidth / underSideCards.Count);
+    void ApplyHoverEffect(List<GameObject> cards, Transform parent, float spacing, float verticalSpace, float maxWidth, float offset = 0)
+    {
+        if (cards.Count == 0) return;
 
-        for (int i = 0; i < underSideCards.Count; i++)
+        float cardSpacing = Mathf.Min(spacing, maxWidth / cards.Count);
+
+        for (int i = 0; i < cards.Count; i++)
         {
-            underSideCards[i].transform.SetParent(underSideTransform);
+            cards[i].transform.SetParent(parent);
 
-            float horizontalOffset = sideCardSpacing * (i - (underSideCards.Count - 1) / 2f);
-            float normalizedPosition = 2f * i / (underSideCards.Count - 1) - 1f;
-            float verticalOffset = sideVerticalSpacing * (1 - normalizedPosition * normalizedPosition);
+            if (cards.Count > 1)
+            {
+                float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
+                float normalizedPosition = 2f * i / (cards.Count - 1) - 1f;
+                float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
+                Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
 
-            underSideCards[i].transform.localPosition = new Vector3(horizontalOffset, verticalOffset, 0);
-        }
-
-        for (int i = 0; i < overSideCards.Count; i++)
-        {
-            overSideCards[i].transform.SetParent(overSideTransform);
-
-            float horizontalOffset = sideCardSpacing * (i - (overSideCards.Count - 1) / 2f);
-            float normalizedPosition = 2f * i / (overSideCards.Count - 1) - 1f;
-            float verticalOffset = sideVerticalSpacing * (1 - normalizedPosition * normalizedPosition);
-
-            overSideCards[i].transform.localPosition = new Vector3(horizontalOffset + overSideOffset, verticalOffset + overSideOffset, 0);
+                cards[i].transform.localPosition = cards[i] == hoveredCard ? cardPosition + new Vector3(0, popUpHeight, 0) : cardPosition;
+            }
+            else
+            {
+                cards[i].transform.localPosition = Vector3.zero;
+            }
         }
     }
 
     void DetectHover()
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        hoveredCard = hit.collider ? hit.collider.gameObject : null;
 
-        if (hit.collider != null)
+        if (hoveredCard != null && Input.GetKeyDown(KeyCode.Mouse0))
         {
-            GameObject hitObject = hit.collider.gameObject;
-            if (handCards.Contains(hitObject) && !usingOverSideCards && !usingUnderSideCards)
+            if (handCards.Contains(hoveredCard) && !usingOverSideCards && !usingUnderSideCards ||
+                overSideCards.Contains(hoveredCard) && usingOverSideCards ||
+                underSideCards.Contains(hoveredCard) && usingUnderSideCards)
             {
-                hoveredCard = hitObject;
-                if (Input.GetKeyDown(KeyCode.Mouse0))
+                if (hoveredCard != null)
                 {
-                    PlayCard(hitObject);
+                    PlayCard(hoveredCard);
+                }
+                else
+                {
+                    Debug.LogError("Card not found");
                 }
             }
-            else if (overSideCards.Contains(hitObject) && usingOverSideCards && !usingUnderSideCards)
-            {
-                hoveredCard = hitObject;
-                if (Input.GetKeyDown(KeyCode.Mouse0))
-                {
-                    PlayCard(hitObject);
-                }
-            }
-            else if (underSideCards.Contains(hitObject) && usingUnderSideCards)
-            {
-                hoveredCard = hitObject;
-                if (Input.GetKeyDown(KeyCode.Mouse0))
-                {
-                    PlayCard(hitObject); 
-                }
-            }
-            else
-            {
-                hoveredCard = null;
-            }
-        }
-        else
-        {
-            hoveredCard = null;
         }
     }
 
     void PlayCard(GameObject cardInHand)
     {
-        if (!isTurn) { return; }
+        if (!isTurn) return;
 
-        int cardInPile = pile.GetCurrentCard();
-        int cardInHandValue = cardInHand.GetComponent<Card>().GetValue();
-
-        if (CanPlayCard(cardInHandValue))
+        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue()))
         {
+            RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
 
-            if (usingOverSideCards)
-            {
-                overSideCards.Remove(cardInHand);
-            }
-            else if (usingUnderSideCards)
-            {
-                underSideCards.Remove(cardInHand); 
-            }
-            else
-            {
-                handCards.Remove(cardInHand);
-            }
-
-            if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
+            if (cardGenerator.GetDeck().Count > 0 && handCards.Count < 3)
             {
                 cardGenerator.DrawNewCard(1);
             }
 
-            if (cardInHandValue == 10)
+            if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
             {
                 pile.DiscardCardsInPile();
             }
-
-            gameManager.NextTurn(handCards, cardInHand);
         }
         else
         {
-            int cardsToPlay = 0;
-
-            if (usingOverSideCards)
+            if ((underSideCards.Contains(cardInHand) && usingUnderSideCards))
             {
-                foreach (GameObject card in overSideCards)
-                {
-                    int value = card.GetComponent<Card>().GetValue();
-                    if (CanPlayCard(value))
-                    {
-                        cardsToPlay++;
-                    }
-                }
-            }
-            else if (usingUnderSideCards)
-            {
-                foreach (GameObject card in underSideCards)
-                {
-                    int value = card.GetComponent<Card>().GetValue();
-                    if (CanPlayCard(value))
-                    {
-                        cardsToPlay++;
-                    }
-                }
-            }
-            else
-            {
-                foreach (GameObject card in handCards)
-                {
-                    int value = card.GetComponent<Card>().GetValue();
-                    if (CanPlayCard(value))
-                    {
-                        cardsToPlay++;
-                    }
-                }
-            }
-
-            if (cardsToPlay <= 0)
-            {
-                if (usingOverSideCards)
-                {
-                    overSideCards.Remove(cardInHand);
-                    gameManager.NextTurn(overSideCards, cardInHand);
-                }
-                else if (usingUnderSideCards)
-                {
-                    underSideCards.Remove(cardInHand);
-                    gameManager.NextTurn(underSideCards, cardInHand);
-                }
-                else
-                {
-                    handCards.Remove(cardInHand);
-                    gameManager.NextTurn(handCards, cardInHand);
-                }
-
-                Debug.Log(cardInHand);
-
-
                 pile.AddCardsToPile(cardInHand);
+                RemoveCardFromList(cardInHand);
                 PickUpPile();
             }
-            else if (usingUnderSideCards)
+            else if (usingOverSideCards)
             {
-                underSideCards.Remove(cardInHand);
+                bool hasCardToPlay = false;
 
-                pile.AddCardsToPile(cardInHand);
-                PickUpPile();
+                for (int i = 0; i < overSideCards.Count; i++)
+                {
+                    if (CanPlayCard(overSideCards[i].GetComponent<Card>().GetValue()))
+                    {
+                        hasCardToPlay = true;
+                    }
+                }
+
+                if (!hasCardToPlay)
+                {
+                    pile.AddCardsToPile(cardInHand);
+                    RemoveCardFromList(cardInHand);
+                    PickUpPile();
+                }
             }
+
         }
-
-        Debug.Log(cardInHand);
-    }
-
-    bool CanPlayCard(float cardValue)
-    {
-        int cardInPile = pile.GetCurrentCard();
-
-        if (cardValue >= cardInPile || cardValue == 10 || cardValue == 2)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     void PickUpPile()
     {
         List<GameObject> pileCards = pile.GetCardsInPile();
-        foreach (GameObject card in pileCards)
-        {
-            AddHandCards(card);
-        }
-
+        handCards.AddRange(pileCards);
         pile.ClearPile();
+        UpdateCardSortingOrder(handCards);
     }
 
-    public void SetTurn(bool b)
-    {
-        isTurn = b;
-    }
-
-    public List<GameObject> GetCards()
+    void RemoveCardFromList(GameObject cardInHand)
     {
         if (usingOverSideCards)
         {
-            return overSideCards;
+            overSideCards.Remove(cardInHand);
         }
         else if (usingUnderSideCards)
         {
-            return underSideCards;
+            underSideCards.Remove(cardInHand);
         }
         else
         {
-            return handCards;
+            handCards.Remove(cardInHand);
         }
-    } 
+    }
+
+    bool ShouldDiscard(int cardValue) => cardValue == 10 && (handCards.Count != 0 || overSideCards.Count != 0 || underSideCards.Count != 0);
+
+    bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
+
+    public void SetTurn(bool b) => isTurn = b;
+
+    public List<GameObject> GetCards()
+    {
+        if (usingOverSideCards) return overSideCards;
+        if (usingUnderSideCards) return underSideCards;
+        return handCards;
+    }
 }

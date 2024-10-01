@@ -6,15 +6,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] int playerCount = 1;
     [SerializeField] int turn;
     [SerializeField] List<PlayerHand> allPlayers;
+    [SerializeField] GameObject playerPrefab;
 
     void Start()
     {
         turn = playerCount;
-    }
-
-    void CreatePlayers()
-    {
-
     }
 
     public void AsignStartPlayer()

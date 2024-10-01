@@ -111,6 +111,8 @@ public class CardGenrator : MonoBehaviour
                     card.transform.SetParent(obj.transform);
                     card.transform.localPosition = Vector3.zero;
                     card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
+
+                    obj.GetComponent<Card>().ApplyChild(card);
                 }
                 else
                 {
@@ -123,7 +125,7 @@ public class CardGenrator : MonoBehaviour
             player.SetUnderSideCards(underSideCards);
             player.SetOverSideCards(overSideCards);
 
-            player.SortCards();
+            player.SortCards(true);
         }
 
         gameManager.AsignStartPlayer();
