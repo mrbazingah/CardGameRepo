@@ -19,11 +19,13 @@ public class CardGenrator : MonoBehaviour
     int playerCount;
 
     PlayerHand player;
+    AIHand ai;
     GameManager gameManager;
 
     void Awake()
     {
         player = FindFirstObjectByType<PlayerHand>();
+        ai = FindFirstObjectByType<AIHand>();
         gameManager = FindFirstObjectByType<GameManager>();
     }
 
@@ -32,7 +34,8 @@ public class CardGenrator : MonoBehaviour
         playerCount = gameManager.GetPlayerCount();
 
         GenerateCards();
-        DealCards();
+        DealPlayerCards();
+        DealAiCards();
     }
 
     void GenerateCards()
@@ -79,56 +82,98 @@ public class CardGenrator : MonoBehaviour
         }
     }
 
-    void DealCards()
+    void DealPlayerCards()
     {
-        for (int i = 0; i < playerCount; i++)
+        for (int ii = 0; ii < cardsPerPlayer; ii++)
         {
-            for (int ii = 0; ii < cardsPerPlayer; ii++)
-            {
-                int randomNumber = Random.Range(0, deck.Count);
-                GameObject obj = deck[randomNumber];
+            int randomNumber = Random.Range(0, deck.Count);
+            GameObject obj = deck[randomNumber];
 
-                player.AddHandCards(obj);
-                deck.Remove(obj);
-            }
-
-
-            List<GameObject> underSideCards = new List<GameObject>(3);
-            List<GameObject> overSideCards = new List<GameObject>(3);
-
-            for (int ii = 0; ii < 6; ii++)
-            {
-                int randomNumber = Random.Range(0, deck.Count);
-                GameObject obj = deck[randomNumber];
-
-                obj.GetComponent<SpriteRenderer>().sortingOrder = ii;
-
-                if (ii <= 2)
-                {
-                    underSideCards.Add(obj);
-
-                    GameObject card = Instantiate(backCardPrefab);
-                    card.transform.SetParent(obj.transform);
-                    card.transform.localPosition = Vector3.zero;
-                    card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
-
-                    obj.GetComponent<Card>().ApplyChild(card);
-                }
-                else
-                {
-                    overSideCards.Add(obj);
-                }
-
-                deck.Remove(obj);
-            }
-
-            player.SetUnderSideCards(underSideCards);
-            player.SetOverSideCards(overSideCards);
-
-            player.SortCards(true);
+            player.AddHandCards(obj);
+            deck.Remove(obj);
         }
 
+
+        List<GameObject> underSideCards = new List<GameObject>(3);
+        List<GameObject> overSideCards = new List<GameObject>(3);
+
+        for (int ii = 0; ii < 6; ii++)
+        {
+            int randomNumber = Random.Range(0, deck.Count);
+            GameObject obj = deck[randomNumber];
+
+            obj.GetComponent<SpriteRenderer>().sortingOrder = ii;
+
+            if (ii <= 2)
+            {
+                underSideCards.Add(obj);
+
+                GameObject card = Instantiate(backCardPrefab);
+                card.transform.SetParent(obj.transform);
+                card.transform.localPosition = Vector3.zero;
+                card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
+
+                obj.GetComponent<Card>().ApplyChild(card);
+            }
+            else
+            {
+                overSideCards.Add(obj);
+            }
+
+            deck.Remove(obj);
+        }
+
+        player.SetUnderSideCards(underSideCards);
+        player.SetOverSideCards(overSideCards);
+
+        player.SortCards(true);
+    
         gameManager.AsignStartPlayer();
+    }
+
+    void DealAiCards()
+    {
+        for (int ii = 0; ii < cardsPerPlayer; ii++)
+        {
+            int randomNumber = Random.Range(0, deck.Count);
+            GameObject obj = deck[randomNumber];
+
+            ai.AddHandCards(obj);
+            deck.Remove(obj);
+        }
+
+
+        List<GameObject> underSideCards = new List<GameObject>(3);
+        List<GameObject> overSideCards = new List<GameObject>(3);
+
+        for (int ii = 0; ii < 6; ii++)
+        {
+            int randomNumber = Random.Range(0, deck.Count);
+            GameObject obj = deck[randomNumber];
+
+            obj.GetComponent<SpriteRenderer>().sortingOrder = ii;
+
+            if (ii <= 2)
+            {
+                underSideCards.Add(obj);
+
+                GameObject card = Instantiate(backCardPrefab);
+                card.transform.SetParent(obj.transform);
+                card.transform.localPosition = Vector3.zero;
+                card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
+
+                obj.GetComponent<Card>().ApplyChild(card);
+            }
+            else
+            {
+                overSideCards.Add(obj);
+            }
+
+            deck.Remove(obj);
+        }
+
+        ai.SetUnderSideCards(underSideCards);
+        ai.SetOverSideCards(overSideCards);
     }
 
     public void DrawNewCard(int amount)

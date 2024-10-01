@@ -33,20 +33,30 @@ public class GameManager : MonoBehaviour
         allPlayers[lowestPLayer].SetTurn(true);
     }
 
-    public void NextTurn(List<GameObject> hand, GameObject lastPlayed)
+    public bool NextTurn(List<GameObject> hand, GameObject lastPlayed)
     {
+        int index = 0;
+
         for (int i = 0; i < hand.Count; i++)
         {
-            int value = GetComponent<Card>().GetValue();
-            if (hand[i] != lastPlayed || value != 2 || value != 10)
+            int value = hand[i].GetComponent<Card>().GetValue();
+            if (value != lastPlayed.GetComponent<Card>().GetValue() || value != 2 || value != 10)
             {
-                turn++;
-                if (turn >= playerCount)
-                {
-                    turn = 1;
-                }
+                index++;
             }
         }
+
+        bool isTurn;
+        if (index > 0)
+        {
+            isTurn = false;
+        }
+        else
+        {
+            isTurn = true;
+        }
+
+        return isTurn;
     }
 
     public int GetPlayerCount()

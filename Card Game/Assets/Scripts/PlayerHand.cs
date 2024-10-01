@@ -196,8 +196,9 @@ public class PlayerHand : MonoBehaviour
                     PickUpPile();
                 }
             }
-
         }
+
+        isTurn = gameManager.NextTurn(handCards, cardInHand);
     }
 
     void PickUpPile()

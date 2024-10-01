@@ -132,8 +132,7 @@ public class AIHand : MonoBehaviour
 
     void EndTurn(GameObject lastPlayed)
     {
-        isTurn = false;
-        gameManager.NextTurn(handCards, lastPlayed);
+        isTurn = gameManager.NextTurn(handCards, lastPlayed);
     }
 
     public void SetTurn(bool b) => isTurn = b;

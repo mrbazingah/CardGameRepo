@@ -267,7 +267,7 @@ MonoBehaviour:
   - {fileID: -5191531806552453709, guid: 8ac089a7492649446b0eb776147ba166, type: 3}
   cardParent: {fileID: 1379739153}
   cardsPerPlayer: 3
-  numberOfCards: 10
+  numberOfCards: 52
   deck: []
 --- !u!4 &232554793
 Transform:
@@ -394,18 +394,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handCards: []
-  handTransform: {fileID: 0}
-  baseCardSpacing: 150
-  verticalSpacing: 50
-  maxHandWidth: 1000
   underSideCards: []
   overSideCards: []
-  underSideTransform: {fileID: 0}
-  overSideTransform: {fileID: 0}
-  sideBaseCardSpacing: 2
-  sideVerticalSpacing: 0
-  sideMaxHandWidth: 15
-  overSideOffset: 0.3
   isTurn: 0
 --- !u!1 &519420028
 GameObject:
@@ -917,7 +907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9792c9d8c582de645aac318b069f547f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCount: 1
+  playerCount: 3
   turn: 0
   allPlayers:
   - {fileID: 321392016}
@@ -1174,10 +1164,10 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 232554793}
+  - {fileID: 926891389}
   - {fileID: 321392017}
   - {fileID: 337405465}
   - {fileID: 1379739154}
   - {fileID: 618160155}
   - {fileID: 902786054}
   - {fileID: 542320425}
-  - {fileID: 926891389}
