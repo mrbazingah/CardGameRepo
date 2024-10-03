@@ -1,66 +1,131 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] int playerCount = 1;
-    [SerializeField] int turn;
+    [SerializeField] int turn = 1;
     [SerializeField] List<PlayerHand> allPlayers;
-    [SerializeField] GameObject playerPrefab;
+    [SerializeField] TextMeshProUGUI winText;
 
-    void Start()
-    {
-        turn = playerCount;
-    }
+    bool winner;
+
+    PlayerHand playerHand;
+    AIHand aiHand;
 
     public void AsignStartPlayer()
     {
-        int lowestPLayer = 20;
+        aiHand = FindFirstObjectByType<AIHand>();
+        playerHand = FindFirstObjectByType<PlayerHand>();
 
-        for (int i = 0; i < allPlayers.Count; i++)
+        List<GameObject> playerCards = playerHand.GetCards();
+        int playerLowest = 20;
+
+        for (int i = 0; i < playerCards.Count; i++)
         {
-            PlayerHand player = FindFirstObjectByType<PlayerHand>();
-
-            for (int ii = 0; ii < 3; ii++)
+            int value = playerCards[i].GetComponent<Card>().GetValue();
+            if (value < playerLowest)
             {
-                if (player.GetCards()[ii].GetComponent<Card>().GetValue() < lowestPLayer)
-                {
-                    lowestPLayer = i;
-                }
+                playerLowest = value;
             }
         }
 
-        allPlayers[lowestPLayer].SetTurn(true);
-    }
+        List<GameObject> aiCards = aiHand.GetCards();
+        int aiLowest = 20;
 
-    public bool NextTurn(List<GameObject> hand, GameObject lastPlayed)
-    {
-        int index = 0;
-
-        for (int i = 0; i < hand.Count; i++)
+        for (int i = 0; i < aiCards.Count; i++)
         {
-            int value = hand[i].GetComponent<Card>().GetValue();
-            if (value != lastPlayed.GetComponent<Card>().GetValue() || value != 2 || value != 10)
+            int value = aiCards[i].GetComponent<Card>().GetValue();
+            if (value < aiLowest)
             {
-                index++;
+                aiLowest = value;
             }
         }
 
-        bool isTurn;
-        if (index > 0)
+        if (playerLowest > aiLowest)
         {
-            isTurn = false;
+            aiHand.SetTurnNumber(1);
+            playerHand.SetTurnNumber(2);
         }
         else
         {
-            isTurn = true;
+            playerHand.SetTurnNumber(1);
+            aiHand.SetTurnNumber(2);
         }
+    }
 
-        return isTurn;
+    public void NextTurn(GameObject lastPlayed)
+    {
+        if (lastPlayed != null)
+        {
+            int value = lastPlayed.GetComponent<Card>().GetValue();
+            if (value != 10 || value != 2)
+            {
+                turn++;
+                if (turn > 2)
+                {
+                    turn = 1;
+                }
+            }
+        }
+        else
+        {
+            turn++;
+            if (turn > 2)
+            {
+                turn = 1;
+            }
+        }
+    }
+
+    void Update()
+    {
+        ProcessWin();
+    }
+
+    void ProcessWin()
+    {
+        if (!winner)
+        {
+            if (playerHand.GetCards().Count == 0)
+            {
+                winText.gameObject.SetActive(true);
+                winText.text = "Player Wins!";
+                winner = true;
+            }
+            else if (aiHand.GetCards().Count == 0)
+            {
+                winText.gameObject.SetActive(true);
+                winText.text = "AI Wins!";
+                winner = true;
+            }
+            else
+            {
+                winText.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void RestartGame()
+    {
+        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(sceneIndex);
     }
 
     public int GetPlayerCount()
     {
         return playerCount;
+    }
+
+    public int GetTurn()
+    {
+        return turn;
+    }
+
+    public bool GetWinner()
+    {
+        return winner;
     }
 }

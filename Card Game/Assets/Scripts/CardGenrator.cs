@@ -127,8 +127,6 @@ public class CardGenrator : MonoBehaviour
         player.SetOverSideCards(overSideCards);
 
         player.SortCards(true);
-    
-        gameManager.AsignStartPlayer();
     }
 
     void DealAiCards()
@@ -174,16 +172,26 @@ public class CardGenrator : MonoBehaviour
 
         ai.SetUnderSideCards(underSideCards);
         ai.SetOverSideCards(overSideCards);
+
+        gameManager.AsignStartPlayer();
     }
 
-    public void DrawNewCard(int amount)
+    public void DrawNewCard(int amount, bool isPlayer)
     {
         for (int i = 0; i < amount; i++)
         {
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
 
-            player.AddHandCards(obj);
+            if (isPlayer)
+            {
+                player.AddHandCards(obj);
+            }
+            else
+            {
+                ai.AddHandCards(obj);
+            }
+
             deck.Remove(obj);
 
             if (deck.Count == 0)

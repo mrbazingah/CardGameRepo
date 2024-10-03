@@ -11,11 +11,15 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] List<GameObject> underSideCards, overSideCards;
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
-
+    [Space]
     [SerializeField] bool isTurn;
+    [SerializeField] int turnNumber;
+    [SerializeField] GameObject pickupButton;
 
     GameObject hoveredCard;
     bool usingOverSideCards, usingUnderSideCards;
+
+    int savedCardValue;
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -26,6 +30,11 @@ public class PlayerHand : MonoBehaviour
         pile = FindFirstObjectByType<Pile>();
         cardGenerator = FindFirstObjectByType<CardGenrator>();
         gameManager = FindFirstObjectByType<GameManager>();
+    }
+
+    public void SetTurnNumber(int i)
+    {
+        turnNumber = i;
     }
 
     public void AddHandCards(GameObject newCard)
@@ -50,8 +59,15 @@ public class PlayerHand : MonoBehaviour
         SortCards(false);
         DetectHover();
         UpdateSideUsage();
+        CheckTurn();
     }
 
+    void CheckTurn()
+    {
+        isTurn = turnNumber == gameManager.GetTurn();
+    }
+
+    #region Sorting
     void UpdateSideUsage()
     {
         usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
@@ -149,33 +165,51 @@ public class PlayerHand : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Play
     void PlayCard(GameObject cardInHand)
     {
-        if (!isTurn) return;
+        int cardValue = cardInHand.GetComponent<Card>().GetValue();
+        if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
-        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue()))
+        if (CanPlayCard(cardValue))
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
 
-            if (cardGenerator.GetDeck().Count > 0 && handCards.Count < 3)
-            {
-                cardGenerator.DrawNewCard(1);
-            }
-
-            if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
+            if (ShouldDiscard(cardValue))
             {
                 pile.DiscardCardsInPile();
+                savedCardValue = 0;
+            }
+
+            if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10) 
+            {
+                if (HasSameValueCard(cardValue) && cardValue != 2 && cardValue != 10)
+                {
+                    savedCardValue = cardValue;
+                }
+            }
+            else
+            {
+                savedCardValue = 0;
+                gameManager.NextTurn(cardInHand);
+                CheckTurn();
+            }
+
+            if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
+            {
+                cardGenerator.DrawNewCard(3 - handCards.Count, true);
             }
         }
         else
         {
-            if ((underSideCards.Contains(cardInHand) && usingUnderSideCards))
+            if (underSideCards.Contains(cardInHand) && usingUnderSideCards)
             {
                 pile.AddCardsToPile(cardInHand);
                 RemoveCardFromList(cardInHand);
-                PickUpPile();
+                PickUpPile(cardInHand);
             }
             else if (usingOverSideCards)
             {
@@ -193,20 +227,51 @@ public class PlayerHand : MonoBehaviour
                 {
                     pile.AddCardsToPile(cardInHand);
                     RemoveCardFromList(cardInHand);
-                    PickUpPile();
+                    PickUpPile(cardInHand);
+                }
+            }
+            else
+            {
+                bool hasCardToPlay = false;
+
+                for (int i = 0; i < handCards.Count; i++)
+                {
+                    if (CanPlayCard(handCards[i].GetComponent<Card>().GetValue()))
+                    {
+                        hasCardToPlay = true;
+                    }
+                }
+
+                if (!hasCardToPlay)
+                {
+                    pile.AddCardsToPile(cardInHand);
+                    RemoveCardFromList(cardInHand);
+                    PickUpPile(cardInHand);
                 }
             }
         }
-
-        isTurn = gameManager.NextTurn(handCards, cardInHand);
     }
 
-    void PickUpPile()
+    void PickUpPile(GameObject cardInHand)
     {
         List<GameObject> pileCards = pile.GetCardsInPile();
-        handCards.AddRange(pileCards);
-        pile.ClearPile();
-        UpdateCardSortingOrder(handCards);
+
+        if (pileCards.Count > 0)
+        {
+            handCards.AddRange(pileCards);
+            pile.ClearPile();
+            UpdateCardSortingOrder(handCards);
+
+            Debug.Log($"Player picked up {pileCards.Count} cards from the pile.");
+        }
+        else
+        {
+            Debug.Log("Pile is empty. Nothing to pick up.");
+        }
+
+        savedCardValue = 0;
+        gameManager.NextTurn(cardInHand);
+        CheckTurn();
     }
 
     void RemoveCardFromList(GameObject cardInHand)
@@ -228,6 +293,19 @@ public class PlayerHand : MonoBehaviour
     bool ShouldDiscard(int cardValue) => cardValue == 10 && (handCards.Count != 0 || overSideCards.Count != 0 || underSideCards.Count != 0);
 
     bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
+
+    bool HasSameValueCard(int cardValue)
+    {
+        foreach (GameObject card in handCards)
+        {
+            if (card.GetComponent<Card>().GetValue() == cardValue)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    #endregion
 
     public void SetTurn(bool b) => isTurn = b;
 

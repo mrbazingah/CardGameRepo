@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,10 +8,12 @@ public class AIHand : MonoBehaviour
     [SerializeField] List<GameObject> handCards;
     [Header("Side Settings")]
     [SerializeField] List<GameObject> underSideCards, overSideCards;
-
     [SerializeField] bool isTurn;
+    [SerializeField] int turnNumber;
+    [SerializeField] float playDelay;
 
     bool usingOverSideCards, usingUnderSideCards;
+    bool isPlaying;
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -21,12 +24,17 @@ public class AIHand : MonoBehaviour
         pile = FindFirstObjectByType<Pile>();
         cardGenerator = FindFirstObjectByType<CardGenrator>();
         gameManager = FindFirstObjectByType<GameManager>();
+        isPlaying = false;
+    }
+
+    public void SetTurnNumber(int i)
+    {
+        turnNumber = i;
     }
 
     public void AddHandCards(GameObject newCard)
     {
         handCards.Add(newCard);
-        DisplayCardCount();
     }
 
     public void SetUnderSideCards(List<GameObject> newCards) => underSideCards = newCards;
@@ -35,11 +43,17 @@ public class AIHand : MonoBehaviour
     void Update()
     {
         UpdateSideUsage();
+        CheckTurn();
 
-        if (isTurn)
+        if (isTurn && !isPlaying)
         {
-            PlayAITurn();
+            StartCoroutine(PlayAITurnWithDelay());
         }
+    }
+
+    void CheckTurn()
+    {
+        isTurn = turnNumber == gameManager.GetTurn();
     }
 
     void UpdateSideUsage()
@@ -48,45 +62,104 @@ public class AIHand : MonoBehaviour
         usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
     }
 
-    void PlayAITurn()
+    IEnumerator PlayAITurnWithDelay()
     {
-        List<GameObject> currentCards = GetCards();
-        GameObject selectedCard = null;
-
-        foreach (GameObject card in currentCards)
+        isPlaying = true;
+        yield return new WaitForSeconds(playDelay);
+        bool playAgain;
+        do
         {
-            Card cardComponent = card.GetComponent<Card>();
-            if (CanPlayCard(cardComponent.GetValue()))
+            playAgain = false;
+            GameObject selectedCard = null;
+
+            List<GameObject> currentCards = GetCards();
+
+            List<GameObject> playableCards = new List<GameObject>();
+            List<GameObject> specialCards = new List<GameObject>();
+
+            foreach (GameObject card in currentCards)
             {
-                selectedCard = card;
-                break;
+                Card cardComponent = card.GetComponent<Card>();
+                int cardValue = cardComponent.GetValue();
+
+                if (CanPlayCard(cardValue))
+                {
+                    if (cardValue == 2 || cardValue == 10)
+                    {
+                        specialCards.Add(card);  
+                    }
+                    else
+                    {
+                        playableCards.Add(card); 
+                    }
+                }
             }
+
+            if (playableCards.Count > 0)
+            {
+                playableCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
+                selectedCard = playableCards[0];
+            }
+            else if (specialCards.Count > 0)
+            {
+                selectedCard = specialCards[0]; 
+            }
+
+            if (selectedCard != null)
+            {
+                PlayCard(selectedCard);
+
+                int cardValue = selectedCard.GetComponent<Card>().GetValue();
+                if (cardValue == 2 || cardValue == 10)
+                {
+                    playAgain = true;
+                    Debug.Log("AI played a special card (2 or 10), playing again.");
+                    yield return new WaitForSeconds(playDelay);
+                }
+                else
+                {
+                    gameManager.NextTurn(selectedCard);
+                }
+            }
+            else
+            {
+                if (pile.GetCardsInPile().Count > 0)
+                {
+                    PickUpPile();
+                    Debug.Log("No playable cards, AI picking up the pile.");
+                    gameManager.NextTurn(null);
+                }
+                else
+                {
+                    Debug.Log("Pile is empty, AI can't pick up.");
+                }
+                playAgain = false;
+            }
+
+        } while (playAgain);
+
+        CheckTurn();
+
+        if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
+        {
+            cardGenerator.DrawNewCard(3 - handCards.Count, false);
         }
 
-        if (selectedCard != null)
-        {
-            PlayCard(selectedCard);
-        }
-        else
-        {
-            PickUpPile();
-        }
-
-        EndTurn(selectedCard);
+        isPlaying = false;
     }
 
     void PlayCard(GameObject cardInHand)
     {
-        if (!isTurn) return;
+        if (!isTurn || gameManager.GetWinner()) return;
 
         if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue()))
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
 
-            if (cardGenerator.GetDeck().Count > 0 && handCards.Count < 3)
+            if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
             {
-                cardGenerator.DrawNewCard(1);
+                cardGenerator.DrawNewCard(3 - handCards.Count, false);
             }
 
             if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
@@ -107,7 +180,6 @@ public class AIHand : MonoBehaviour
         List<GameObject> pileCards = pile.GetCardsInPile();
         handCards.AddRange(pileCards);
         pile.ClearPile();
-        DisplayCardCount();
     }
 
     void RemoveCardFromList(GameObject cardInHand)
@@ -130,11 +202,6 @@ public class AIHand : MonoBehaviour
 
     bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
 
-    void EndTurn(GameObject lastPlayed)
-    {
-        isTurn = gameManager.NextTurn(handCards, lastPlayed);
-    }
-
     public void SetTurn(bool b) => isTurn = b;
 
     public List<GameObject> GetCards()
@@ -142,10 +209,5 @@ public class AIHand : MonoBehaviour
         if (usingOverSideCards) return overSideCards;
         if (usingUnderSideCards) return underSideCards;
         return handCards;
-    }
-
-    void DisplayCardCount()
-    {
-        Debug.Log("AI has " + handCards.Count + " cards in hand.");
     }
 }
