@@ -15,6 +15,9 @@ public class AIHand : MonoBehaviour
     bool usingOverSideCards, usingUnderSideCards;
     bool isPlaying;
 
+    bool hasDiscarded;
+    int savedCardValue;
+
     Pile pile;
     CardGenrator cardGenerator;
     GameManager gameManager;
@@ -110,10 +113,11 @@ public class AIHand : MonoBehaviour
                 PlayCard(selectedCard);
 
                 int cardValue = selectedCard.GetComponent<Card>().GetValue();
-                if (cardValue == 2 || cardValue == 10)
+                if (cardValue == 2 || cardValue == 10 || hasDiscarded || HasSameValueCard(cardValue))
                 {
                     playAgain = true;
-                    Debug.Log("AI played a special card (2 or 10), playing again.");
+                    hasDiscarded = false;
+                    Debug.Log("Ai plays again");
                     yield return new WaitForSeconds(playDelay);
                 }
                 else
@@ -152,7 +156,8 @@ public class AIHand : MonoBehaviour
     {
         if (!isTurn || gameManager.GetWinner()) return;
 
-        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue()))
+        int value = cardInHand.GetComponent<Card>().GetValue();
+        if (CanPlayCard(value))
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
@@ -162,10 +167,12 @@ public class AIHand : MonoBehaviour
                 cardGenerator.DrawNewCard(3 - handCards.Count, false);
             }
 
-            if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
+            if (ShouldDiscard(value))
             {
-                pile.DiscardCardsInPile();
+                StartCoroutine(pile.DiscardCardsInPile());
             }
+
+            savedCardValue = value;
         }
         else if (usingUnderSideCards || usingOverSideCards)
         {
@@ -198,7 +205,53 @@ public class AIHand : MonoBehaviour
         }
     }
 
-    bool ShouldDiscard(int cardValue) => cardValue == 10 && (handCards.Count != 0 || overSideCards.Count != 0 || underSideCards.Count != 0);
+    bool ShouldDiscard(int cardValue)
+    {
+        if (cardValue == 10 && (handCards.Count != 0 || overSideCards.Count != 0 || underSideCards.Count != 0))
+        {
+            hasDiscarded = true;
+            return true;
+        }
+
+        List<GameObject> pileCards = pile.GetCardsInPile();
+
+        if (pileCards.Count >= 4)
+        {
+            int lastCardValue = pileCards[pileCards.Count - 1].GetComponent<Card>().GetValue();
+            bool allSame = true;
+
+            for (int i = pileCards.Count - 2; i >= pileCards.Count - 4; i--)
+            {
+                int currentCardValue = pileCards[i].GetComponent<Card>().GetValue();
+                if (currentCardValue != lastCardValue)
+                {
+                    allSame = false;
+                    break;
+                }
+            }
+
+            if (allSame)
+            {
+                hasDiscarded = true;
+                return true;
+            }
+        }
+
+        hasDiscarded = false;
+        return false;
+    }
+
+    bool HasSameValueCard(int cardValue)
+    {
+        foreach (GameObject card in handCards)
+        {
+            if (card.GetComponent<Card>().GetValue() == cardValue)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
 

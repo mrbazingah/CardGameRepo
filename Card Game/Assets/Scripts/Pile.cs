@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class Pile : MonoBehaviour
     [SerializeField] List<GameObject> cardsInPile;
     [SerializeField] List<GameObject> discardedPile;
     [SerializeField] Transform pileTransform;
+    [SerializeField] float discardDelay;
 
     public void AddCardsToPile(GameObject newCard)
     {
@@ -34,8 +36,10 @@ public class Pile : MonoBehaviour
         return currentValue;
     }
 
-    public void DiscardCardsInPile()
+    public IEnumerator DiscardCardsInPile()
     {
+        yield return new WaitForSeconds(discardDelay);
+
         discardedPile = cardsInPile;
         cardsInPile = new List<GameObject>(0);
 

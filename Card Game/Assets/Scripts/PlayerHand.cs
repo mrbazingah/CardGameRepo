@@ -20,6 +20,7 @@ public class PlayerHand : MonoBehaviour
     bool usingOverSideCards, usingUnderSideCards;
 
     int savedCardValue;
+    bool hasDiscarded;
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -180,16 +181,18 @@ public class PlayerHand : MonoBehaviour
 
             if (ShouldDiscard(cardValue))
             {
-                pile.DiscardCardsInPile();
+                StartCoroutine(pile.DiscardCardsInPile());
                 savedCardValue = 0;
             }
 
-            if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10) 
+            if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10 || hasDiscarded) 
             {
                 if (HasSameValueCard(cardValue) && cardValue != 2 && cardValue != 10)
                 {
                     savedCardValue = cardValue;
                 }
+
+                hasDiscarded = false;
             }
             else
             {
@@ -290,7 +293,41 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    bool ShouldDiscard(int cardValue) => cardValue == 10 && (handCards.Count != 0 || overSideCards.Count != 0 || underSideCards.Count != 0);
+    bool ShouldDiscard(int cardValue)
+    {
+        if (cardValue == 10 && (handCards.Count != 0 || overSideCards.Count != 0 || underSideCards.Count != 0))
+        {
+            hasDiscarded = true;
+            return true;
+        }
+
+        List<GameObject> pileCards = pile.GetCardsInPile();
+
+        if (pileCards.Count >= 4) 
+        {
+            int lastCardValue = pileCards[pileCards.Count - 1].GetComponent<Card>().GetValue();
+            bool allSame = true;
+
+            for (int i = pileCards.Count - 2; i >= pileCards.Count - 4; i--)
+            {
+                int currentCardValue = pileCards[i].GetComponent<Card>().GetValue();
+                if (currentCardValue != lastCardValue)
+                {
+                    allSame = false;
+                    break;
+                }
+            }
+
+            if (allSame)
+            {
+                hasDiscarded = true;
+                return true; 
+            }
+        }
+
+        hasDiscarded = false;
+        return false;
+    } 
 
     bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
 
