@@ -132,6 +132,7 @@ public class AIHand : MonoBehaviour
                     PickUpPile();
                     Debug.Log("No playable cards, AI picking up the pile.");
                     gameManager.NextTurn(null);
+                    playAgain = false;
                 }
                 else
                 {
@@ -186,6 +187,7 @@ public class AIHand : MonoBehaviour
     {
         List<GameObject> pileCards = pile.GetCardsInPile();
         handCards.AddRange(pileCards);
+        gameManager.NextTurn(null);
         pile.ClearPile();
     }
 

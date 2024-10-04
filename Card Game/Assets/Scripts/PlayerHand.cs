@@ -3,28 +3,30 @@ using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
 {
-    [Header("Hand Settings")]
+    #region Variables
     [SerializeField] List<GameObject> handCards;
     [SerializeField] Transform handTransform;
     [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f, popUpHeight = 50f;
-    [Header("Side Settings")]
+    [Space]
     [SerializeField] List<GameObject> underSideCards, overSideCards;
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
     [Space]
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
-    [SerializeField] GameObject pickupButton;
+    [SerializeField] GameObject endTurnButton;
 
     GameObject hoveredCard;
     bool usingOverSideCards, usingUnderSideCards;
 
     int savedCardValue;
     bool hasDiscarded;
+    bool canEndTurn;
 
     Pile pile;
     CardGenrator cardGenerator;
     GameManager gameManager;
+    #endregion
 
     void Start()
     {
@@ -33,16 +35,15 @@ public class PlayerHand : MonoBehaviour
         gameManager = FindFirstObjectByType<GameManager>();
     }
 
-    public void SetTurnNumber(int i)
-    {
-        turnNumber = i;
-    }
-
+    #region SetCards
     public void AddHandCards(GameObject newCard)
     {
         handCards.Add(newCard);
         UpdateCardSortingOrder(handCards);
     }
+
+    public void SetUnderSideCards(List<GameObject> newCards) => underSideCards = newCards;
+    public void SetOverSideCards(List<GameObject> newCards) => overSideCards = newCards;
 
     void UpdateCardSortingOrder(List<GameObject> cards)
     {
@@ -51,22 +52,40 @@ public class PlayerHand : MonoBehaviour
             cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
         }
     }
-
-    public void SetUnderSideCards(List<GameObject> newCards) => underSideCards = newCards;
-    public void SetOverSideCards(List<GameObject> newCards) => overSideCards = newCards;
+    #endregion
 
     void Update()
     {
+        CanEndTurn();
         SortCards(false);
         DetectHover();
         UpdateSideUsage();
         CheckTurn();
     }
 
+    #region Turn
+    public void SetTurnNumber(int i)
+    {
+        turnNumber = i;
+    }
+
     void CheckTurn()
     {
         isTurn = turnNumber == gameManager.GetTurn();
     }
+
+    void CanEndTurn()
+    {
+        endTurnButton.SetActive(canEndTurn);
+    }
+
+    public void EndTurn()
+    {
+        gameManager.NextTurn(null);
+        canEndTurn = false;
+        endTurnButton.SetActive(false);
+    }
+    #endregion
 
     #region Sorting
     void UpdateSideUsage()
@@ -183,13 +202,15 @@ public class PlayerHand : MonoBehaviour
             {
                 StartCoroutine(pile.DiscardCardsInPile());
                 savedCardValue = 0;
+                canEndTurn = false;
             }
 
-            if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10 || hasDiscarded) 
+            if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10 || hasDiscarded)
             {
                 if (HasSameValueCard(cardValue) && cardValue != 2 && cardValue != 10)
                 {
                     savedCardValue = cardValue;
+                    canEndTurn = true;
                 }
 
                 hasDiscarded = false;
@@ -197,6 +218,7 @@ public class PlayerHand : MonoBehaviour
             else
             {
                 savedCardValue = 0;
+                canEndTurn = false;
                 gameManager.NextTurn(cardInHand);
                 CheckTurn();
             }
@@ -273,6 +295,7 @@ public class PlayerHand : MonoBehaviour
         }
 
         savedCardValue = 0;
+        canEndTurn = false;
         gameManager.NextTurn(cardInHand);
         CheckTurn();
     }
@@ -303,7 +326,7 @@ public class PlayerHand : MonoBehaviour
 
         List<GameObject> pileCards = pile.GetCardsInPile();
 
-        if (pileCards.Count >= 4) 
+        if (pileCards.Count >= 4)
         {
             int lastCardValue = pileCards[pileCards.Count - 1].GetComponent<Card>().GetValue();
             bool allSame = true;
@@ -321,13 +344,13 @@ public class PlayerHand : MonoBehaviour
             if (allSame)
             {
                 hasDiscarded = true;
-                return true; 
+                return true;
             }
         }
 
         hasDiscarded = false;
         return false;
-    } 
+    }
 
     bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
 
@@ -343,8 +366,6 @@ public class PlayerHand : MonoBehaviour
         return false;
     }
     #endregion
-
-    public void SetTurn(bool b) => isTurn = b;
 
     public List<GameObject> GetCards()
     {

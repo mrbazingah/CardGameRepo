@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < playerCards.Count; i++)
         {
             int value = playerCards[i].GetComponent<Card>().GetValue();
-            if (value < playerLowest)
+            if (value < playerLowest && value != 2 && value != 10)
             {
                 playerLowest = value;
             }
@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < aiCards.Count; i++)
         {
             int value = aiCards[i].GetComponent<Card>().GetValue();
-            if (value < aiLowest)
+            if (value < aiLowest && value != 2 && value != 10)
             {
                 aiLowest = value;
             }
