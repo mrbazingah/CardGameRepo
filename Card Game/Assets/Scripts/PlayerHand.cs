@@ -1,18 +1,21 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
 {
     #region Variables
     [SerializeField] List<GameObject> handCards;
+    [SerializeField] List<GameObject> underSideCards, overSideCards;
+    [Space]
     [SerializeField] Transform handTransform;
     [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f, popUpHeight = 50f;
     [Space]
-    [SerializeField] List<GameObject> underSideCards, overSideCards;
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
     [Space]
     [SerializeField] bool isTurn;
+    [SerializeField] bool canEndTurn;
     [SerializeField] int turnNumber;
     [SerializeField] GameObject endTurnButton;
 
@@ -21,7 +24,6 @@ public class PlayerHand : MonoBehaviour
 
     int savedCardValue;
     bool hasDiscarded;
-    bool canEndTurn;
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -60,6 +62,7 @@ public class PlayerHand : MonoBehaviour
         SortCards(false);
         DetectHover();
         UpdateSideUsage();
+        UpdateColliders();
         CheckTurn();
     }
 
@@ -92,6 +95,15 @@ public class PlayerHand : MonoBehaviour
     {
         usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
         usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
+    }
+
+    void UpdateColliders()
+    {
+        for (int i = 0; i < underSideCards.Count; i++)
+        {
+            BoxCollider2D boxCollider = underSideCards[i].GetComponent<BoxCollider2D>();
+            boxCollider.enabled = usingUnderSideCards;
+        }
     }
 
     public void SortCards(bool sortSideCards)

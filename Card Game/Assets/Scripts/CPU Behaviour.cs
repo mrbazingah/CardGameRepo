@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class AIHand : MonoBehaviour
 {
-    [Header("Hand Settings")]
     [SerializeField] List<GameObject> handCards;
-    [Header("Side Settings")]
     [SerializeField] List<GameObject> underSideCards, overSideCards;
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
@@ -14,9 +12,7 @@ public class AIHand : MonoBehaviour
 
     bool usingOverSideCards, usingUnderSideCards;
     bool isPlaying;
-
     bool hasDiscarded;
-    int savedCardValue;
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -105,7 +101,7 @@ public class AIHand : MonoBehaviour
             }
             else if (specialCards.Count > 0)
             {
-                selectedCard = specialCards[0]; 
+                selectedCard = specialCards[0];
             }
 
             if (selectedCard != null)
@@ -113,11 +109,9 @@ public class AIHand : MonoBehaviour
                 PlayCard(selectedCard);
 
                 int cardValue = selectedCard.GetComponent<Card>().GetValue();
-                if (cardValue == 2 || cardValue == 10 || hasDiscarded || HasSameValueCard(cardValue))
+                if (cardValue == 2 || ShouldDiscard(cardValue) || HasSameValueCard(cardValue))
                 {
                     playAgain = true;
-                    hasDiscarded = false;
-                    Debug.Log("Ai plays again");
                     yield return new WaitForSeconds(playDelay);
                 }
                 else
@@ -132,7 +126,6 @@ public class AIHand : MonoBehaviour
                     PickUpPile();
                     Debug.Log("No playable cards, AI picking up the pile.");
                     gameManager.NextTurn(null);
-                    playAgain = false;
                 }
                 else
                 {
@@ -157,8 +150,7 @@ public class AIHand : MonoBehaviour
     {
         if (!isTurn || gameManager.GetWinner()) return;
 
-        int value = cardInHand.GetComponent<Card>().GetValue();
-        if (CanPlayCard(value))
+        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue()))
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
@@ -168,12 +160,10 @@ public class AIHand : MonoBehaviour
                 cardGenerator.DrawNewCard(3 - handCards.Count, false);
             }
 
-            if (ShouldDiscard(value))
+            if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
             {
-                StartCoroutine(pile.DiscardCardsInPile());
+                pile.DiscardCardsInPile();
             }
-
-            savedCardValue = value;
         }
         else if (usingUnderSideCards || usingOverSideCards)
         {
@@ -187,7 +177,6 @@ public class AIHand : MonoBehaviour
     {
         List<GameObject> pileCards = pile.GetCardsInPile();
         handCards.AddRange(pileCards);
-        gameManager.NextTurn(null);
         pile.ClearPile();
     }
 
@@ -243,6 +232,8 @@ public class AIHand : MonoBehaviour
         return false;
     }
 
+    bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
+
     bool HasSameValueCard(int cardValue)
     {
         foreach (GameObject card in handCards)
@@ -254,8 +245,6 @@ public class AIHand : MonoBehaviour
         }
         return false;
     }
-
-    bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
 
     public void SetTurn(bool b) => isTurn = b;
 

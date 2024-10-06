@@ -284,13 +284,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handCards: []
+  underSideCards: []
+  overSideCards: []
   handTransform: {fileID: 181848385}
   baseCardSpacing: 1.2
   verticalSpacing: 0
   maxHandWidth: 15
   popUpHeight: 0.8
-  underSideCards: []
-  overSideCards: []
   underSideTransform: {fileID: 1349085153}
   overSideTransform: {fileID: 1869273745}
   sideBaseCardSpacing: 2
@@ -298,6 +298,7 @@ MonoBehaviour:
   sideMaxHandWidth: 15
   overSideOffset: 0.15
   isTurn: 0
+  canEndTurn: 0
   turnNumber: 0
   endTurnButton: {fileID: 2124886686}
 --- !u!4 &321392017
@@ -631,7 +632,7 @@ MonoBehaviour:
   cardsInPile: []
   discardedPile: []
   pileTransform: {fileID: 1231275424}
-  discardDelay: 0.6
+  discardDelay: 0.3
 --- !u!1 &636507204
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,7 +904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9792c9d8c582de645aac318b069f547f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCount: 3
+  playerCount: 2
   turn: 1
   allPlayers:
   - {fileID: 321392016}
