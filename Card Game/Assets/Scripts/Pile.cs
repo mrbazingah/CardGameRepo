@@ -60,33 +60,6 @@ public class Pile : MonoBehaviour
         cardsInPile = new List<GameObject>(0);
     }
 
-    public bool ShouldDiscardPile()
-    {
-        List<int> fourCards = new List<int>(4);
-        int count = 0;
-        for (int i = cardsInPile.Count - 1; i >= 0; i--)
-        {
-            if (count < 4 && cardsInPile.Count >= 4)
-            {
-                count++;
-                fourCards.Add(cardsInPile[i].GetComponent<Card>().GetValue());
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        if (fourCards[0] == fourCards[1] && fourCards[1] == fourCards[2] && fourCards[2] == fourCards[3])
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     public List<GameObject> GetCardsInPile()
     {
         return cardsInPile;

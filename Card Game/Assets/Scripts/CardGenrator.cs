@@ -21,12 +21,14 @@ public class CardGenrator : MonoBehaviour
     PlayerHand player;
     AIHand ai;
     GameManager gameManager;
+    Pile pile;
 
     void Awake()
     {
         player = FindFirstObjectByType<PlayerHand>();
         ai = FindFirstObjectByType<AIHand>();
         gameManager = FindFirstObjectByType<GameManager>();
+        pile = FindFirstObjectByType<Pile>();  
     }
 
     void Start()
@@ -199,6 +201,15 @@ public class CardGenrator : MonoBehaviour
                 Destroy(deckImage);
             }
         }
+    }
+
+    public GameObject GetChanceCard()
+    {
+        int randomNumber = Random.Range(0, deck.Count);
+        GameObject obj = deck[randomNumber];
+        pile.AddCardsToPile(obj);
+
+        return obj;
     }
 
     public List<GameObject> GetDeck()

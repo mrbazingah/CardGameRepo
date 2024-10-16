@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -18,6 +19,7 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] bool canEndTurn;
     [SerializeField] int turnNumber;
     [SerializeField] GameObject endTurnButton;
+    [SerializeField] float playChanceDelay;
 
     GameObject hoveredCard;
     bool usingOverSideCards, usingUnderSideCards;
@@ -86,6 +88,7 @@ public class PlayerHand : MonoBehaviour
     {
         gameManager.NextTurn(null);
         canEndTurn = false;
+        savedCardValue = 0;
         endTurnButton.SetActive(false);
     }
     #endregion
@@ -149,6 +152,7 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
+    #region Hover
     void ApplyHoverEffect(List<GameObject> cards, Transform parent, float spacing, float verticalSpace, float maxWidth, float offset = 0)
     {
         if (cards.Count == 0) return;
@@ -197,6 +201,7 @@ public class PlayerHand : MonoBehaviour
             }
         }
     }
+    #endregion
     #endregion
 
     #region Play
@@ -312,6 +317,21 @@ public class PlayerHand : MonoBehaviour
         CheckTurn();
     }
 
+    public void PlayChanceCard()
+    {
+        StartCoroutine(ProcessChanceCard());
+    }
+
+    IEnumerator ProcessChanceCard()
+    {
+        GameObject cardFromDeck = cardGenerator.GetChanceCard();
+        if (!isTurn || gameManager.GetWinner() || HasCardToPlay(cardFromDeck)) yield break;
+
+        yield return new WaitForSeconds(playChanceDelay);
+
+        PlayCard(cardFromDeck);
+    }
+
     void RemoveCardFromList(GameObject cardInHand)
     {
         if (usingOverSideCards)
@@ -376,6 +396,34 @@ public class PlayerHand : MonoBehaviour
             }
         }
         return false;
+    }
+
+    bool HasCardToPlay(GameObject cardInHand)
+    {
+        bool hasCardToPlay = false;
+
+        if (usingOverSideCards)
+        {
+            for (int i = 0; i < overSideCards.Count; i++)
+            {
+                if (CanPlayCard(overSideCards[i].GetComponent<Card>().GetValue()))
+                {
+                    hasCardToPlay = true;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < handCards.Count; i++)
+            {
+                if (CanPlayCard(handCards[i].GetComponent<Card>().GetValue()))
+                {
+                    hasCardToPlay = true;
+                }
+            }
+        }
+
+        return hasCardToPlay;
     }
     #endregion
 

@@ -12,7 +12,6 @@ public class AIHand : MonoBehaviour
 
     bool usingOverSideCards, usingUnderSideCards;
     bool isPlaying;
-    bool hasDiscarded;
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -85,11 +84,11 @@ public class AIHand : MonoBehaviour
                 {
                     if (cardValue == 2 || cardValue == 10)
                     {
-                        specialCards.Add(card);  
+                        specialCards.Add(card);
                     }
                     else
                     {
-                        playableCards.Add(card); 
+                        playableCards.Add(card);
                     }
                 }
             }
@@ -97,7 +96,15 @@ public class AIHand : MonoBehaviour
             if (playableCards.Count > 0)
             {
                 playableCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
-                selectedCard = playableCards[0];
+                if (usingUnderSideCards)
+                {
+                    int randomNumber = Random.Range(0, playableCards.Count);
+                    selectedCard = playableCards[randomNumber];
+                }
+                else
+                {
+                    selectedCard = playableCards[0];
+                }
             }
             else if (specialCards.Count > 0)
             {
@@ -162,8 +169,11 @@ public class AIHand : MonoBehaviour
 
             if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
             {
-                pile.DiscardCardsInPile();
+                StartCoroutine(pile.DiscardCardsInPile());
+                Debug.Log("Discarded");
             }
+
+            Debug.Log("Played Card");
         }
         else if (usingUnderSideCards || usingOverSideCards)
         {
@@ -198,9 +208,8 @@ public class AIHand : MonoBehaviour
 
     bool ShouldDiscard(int cardValue)
     {
-        if (cardValue == 10 && (handCards.Count != 0 || overSideCards.Count != 0 || underSideCards.Count != 0))
+        if (cardValue == 10)
         {
-            hasDiscarded = true;
             return true;
         }
 
@@ -223,12 +232,10 @@ public class AIHand : MonoBehaviour
 
             if (allSame)
             {
-                hasDiscarded = true;
                 return true;
             }
         }
 
-        hasDiscarded = false;
         return false;
     }
 
