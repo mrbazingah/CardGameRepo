@@ -91,6 +91,11 @@ public class PlayerHand : MonoBehaviour
         savedCardValue = 0;
         endTurnButton.SetActive(false);
     }
+
+    public bool GetTurn()
+    {
+        return isTurn;
+    }
     #endregion
 
     #region Sorting
@@ -192,7 +197,7 @@ public class PlayerHand : MonoBehaviour
             {
                 if (hoveredCard != null)
                 {
-                    PlayCard(hoveredCard);
+                    PlayCard(hoveredCard, false);
                 }
                 else
                 {
@@ -205,7 +210,7 @@ public class PlayerHand : MonoBehaviour
     #endregion
 
     #region Play
-    void PlayCard(GameObject cardInHand)
+    void PlayCard(GameObject cardInHand, bool isChanceCard)
     {
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
@@ -245,6 +250,12 @@ public class PlayerHand : MonoBehaviour
                 cardGenerator.DrawNewCard(3 - handCards.Count, true);
             }
         }
+        else if (isChanceCard)
+        {
+            pile.AddCardsToPile(cardInHand);
+            RemoveCardFromList(cardInHand);
+            PickUpPile(cardInHand);
+        }
         else
         {
             if (underSideCards.Contains(cardInHand) && usingUnderSideCards)
@@ -255,15 +266,7 @@ public class PlayerHand : MonoBehaviour
             }
             else if (usingOverSideCards)
             {
-                bool hasCardToPlay = false;
-
-                for (int i = 0; i < overSideCards.Count; i++)
-                {
-                    if (CanPlayCard(overSideCards[i].GetComponent<Card>().GetValue()))
-                    {
-                        hasCardToPlay = true;
-                    }
-                }
+                bool hasCardToPlay = HasCardToPlay(cardInHand, overSideCards);
 
                 if (!hasCardToPlay)
                 {
@@ -272,17 +275,9 @@ public class PlayerHand : MonoBehaviour
                     PickUpPile(cardInHand);
                 }
             }
-            else
+            else 
             {
-                bool hasCardToPlay = false;
-
-                for (int i = 0; i < handCards.Count; i++)
-                {
-                    if (CanPlayCard(handCards[i].GetComponent<Card>().GetValue()))
-                    {
-                        hasCardToPlay = true;
-                    }
-                }
+                bool hasCardToPlay = HasCardToPlay(cardInHand, handCards);
 
                 if (!hasCardToPlay)
                 {
@@ -325,11 +320,13 @@ public class PlayerHand : MonoBehaviour
     IEnumerator ProcessChanceCard()
     {
         GameObject cardFromDeck = cardGenerator.GetChanceCard();
-        if (!isTurn || gameManager.GetWinner() || HasCardToPlay(cardFromDeck)) yield break;
+        if (!isTurn || gameManager.GetWinner() || HasCardToPlay(cardFromDeck, handCards)) yield break;
+
+        cardGenerator.GetDeck().Remove(cardFromDeck);
 
         yield return new WaitForSeconds(playChanceDelay);
 
-        PlayCard(cardFromDeck);
+        PlayCard(cardFromDeck, true);
     }
 
     void RemoveCardFromList(GameObject cardInHand)
@@ -384,7 +381,7 @@ public class PlayerHand : MonoBehaviour
         return false;
     }
 
-    bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
+    public bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
 
     bool HasSameValueCard(int cardValue)
     {
@@ -398,28 +395,15 @@ public class PlayerHand : MonoBehaviour
         return false;
     }
 
-    bool HasCardToPlay(GameObject cardInHand)
+    bool HasCardToPlay(GameObject cardInHand, List<GameObject> currentList)
     {
         bool hasCardToPlay = false;
 
-        if (usingOverSideCards)
+        for (int i = 0; i < currentList.Count; i++)
         {
-            for (int i = 0; i < overSideCards.Count; i++)
+            if (CanPlayCard(currentList[i].GetComponent<Card>().GetValue()))
             {
-                if (CanPlayCard(overSideCards[i].GetComponent<Card>().GetValue()))
-                {
-                    hasCardToPlay = true;
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < handCards.Count; i++)
-            {
-                if (CanPlayCard(handCards[i].GetComponent<Card>().GetValue()))
-                {
-                    hasCardToPlay = true;
-                }
+                hasCardToPlay = true;
             }
         }
 

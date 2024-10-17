@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardGenrator : MonoBehaviour
@@ -207,7 +208,12 @@ public class CardGenrator : MonoBehaviour
     {
         int randomNumber = Random.Range(0, deck.Count);
         GameObject obj = deck[randomNumber];
-        pile.AddCardsToPile(obj);
+
+        if (!player.GetTurn() || player.CanPlayCard(obj.GetComponent<Card>().GetValue())) { return null; }
+
+        deck.Remove(obj);
+        obj.GetComponent<SpriteRenderer>().sortingOrder = 100;
+        obj.transform.position = Vector2.zero;
 
         return obj;
     }

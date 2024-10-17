@@ -134,10 +134,6 @@ public class AIHand : MonoBehaviour
                     Debug.Log("No playable cards, AI picking up the pile.");
                     gameManager.NextTurn(null);
                 }
-                else
-                {
-                    Debug.Log("Pile is empty, AI can't pick up.");
-                }
                 playAgain = false;
             }
 
@@ -170,10 +166,7 @@ public class AIHand : MonoBehaviour
             if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
             {
                 StartCoroutine(pile.DiscardCardsInPile());
-                Debug.Log("Discarded");
             }
-
-            Debug.Log("Played Card");
         }
         else if (usingUnderSideCards || usingOverSideCards)
         {
