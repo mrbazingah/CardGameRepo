@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
@@ -298,14 +297,8 @@ public class PlayerHand : MonoBehaviour
             handCards.AddRange(pileCards);
             pile.ClearPile();
             UpdateCardSortingOrder(handCards);
-
-            Debug.Log($"Player picked up {pileCards.Count} cards from the pile.");
         }
-        else
-        {
-            Debug.Log("Pile is empty. Nothing to pick up.");
-        }
-
+        
         savedCardValue = 0;
         canEndTurn = false;
         gameManager.NextTurn(cardInHand);

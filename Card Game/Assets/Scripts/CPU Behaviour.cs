@@ -6,6 +6,13 @@ public class AIHand : MonoBehaviour
 {
     [SerializeField] List<GameObject> handCards;
     [SerializeField] List<GameObject> underSideCards, overSideCards;
+    [Space]
+    [SerializeField] Transform handTransform;
+    [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f, popUpHeight = 50f;
+    [Space]
+    [SerializeField] Transform underSideTransform, overSideTransform;
+    [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
+    [Space]
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
@@ -25,6 +32,7 @@ public class AIHand : MonoBehaviour
         isPlaying = false;
     }
 
+    #region Set Cards
     public void SetTurnNumber(int i)
     {
         turnNumber = i;
@@ -37,10 +45,13 @@ public class AIHand : MonoBehaviour
 
     public void SetUnderSideCards(List<GameObject> newCards) => underSideCards = newCards;
     public void SetOverSideCards(List<GameObject> newCards) => overSideCards = newCards;
+    #endregion
 
     void Update()
     {
         UpdateSideUsage();
+        UpdateColliders();
+        SortCards();
         CheckTurn();
 
         if (isTurn && !isPlaying)
@@ -49,17 +60,65 @@ public class AIHand : MonoBehaviour
         }
     }
 
-    void CheckTurn()
-    {
-        isTurn = turnNumber == gameManager.GetTurn();
-    }
-
+    #region Sorting
     void UpdateSideUsage()
     {
         usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
         usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
     }
 
+    void UpdateColliders()
+    {
+        for (int i = 0; i < underSideCards.Count; i++)
+        {
+            BoxCollider2D boxCollider = underSideCards[i].GetComponent<BoxCollider2D>();
+            boxCollider.enabled = usingUnderSideCards;
+        }
+    }
+
+    public void SortCards()
+    {
+        ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
+        ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
+    }
+
+    void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float verticalSpace, float maxWidth, float offset = 0)
+    {
+        if (cards.Count == 0) return;
+
+        float cardSpacing = Mathf.Min(spacing, maxWidth / cards.Count);
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            cards[i].transform.SetParent(parent);
+
+            if (cards.Count > 1)
+            {
+                float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
+                float normalizedPosition = 2f * i / (cards.Count - 1) - 1f;
+                float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
+                Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
+
+                cards[i].transform.localPosition = cardPosition;
+            }
+            else
+            {
+                cards[i].transform.localPosition = Vector3.zero;
+            }
+        }
+    }
+    #endregion
+
+    #region Turn
+    public void SetTurn(bool b) => isTurn = b;
+
+    void CheckTurn()
+    {
+        isTurn = turnNumber == gameManager.GetTurn();
+    }
+    #endregion
+
+    #region Play
     IEnumerator PlayAITurnWithDelay()
     {
         isPlaying = true;
@@ -93,22 +152,27 @@ public class AIHand : MonoBehaviour
                 }
             }
 
-            if (playableCards.Count > 0)
+            if (playableCards.Count > 0 && !usingUnderSideCards)
             {
                 playableCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
-                if (usingUnderSideCards)
-                {
-                    int randomNumber = Random.Range(0, playableCards.Count);
-                    selectedCard = playableCards[randomNumber];
-                }
-                else
-                {
-                    selectedCard = playableCards[0];
-                }
+                selectedCard = playableCards[0];
             }
-            else if (specialCards.Count > 0)
+            else if (specialCards.Count > 0 && !usingUnderSideCards)
             {
                 selectedCard = specialCards[0];
+            }
+            else
+            {
+                if (usingUnderSideCards)
+                {
+                    int randomNumber = Random.Range(0, underSideCards.Count);
+                    selectedCard = underSideCards[randomNumber];
+                }
+                else if (usingOverSideCards)
+                {
+                    int randomNumber = Random.Range(0, overSideCards.Count);
+                    selectedCard = overSideCards[randomNumber];
+                }
             }
 
             if (selectedCard != null)
@@ -124,6 +188,7 @@ public class AIHand : MonoBehaviour
                 else
                 {
                     gameManager.NextTurn(selectedCard);
+                    playAgain = false;
                 }
             }
             else
@@ -173,6 +238,7 @@ public class AIHand : MonoBehaviour
             pile.AddCardsToPile(cardInHand);
             RemoveCardFromList(cardInHand);
             PickUpPile();
+            gameManager.NextTurn(cardInHand);
         }
     }
 
@@ -245,8 +311,7 @@ public class AIHand : MonoBehaviour
         }
         return false;
     }
-
-    public void SetTurn(bool b) => isTurn = b;
+    #endregion
 
     public List<GameObject> GetCards()
     {
