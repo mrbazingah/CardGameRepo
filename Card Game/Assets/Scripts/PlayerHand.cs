@@ -18,7 +18,9 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] bool canEndTurn;
     [SerializeField] int turnNumber;
     [SerializeField] GameObject endTurnButton;
+    [Space]
     [SerializeField] float playChanceDelay;
+    [SerializeField] float lerpSpeed;
 
     GameObject hoveredCard;
     bool usingOverSideCards, usingUnderSideCards;
@@ -29,13 +31,15 @@ public class PlayerHand : MonoBehaviour
     Pile pile;
     CardGenrator cardGenerator;
     GameManager gameManager;
+    AudioManager audioManager;
     #endregion
 
-    void Start()
+    void Awake()
     {
         pile = FindFirstObjectByType<Pile>();
         cardGenerator = FindFirstObjectByType<CardGenrator>();
         gameManager = FindFirstObjectByType<GameManager>();
+        audioManager = FindFirstObjectByType<AudioManager>();
     }
 
     #region SetCards
@@ -147,7 +151,7 @@ public class PlayerHand : MonoBehaviour
                 float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
                 Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
 
-                cards[i].transform.localPosition = cards[i] == hoveredCard ? cardPosition + new Vector3(0, popUpHeight, 0) : cardPosition;
+                cards[i].transform.localPosition = cards[i] == hoveredCard ? cardPosition + new Vector3(0, popUpHeight, 0) : Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed);
             }
             else
             {
@@ -216,6 +220,8 @@ public class PlayerHand : MonoBehaviour
 
         if (CanPlayCard(cardValue))
         {
+            audioManager.PlayCardSFX();
+
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
 
@@ -241,11 +247,7 @@ public class PlayerHand : MonoBehaviour
                 savedCardValue = 0;
                 canEndTurn = false;
                 gameManager.NextTurn(cardInHand);
-                CheckTurn();
-            }
-
-            if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
-            {
+                CheckTurn(); 
                 cardGenerator.DrawNewCard(3 - handCards.Count, true);
             }
         }
@@ -265,7 +267,7 @@ public class PlayerHand : MonoBehaviour
             }
             else if (usingOverSideCards)
             {
-                bool hasCardToPlay = HasCardToPlay(cardInHand, overSideCards);
+                bool hasCardToPlay = HasCardToPlay(overSideCards);
 
                 if (!hasCardToPlay)
                 {
@@ -276,7 +278,7 @@ public class PlayerHand : MonoBehaviour
             }
             else 
             {
-                bool hasCardToPlay = HasCardToPlay(cardInHand, handCards);
+                bool hasCardToPlay = HasCardToPlay(handCards);
 
                 if (!hasCardToPlay)
                 {
@@ -302,6 +304,7 @@ public class PlayerHand : MonoBehaviour
         savedCardValue = 0;
         canEndTurn = false;
         gameManager.NextTurn(cardInHand);
+        audioManager.PlayShufflingSFX();
         CheckTurn();
     }
 
@@ -313,8 +316,6 @@ public class PlayerHand : MonoBehaviour
     IEnumerator ProcessChanceCard()
     {
         GameObject cardFromDeck = cardGenerator.GetChanceCard();
-        if (!isTurn || gameManager.GetWinner() || HasCardToPlay(cardFromDeck, handCards)) yield break;
-
         cardGenerator.GetDeck().Remove(cardFromDeck);
 
         yield return new WaitForSeconds(playChanceDelay);
@@ -388,7 +389,7 @@ public class PlayerHand : MonoBehaviour
         return false;
     }
 
-    bool HasCardToPlay(GameObject cardInHand, List<GameObject> currentList)
+    bool HasCardToPlay(List<GameObject> currentList)
     {
         bool hasCardToPlay = false;
 
@@ -401,6 +402,12 @@ public class PlayerHand : MonoBehaviour
         }
 
         return hasCardToPlay;
+    }
+
+    public bool CanChance()
+    {
+        bool b = !isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards);
+        return b;
     }
     #endregion
 

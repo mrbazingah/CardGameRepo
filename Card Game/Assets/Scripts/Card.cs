@@ -10,11 +10,6 @@ public class Card : MonoBehaviour
         cardValue = value;
     }
 
-    public int GetValue()
-    {
-        return cardValue;
-    }
-
     public void ApplyChild(GameObject newChild)
     {
         child = newChild;
@@ -26,5 +21,15 @@ public class Card : MonoBehaviour
         {
             Destroy(child);
         }
+    }
+
+    public GameObject GetChild()
+    {
+        return child;
+    }
+
+    public int GetValue()
+    {
+        return cardValue;
     }
 }

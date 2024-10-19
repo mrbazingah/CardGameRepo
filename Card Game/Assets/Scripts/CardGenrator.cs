@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardGenrator : MonoBehaviour
@@ -14,6 +13,7 @@ public class CardGenrator : MonoBehaviour
     [SerializeField] int numberOfCards = 52;
     [Space]
     [SerializeField] List<GameObject> deck;
+    [SerializeField] float lerpSpeed;
 
     List<string> cardSuits;
 
@@ -23,6 +23,7 @@ public class CardGenrator : MonoBehaviour
     AIHand ai;
     GameManager gameManager;
     Pile pile;
+    AudioManager audioManager;
 
     void Awake()
     {
@@ -30,6 +31,7 @@ public class CardGenrator : MonoBehaviour
         ai = FindFirstObjectByType<AIHand>();
         gameManager = FindFirstObjectByType<GameManager>();
         pile = FindFirstObjectByType<Pile>();  
+        audioManager = FindFirstObjectByType<AudioManager>();
     }
 
     void Start()
@@ -96,6 +98,7 @@ public class CardGenrator : MonoBehaviour
             deck.Remove(obj);
         }
 
+        audioManager.PlayShufflingSFX();
 
         List<GameObject> underSideCards = new List<GameObject>(3);
         List<GameObject> overSideCards = new List<GameObject>(3);
@@ -110,13 +113,7 @@ public class CardGenrator : MonoBehaviour
             if (ii <= 2)
             {
                 underSideCards.Add(obj);
-
-                GameObject card = Instantiate(backCardPrefab);
-                card.transform.SetParent(obj.transform);
-                card.transform.localPosition = Vector3.zero;
-                card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
-
-                obj.GetComponent<Card>().ApplyChild(card);
+                ApplyCoverOnCards(obj);
             }
             else
             {
@@ -139,6 +136,7 @@ public class CardGenrator : MonoBehaviour
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
 
+            ApplyCoverOnCards(obj);
             ai.AddHandCards(obj);
             deck.Remove(obj);
         }
@@ -157,13 +155,7 @@ public class CardGenrator : MonoBehaviour
             if (ii <= 2)
             {
                 underSideCards.Add(obj);
-
-                GameObject card = Instantiate(backCardPrefab);
-                card.transform.SetParent(obj.transform);
-                card.transform.localPosition = Vector3.zero;
-                card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
-
-                obj.GetComponent<Card>().ApplyChild(card);
+                ApplyCoverOnCards(obj);
             }
             else
             {
@@ -192,9 +184,11 @@ public class CardGenrator : MonoBehaviour
             }
             else
             {
+                ApplyCoverOnCards(obj);
                 ai.AddHandCards(obj);
             }
 
+            audioManager.PlayCardSFX();
             deck.Remove(obj);
 
             if (deck.Count == 0)
@@ -204,16 +198,28 @@ public class CardGenrator : MonoBehaviour
         }
     }
 
+    public void ApplyCoverOnCards(GameObject obj)
+    {
+        GameObject card = Instantiate(backCardPrefab);
+        card.transform.SetParent(obj.transform);
+        card.transform.localPosition = Vector3.zero;
+        card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
+
+        obj.GetComponent<Card>().ApplyChild(card);
+    }
+
     public GameObject GetChanceCard()
     {
         int randomNumber = Random.Range(0, deck.Count);
         GameObject obj = deck[randomNumber];
 
-        if (!player.GetTurn() || player.CanPlayCard(obj.GetComponent<Card>().GetValue())) { return null; }
+        if (!player.CanChance()) { return null; }
 
         deck.Remove(obj);
+        pile.AddCardsToPile(obj);
         obj.GetComponent<SpriteRenderer>().sortingOrder = 100;
-        obj.transform.position = Vector2.zero;
+
+        audioManager.PlayCardSFX();
 
         return obj;
     }

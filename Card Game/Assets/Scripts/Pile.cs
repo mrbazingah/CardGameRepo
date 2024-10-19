@@ -8,13 +8,38 @@ public class Pile : MonoBehaviour
     [SerializeField] List<GameObject> discardedPile;
     [SerializeField] Transform pileTransform;
     [SerializeField] float discardDelay;
+    [SerializeField] float lerpSpeed;
+
+    AudioManager audioManager;
+
+    void Awake()
+    {
+        audioManager = FindFirstObjectByType<AudioManager>();
+    }
+
+    void Update()
+    {
+        LerpCardsToPile();
+    }
+
+    void LerpCardsToPile()
+    {
+        for (int i = 0; i < cardsInPile.Count; i++)
+        {
+            cardsInPile[i].transform.position = Vector2.Lerp(cardsInPile[i].transform.position, pileTransform.position, lerpSpeed);
+        }
+
+        for (int i = 0; i < discardedPile.Count; i++)
+        {
+            discardedPile[i].transform.position = Vector2.Lerp(discardedPile[i].transform.position, new Vector2(-10, 0), lerpSpeed);
+        }
+    }
 
     public void AddCardsToPile(GameObject newCard)
     {
         newCard.transform.SetParent(pileTransform);
 
         cardsInPile.Add(newCard);
-        newCard.transform.localPosition = Vector3.zero;
 
         for (int i = 0; i < cardsInPile.Count; i++)
         {
@@ -24,18 +49,6 @@ public class Pile : MonoBehaviour
         newCard.GetComponent<Card>().RemoveChild();
     }
 
-    public int GetCurrentCard()
-    {
-        int currentValue = 0;
-
-        if (cardsInPile.Count != 0)
-        {
-           currentValue = cardsInPile[cardsInPile.Count - 1].GetComponent<Card>().GetValue();
-        }
-
-        return currentValue;
-    }
-
     public IEnumerator DiscardCardsInPile()
     {
         yield return new WaitForSeconds(discardDelay);
@@ -43,21 +56,34 @@ public class Pile : MonoBehaviour
         discardedPile = cardsInPile;
         cardsInPile = new List<GameObject>(0);
 
-        for (int i = 0; i < discardedPile.Count; i++)
-        {
-            discardedPile[i].transform.position = new Vector2(100, 100);
-        }
+        audioManager.PlayShufflingSFX();
     }
 
     public void ClearPile()
     {
         for (int i = 0; i < cardsInPile.Count; i++)
         {
-            cardsInPile[i].transform.position = new Vector2(100, 100);
             cardsInPile[i].transform.SetParent(null);
         }
 
         cardsInPile = new List<GameObject>(0);
+    }
+
+    public int GetCurrentCard()
+    {
+        int currentValue = 0;
+
+        if (cardsInPile.Count != 0)
+        {
+            currentValue = cardsInPile[cardsInPile.Count - 1].GetComponent<Card>().GetValue();
+        }
+
+        return currentValue;
+    }
+
+    public Transform GetPilePosition()
+    {
+        return pileTransform;
     }
 
     public List<GameObject> GetCardsInPile()

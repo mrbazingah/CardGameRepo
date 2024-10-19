@@ -15,11 +15,14 @@ public class GameManager : MonoBehaviour
     PlayerHand playerHand;
     AIHand aiHand;
 
-    public void AsignStartPlayer()
+    void Awake()
     {
         aiHand = FindFirstObjectByType<AIHand>();
         playerHand = FindFirstObjectByType<PlayerHand>();
+    }
 
+    public void AsignStartPlayer()
+    {
         List<GameObject> playerCards = playerHand.GetCards();
         int playerLowest = 20;
 
@@ -87,7 +90,7 @@ public class GameManager : MonoBehaviour
 
     void ProcessWin()
     {
-        if (!winner)
+        if (!winner && playerHand != null)
         {
             if (playerHand.GetCards().Count == 0)
             {

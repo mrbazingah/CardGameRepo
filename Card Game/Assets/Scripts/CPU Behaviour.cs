@@ -8,7 +8,7 @@ public class AIHand : MonoBehaviour
     [SerializeField] List<GameObject> underSideCards, overSideCards;
     [Space]
     [SerializeField] Transform handTransform;
-    [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f, popUpHeight = 50f;
+    [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f;
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
@@ -16,6 +16,7 @@ public class AIHand : MonoBehaviour
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
+    [SerializeField] float lerpSpeed;
 
     bool usingOverSideCards, usingUnderSideCards;
     bool isPlaying;
@@ -23,12 +24,18 @@ public class AIHand : MonoBehaviour
     Pile pile;
     CardGenrator cardGenerator;
     GameManager gameManager;
+    AudioManager audioManager;
 
-    void Start()
+    void Awake()
     {
         pile = FindFirstObjectByType<Pile>();
         cardGenerator = FindFirstObjectByType<CardGenrator>();
         gameManager = FindFirstObjectByType<GameManager>();
+        audioManager = FindFirstObjectByType<AudioManager>();
+    }
+
+    void Start()
+    {
         isPlaying = false;
     }
 
@@ -78,6 +85,11 @@ public class AIHand : MonoBehaviour
 
     public void SortCards()
     {
+        if (handCards.Count > 0)
+        {
+            ArrangeCards(handCards, handTransform, baseCardSpacing, verticalSpacing, maxHandWidth);
+        }
+
         ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
     }
@@ -99,11 +111,17 @@ public class AIHand : MonoBehaviour
                 float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
                 Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
 
-                cards[i].transform.localPosition = cardPosition;
+                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed);
             }
             else
             {
                 cards[i].transform.localPosition = Vector3.zero;
+            }
+
+            GameObject child = cards[i].GetComponent<Card>().GetChild();
+            if (handCards.Contains(cards[i]) && child != null)
+            {
+                child.GetComponent<SpriteRenderer>().sortingLayerName = "BackCard";
             }
         }
     }
@@ -222,6 +240,7 @@ public class AIHand : MonoBehaviour
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
+            audioManager.PlayCardSFX();
 
             if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
             {
@@ -246,6 +265,14 @@ public class AIHand : MonoBehaviour
     {
         List<GameObject> pileCards = pile.GetCardsInPile();
         handCards.AddRange(pileCards);
+
+        for (int i = 0; i < handCards.Count; i++)
+        {
+            handCards[i].GetComponent<Card>().RemoveChild();
+            cardGenerator.ApplyCoverOnCards(handCards[i]);
+        }
+
+        audioManager.PlayShufflingSFX();
         pile.ClearPile();
     }
 
