@@ -258,7 +258,7 @@ public class PlayerHand : MonoBehaviour
         }
         else if (isChanceCard)
         {
-            RemoveCardFromList(cardInHand);
+            RemoveCardFromList(cardInHand); 
             PickUpPile(cardInHand);
         }
         else
