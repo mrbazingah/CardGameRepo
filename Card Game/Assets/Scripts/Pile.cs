@@ -69,13 +69,17 @@ public class Pile : MonoBehaviour
         cardsInPile = new List<GameObject>(0);
     }
 
-    public int GetCurrentCard()
+    public int GetCurrentCard(bool isChance)
     {
         int currentValue = 0;
 
-        if (cardsInPile.Count != 0)
+        if (cardsInPile.Count != 0 && !isChance)
         {
             currentValue = cardsInPile[cardsInPile.Count - 1].GetComponent<Card>().GetValue();
+        }
+        else if (cardsInPile.Count != 0 && isChance)
+        {
+            currentValue = cardsInPile[cardsInPile.Count - 2].GetComponent<Card>().GetValue();
         }
 
         return currentValue;

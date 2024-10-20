@@ -214,7 +214,6 @@ public class AIHand : MonoBehaviour
                 if (pile.GetCardsInPile().Count > 0)
                 {
                     PickUpPile();
-                    Debug.Log("No playable cards, AI picking up the pile.");
                     gameManager.NextTurn(null);
                 }
                 playAgain = false;
@@ -259,6 +258,8 @@ public class AIHand : MonoBehaviour
             PickUpPile();
             gameManager.NextTurn(cardInHand);
         }
+
+        StartCoroutine(gameManager.ProcessWin());
     }
 
     void PickUpPile()
@@ -325,7 +326,7 @@ public class AIHand : MonoBehaviour
         return false;
     }
 
-    bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
+    bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard(false) || cardValue == 10 || cardValue == 2;
 
     bool HasSameValueCard(int cardValue)
     {

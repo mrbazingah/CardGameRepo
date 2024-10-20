@@ -173,6 +173,8 @@ public class CardGenrator : MonoBehaviour
 
     public void DrawNewCard(int amount, bool isPlayer)
     {
+        if (deck.Count <= 0) { return; }
+
         for (int i = 0; i < amount; i++)
         {
             int randomNumber = Random.Range(0, deck.Count);
@@ -197,7 +199,7 @@ public class CardGenrator : MonoBehaviour
             }
         }
     }
-
+    
     public void ApplyCoverOnCards(GameObject obj)
     {
         GameObject card = Instantiate(backCardPrefab);

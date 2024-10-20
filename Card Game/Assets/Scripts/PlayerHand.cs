@@ -218,7 +218,7 @@ public class PlayerHand : MonoBehaviour
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
-        if (CanPlayCard(cardValue))
+        if (CanPlayCard(cardValue, isChanceCard))
         {
             audioManager.PlayCardSFX();
 
@@ -241,19 +241,23 @@ public class PlayerHand : MonoBehaviour
                 }
 
                 hasDiscarded = false;
+                
+                if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0)
+                {
+                    cardGenerator.DrawNewCard(3 - handCards.Count, true);
+                }
             }
             else
             {
                 savedCardValue = 0;
                 canEndTurn = false;
                 gameManager.NextTurn(cardInHand);
-                CheckTurn(); 
+                CheckTurn();
                 cardGenerator.DrawNewCard(3 - handCards.Count, true);
             }
         }
         else if (isChanceCard)
         {
-            pile.AddCardsToPile(cardInHand);
             RemoveCardFromList(cardInHand);
             PickUpPile(cardInHand);
         }
@@ -288,6 +292,8 @@ public class PlayerHand : MonoBehaviour
                 }
             }
         }
+
+        StartCoroutine(gameManager.ProcessWin());
     }
 
     void PickUpPile(GameObject cardInHand)
@@ -316,7 +322,7 @@ public class PlayerHand : MonoBehaviour
     IEnumerator ProcessChanceCard()
     {
         GameObject cardFromDeck = cardGenerator.GetChanceCard();
-        cardGenerator.GetDeck().Remove(cardFromDeck);
+        if (cardFromDeck == null) { yield break; }
 
         yield return new WaitForSeconds(playChanceDelay);
 
@@ -375,7 +381,15 @@ public class PlayerHand : MonoBehaviour
         return false;
     }
 
-    public bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard() || cardValue == 10 || cardValue == 2;
+    public bool CanPlayCard(float cardValue, bool isChance)
+    {
+        if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2)
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     bool HasSameValueCard(int cardValue)
     {
@@ -395,7 +409,7 @@ public class PlayerHand : MonoBehaviour
 
         for (int i = 0; i < currentList.Count; i++)
         {
-            if (CanPlayCard(currentList[i].GetComponent<Card>().GetValue()))
+            if (CanPlayCard(currentList[i].GetComponent<Card>().GetValue(), false))
             {
                 hasCardToPlay = true;
             }
@@ -406,8 +420,12 @@ public class PlayerHand : MonoBehaviour
 
     public bool CanChance()
     {
-        bool b = !isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards);
-        return b;
+        if (isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards))
+        {
+            return true;
+        }
+
+        return false;
     }
     #endregion
 

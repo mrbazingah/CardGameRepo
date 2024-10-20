@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,6 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] int playerCount = 1;
     [SerializeField] int turn = 1;
-    [SerializeField] List<PlayerHand> allPlayers;
     [SerializeField] TextMeshProUGUI winText;
 
     bool winner;
@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour
     {
         aiHand = FindFirstObjectByType<AIHand>();
         playerHand = FindFirstObjectByType<PlayerHand>();
+    }
+
+    void Start()
+    {
+        winText.gameObject.SetActive(false);
     }
 
     public void AsignStartPlayer()
@@ -83,13 +88,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Update()
+    public IEnumerator ProcessWin()
     {
-        ProcessWin();
-    }
+        yield return new WaitForSeconds(0.001f);
 
-    void ProcessWin()
-    {
         if (!winner && playerHand != null)
         {
             if (playerHand.GetCards().Count == 0)
@@ -103,10 +105,6 @@ public class GameManager : MonoBehaviour
                 winText.gameObject.SetActive(true);
                 winText.text = "AI Wins!";
                 winner = true;
-            }
-            else
-            {
-                winText.gameObject.SetActive(false);
             }
         }
     }
