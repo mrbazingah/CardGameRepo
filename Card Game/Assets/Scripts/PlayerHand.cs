@@ -218,7 +218,7 @@ public class PlayerHand : MonoBehaviour
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
-        if (CanPlayCard(cardValue, isChanceCard))
+        if (CanPlayCard(cardValue, isChanceCard, cardInHand))
         {
             audioManager.PlayCardSFX();
 
@@ -381,10 +381,21 @@ public class PlayerHand : MonoBehaviour
         return false;
     }
 
-    public bool CanPlayCard(float cardValue, bool isChance)
+    public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand)
     {
         if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2)
         {
+            if (cardInHand != null)
+            {
+                GetCards().Remove(cardInHand);
+                UpdateSideUsage();
+            }
+
+            if ((cardValue == 10 || cardValue == 2 || cardValue == 14) && GetCards().Count == 0)
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -409,7 +420,7 @@ public class PlayerHand : MonoBehaviour
 
         for (int i = 0; i < currentList.Count; i++)
         {
-            if (CanPlayCard(currentList[i].GetComponent<Card>().GetValue(), false))
+            if (CanPlayCard(currentList[i].GetComponent<Card>().GetValue(), false, null))
             {
                 hasCardToPlay = true;
             }
