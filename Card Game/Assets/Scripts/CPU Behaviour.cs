@@ -152,20 +152,20 @@ public class AIHand : MonoBehaviour
             List<GameObject> playableCards = new List<GameObject>();
             List<GameObject> specialCards = new List<GameObject>();
 
-            foreach (GameObject card in currentCards)
+            for (int i = 0; i < currentCards.Count; i++)
             {
-                Card cardComponent = card.GetComponent<Card>();
+                Card cardComponent = currentCards[i].GetComponent<Card>();
                 int cardValue = cardComponent.GetValue();
 
-                if (CanPlayCard(cardValue))
+                if (CanPlayCard(cardValue, false, null))
                 {
                     if (cardValue == 2 || cardValue == 10)
                     {
-                        specialCards.Add(card);
+                        specialCards.Add(currentCards[i]);
                     }
                     else
                     {
-                        playableCards.Add(card);
+                        playableCards.Add(currentCards[i]);
                     }
                 }
             }
@@ -195,7 +195,7 @@ public class AIHand : MonoBehaviour
 
             if (selectedCard != null)
             {
-                PlayCard(selectedCard);
+                PlayCard(selectedCard, false);
 
                 int cardValue = selectedCard.GetComponent<Card>().GetValue();
                 if (cardValue == 2 || ShouldDiscard(cardValue) || HasSameValueCard(cardValue))
@@ -231,11 +231,11 @@ public class AIHand : MonoBehaviour
         isPlaying = false;
     }
 
-    void PlayCard(GameObject cardInHand)
+    void PlayCard(GameObject cardInHand, bool isChance)
     {
         if (!isTurn || gameManager.GetWinner()) return;
 
-        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue()))
+        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue(), isChance, cardInHand))
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
@@ -326,7 +326,26 @@ public class AIHand : MonoBehaviour
         return false;
     }
 
-    bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard(false) || cardValue == 10 || cardValue == 2;
+    public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand)
+    {
+        if (cardInHand != null)
+        {
+            GetCards().Remove(cardInHand);
+            UpdateSideUsage();
+        }
+
+        if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2)
+        {
+            if ((cardValue == 10 || cardValue == 2 || cardValue == 14) && GetCards().Count == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 
     bool HasSameValueCard(int cardValue)
     {
