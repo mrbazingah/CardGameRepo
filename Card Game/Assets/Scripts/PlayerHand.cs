@@ -404,7 +404,9 @@ public class PlayerHand : MonoBehaviour
 
     bool HasSameValueCard(int cardValue)
     {
-        foreach (GameObject card in handCards)
+        if (usingUnderSideCards) { return false; }
+
+        foreach (GameObject card in GetCards())
         {
             if (card.GetComponent<Card>().GetValue() == cardValue)
             {

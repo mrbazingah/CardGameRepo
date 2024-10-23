@@ -270,7 +270,11 @@ public class AIHand : MonoBehaviour
         for (int i = 0; i < handCards.Count; i++)
         {
             handCards[i].GetComponent<Card>().RemoveChild();
-            cardGenerator.ApplyCoverOnCards(handCards[i]);
+
+            if (cardGenerator.GetAIs().Count == 0)
+            {
+                cardGenerator.ApplyCoverOnCards(handCards[i]);
+            }
         }
 
         audioManager.PlayShufflingSFX();
@@ -349,7 +353,9 @@ public class AIHand : MonoBehaviour
 
     bool HasSameValueCard(int cardValue)
     {
-        foreach (GameObject card in handCards)
+        if (usingUnderSideCards) { return false; }
+
+        foreach (GameObject card in GetCards())
         {
             if (card.GetComponent<Card>().GetValue() == cardValue)
             {
