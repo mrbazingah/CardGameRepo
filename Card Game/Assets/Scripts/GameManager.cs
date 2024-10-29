@@ -14,17 +14,11 @@ public class GameManager : MonoBehaviour
 
     PlayerHand playerHand;
     AIHand aiHand;
-    CardGenrator cardGenrator;
 
     void Awake()
     {
-        cardGenrator = FindFirstObjectByType<CardGenrator>();
-
-        if (cardGenrator.GetAIs().Count == 0)
-        {
-            aiHand = FindFirstObjectByType<AIHand>();
-            playerHand = FindFirstObjectByType<PlayerHand>();
-        }
+        aiHand = FindFirstObjectByType<AIHand>();
+        playerHand = FindFirstObjectByType<PlayerHand>();
     }
 
     void Start()
@@ -34,20 +28,7 @@ public class GameManager : MonoBehaviour
 
     public void AsignStartPlayer()
     {
-        List<GameObject> playerCards;
-        List<GameObject> aiCards;
-
-        if (playerHand != null)
-        {
-            playerCards = playerHand.GetCards();
-            aiCards = aiHand.GetCards();
-        }
-        else
-        {
-            playerCards = cardGenrator.GetAIs()[0].GetCards();
-            aiCards = cardGenrator.GetAIs()[1].GetCards();
-        }
-
+        List<GameObject> playerCards = playerHand.GetCards();
         int playerLowest = 20;
 
         for (int i = 0; i < playerCards.Count; i++)
@@ -59,6 +40,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        List<GameObject> aiCards = aiHand.GetCards();
         int aiLowest = 20;
 
         for (int i = 0; i < aiCards.Count; i++)
@@ -70,31 +52,15 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (playerHand != null)
+        if (playerLowest > aiLowest)
         {
-            if (playerLowest > aiLowest)
-            {
-                aiHand.SetTurnNumber(1);
-                playerHand.SetTurnNumber(2);
-            }
-            else
-            {
-                playerHand.SetTurnNumber(1);
-                aiHand.SetTurnNumber(2);
-            }
+            aiHand.SetTurnNumber(1);
+            playerHand.SetTurnNumber(2);
         }
         else
         {
-            if (playerLowest > aiLowest)
-            {
-                cardGenrator.GetAIs()[0].SetTurnNumber(1);
-                cardGenrator.GetAIs()[1].SetTurnNumber(2);
-            }
-            else
-            {
-                cardGenrator.GetAIs()[0].SetTurnNumber(2);
-                cardGenrator.GetAIs()[1].SetTurnNumber(1);
-            }
+            playerHand.SetTurnNumber(1);
+            aiHand.SetTurnNumber(2);
         }
     }
 
@@ -137,7 +103,7 @@ public class GameManager : MonoBehaviour
             else if (aiHand.GetCards().Count == 0)
             {
                 winText.gameObject.SetActive(true);
-                winText.text = "Gaper Bingzoid Wins!";
+                winText.text = "AI Wins!";
                 winner = true;
             }
         }

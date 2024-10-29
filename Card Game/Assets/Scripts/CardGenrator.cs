@@ -14,8 +14,6 @@ public class CardGenrator : MonoBehaviour
     [Space]
     [SerializeField] List<GameObject> deck;
     [SerializeField] float lerpSpeed;
-    [Space] 
-    [SerializeField] List<AIHand> ais;
 
     List<string> cardSuits;
 
@@ -29,12 +27,8 @@ public class CardGenrator : MonoBehaviour
 
     void Awake()
     {
-        if (ais.Count == 0)
-        {
-            ai = FindFirstObjectByType<AIHand>();
-            player = FindFirstObjectByType<PlayerHand>();
-        }
-
+        player = FindFirstObjectByType<PlayerHand>();
+        ai = FindFirstObjectByType<AIHand>();
         gameManager = FindFirstObjectByType<GameManager>();
         pile = FindFirstObjectByType<Pile>();  
         audioManager = FindFirstObjectByType<AudioManager>();
@@ -46,18 +40,7 @@ public class CardGenrator : MonoBehaviour
 
         GenerateCards();
         DealPlayerCards();
-
-        if (ai == null)
-        {
-            for (int i = 0; i < ais.Count; i++)
-            {
-                DealAiCards(ais[i]);
-            }
-        }
-        else
-        {
-            DealAiCards(ai);
-        }
+        DealAiCards();
     }
 
     void GenerateCards()
@@ -106,8 +89,6 @@ public class CardGenrator : MonoBehaviour
 
     void DealPlayerCards()
     {
-        if (player == null) return;
-
         for (int ii = 0; ii < cardsPerPlayer; ii++)
         {
             int randomNumber = Random.Range(0, deck.Count);
@@ -148,19 +129,15 @@ public class CardGenrator : MonoBehaviour
         player.SortCards(true);
     }
 
-    void DealAiCards(AIHand currentAi)
+    void DealAiCards()
     {
         for (int ii = 0; ii < cardsPerPlayer; ii++)
         {
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
 
-            if (ai != null)
-            {
-                ApplyCoverOnCards(obj);
-            }
-
-            currentAi.AddHandCards(obj);
+            ApplyCoverOnCards(obj);
+            ai.AddHandCards(obj);
             deck.Remove(obj);
         }
 
@@ -188,8 +165,8 @@ public class CardGenrator : MonoBehaviour
             deck.Remove(obj);
         }
 
-        currentAi.SetUnderSideCards(underSideCards);
-        currentAi.SetOverSideCards(overSideCards);
+        ai.SetUnderSideCards(underSideCards);
+        ai.SetOverSideCards(overSideCards);
 
         gameManager.AsignStartPlayer();
     }
@@ -207,20 +184,10 @@ public class CardGenrator : MonoBehaviour
             {
                 player.AddHandCards(obj);
             }
-            else if (ai != null)
+            else
             {
                 ApplyCoverOnCards(obj);
                 ai.AddHandCards(obj);
-            }
-            else
-            {
-                for (int ii  = 0; ii < ais.Count; ii++)
-                {
-                    if (ais[ii].GetCards().Count < 3)
-                    {
-                        ais[ii].AddHandCards(obj);
-                    }
-                }
             }
 
             audioManager.PlayCardSFX();
@@ -262,10 +229,5 @@ public class CardGenrator : MonoBehaviour
     public List<GameObject> GetDeck()
     {
         return deck;
-    }
-
-    public List<AIHand> GetAIs()
-    {
-        return ais;
     }
 }
