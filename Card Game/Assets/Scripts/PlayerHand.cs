@@ -5,15 +5,16 @@ using UnityEngine;
 public class PlayerHand : MonoBehaviour
 {
     #region Variables
+    [Header("Cards")]
     [SerializeField] List<GameObject> handCards;
     [SerializeField] List<GameObject> underSideCards, overSideCards;
-    [Space]
+    [Header("Transform")]
     [SerializeField] Transform handTransform;
     [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f, popUpHeight = 50f;
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
-    [Space]
+    [Header("Turn")]
     [SerializeField] bool isTurn;
     [SerializeField] bool canEndTurn;
     [SerializeField] int turnNumber;
@@ -27,6 +28,8 @@ public class PlayerHand : MonoBehaviour
 
     int savedCardValue;
     bool hasDiscarded;
+
+    List<GameObject> selectedCards = new List<GameObject>(0);
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -64,11 +67,79 @@ public class PlayerHand : MonoBehaviour
     void Update()
     {
         CanEndTurn();
-        SortCards(false);
+        SortCards();
         DetectHover();
         UpdateSideUsage();
         UpdateColliders();
+        ChangeSideCards();
         CheckTurn();
+    }
+
+    void ChangeSideCards()
+    {
+        if (gameManager.GetGameHasStarted() || selectedCards.Count != 2) { return; }
+
+        GameObject handCard = null;
+        GameObject sideCard = null;
+        GameObject lastSelectedCard = null;
+
+        if (handCards.Contains(selectedCards[0]) && overSideCards.Contains(selectedCards[1]))
+        {
+            handCard = selectedCards[0];
+            sideCard = selectedCards[1];
+
+            for (int i = 0; i < handCards.Count; i++)
+            {
+                if (handCards[i] == handCard)
+                {
+                    handCards[i] = sideCard;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < overSideCards.Count; i++)
+            {
+                if (overSideCards[i] == sideCard)
+                {
+                    overSideCards[i] = handCard;
+                    break;
+                }
+            }
+        }
+        else if (handCards.Contains(selectedCards[1]) && overSideCards.Contains(selectedCards[0]))
+        {
+            handCard = selectedCards[1];
+            sideCard = selectedCards[0];
+
+            for (int i = 0; i < handCards.Count; i++)
+            {
+                if (handCards[i] == handCard)
+                {
+                    handCards[i] = sideCard;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < overSideCards.Count; i++)
+            {
+                if (overSideCards[i] == sideCard)
+                {
+                    overSideCards[i] = handCard;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            lastSelectedCard = selectedCards[1];
+        }
+
+        selectedCards = new List<GameObject>(0);
+
+        if (lastSelectedCard != null)
+        {
+            selectedCards.Add(lastSelectedCard);
+        }
     }
 
     #region Turn
@@ -79,6 +150,7 @@ public class PlayerHand : MonoBehaviour
 
     void CheckTurn()
     {
+        if (!gameManager.GetGameHasStarted()) return;
         isTurn = turnNumber == gameManager.GetTurn();
     }
 
@@ -117,18 +189,11 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    public void SortCards(bool sortSideCards)
+    public void SortCards()
     {
-        if (handCards.Count > 0)
-        {
-            ArrangeCards(handCards, handTransform, baseCardSpacing, verticalSpacing, maxHandWidth);
-        }
-
-        if (sortSideCards)
-        {
-            ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
-            ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
-        }
+        ArrangeCards(handCards, handTransform, baseCardSpacing, verticalSpacing, maxHandWidth);
+        ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
+        ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
 
         ApplyHoverEffect(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
         ApplyHoverEffect(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
@@ -143,6 +208,15 @@ public class PlayerHand : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
             cards[i].transform.SetParent(parent);
+
+            if (cards == handCards)
+            {
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+            }
+            else if (cards == overSideCards)
+            {
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 2;
+            }
 
             if (cards.Count > 1)
             {
@@ -202,10 +276,11 @@ public class PlayerHand : MonoBehaviour
                 {
                     PlayCard(hoveredCard, false);
                 }
-                else
-                {
-                    Debug.LogError("Card not found");
-                }
+            }
+
+            if (!gameManager.GetGameHasStarted() && selectedCards.Count < 2)
+            {
+                selectedCards.Add(hoveredCard);
             }
         }
     }
@@ -215,6 +290,8 @@ public class PlayerHand : MonoBehaviour
     #region Play
     void PlayCard(GameObject cardInHand, bool isChanceCard)
     {
+        if (!gameManager.GetGameHasStarted()) return;
+
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
@@ -327,6 +404,13 @@ public class PlayerHand : MonoBehaviour
         yield return new WaitForSeconds(playChanceDelay);
 
         PlayCard(cardFromDeck, true);
+    }
+
+    public void PickupAtBeginning()
+    {
+        if (gameManager.GetGameHasStarted()) return;
+
+        cardGenerator.DrawNewCard(3 - handCards.Count, true);
     }
 
     void RemoveCardFromList(GameObject cardInHand)

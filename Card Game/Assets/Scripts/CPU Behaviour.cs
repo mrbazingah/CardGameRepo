@@ -59,6 +59,9 @@ public class AIHand : MonoBehaviour
         UpdateSideUsage();
         UpdateColliders();
         SortCards();
+
+        if (!gameManager.GetGameHasStarted()) return;
+
         CheckTurn();
 
         if (isTurn && !isPlaying)
@@ -233,7 +236,7 @@ public class AIHand : MonoBehaviour
 
     void PlayCard(GameObject cardInHand)
     {
-        if (!isTurn || gameManager.GetWinner()) return;
+        if (!isTurn || gameManager.GetWinner() || !gameManager.GetGameHasStarted()) return;
 
         if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue()))
         {

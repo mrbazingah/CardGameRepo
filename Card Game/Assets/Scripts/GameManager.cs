@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] int turn = 1;
     [SerializeField] TextMeshProUGUI winText;
 
+    bool gameHasStarted;
     bool winner;
 
     PlayerHand playerHand;
@@ -24,6 +25,14 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         winText.gameObject.SetActive(false);
+    }
+
+    public void StartGame(GameObject button)
+    {
+        AsignStartPlayer();
+        button.SetActive(false);
+        Destroy(button);
+        gameHasStarted = true;
     }
 
     public void AsignStartPlayer()
@@ -128,5 +137,10 @@ public class GameManager : MonoBehaviour
     public bool GetWinner()
     {
         return winner;
+    }
+
+    public bool GetGameHasStarted()
+    {
+        return gameHasStarted;
     }
 }

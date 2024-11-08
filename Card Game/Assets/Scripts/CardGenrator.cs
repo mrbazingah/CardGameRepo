@@ -17,8 +17,6 @@ public class CardGenrator : MonoBehaviour
 
     List<string> cardSuits;
 
-    int playerCount;
-
     PlayerHand player;
     AIHand ai;
     GameManager gameManager;
@@ -36,8 +34,6 @@ public class CardGenrator : MonoBehaviour
 
     void Start()
     {
-        playerCount = gameManager.GetPlayerCount();
-
         GenerateCards();
         DealPlayerCards();
         DealAiCards();
@@ -125,8 +121,6 @@ public class CardGenrator : MonoBehaviour
 
         player.SetUnderSideCards(underSideCards);
         player.SetOverSideCards(overSideCards);
-
-        player.SortCards(true);
     }
 
     void DealAiCards()
@@ -167,8 +161,6 @@ public class CardGenrator : MonoBehaviour
 
         ai.SetUnderSideCards(underSideCards);
         ai.SetOverSideCards(overSideCards);
-
-        gameManager.AsignStartPlayer();
     }
 
     public void DrawNewCard(int amount, bool isPlayer)

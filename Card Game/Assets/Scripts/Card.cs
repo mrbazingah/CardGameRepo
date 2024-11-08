@@ -1,13 +1,21 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Card : MonoBehaviour
 {
     [SerializeField] int cardValue;
     [SerializeField] GameObject child;
+    [SerializeField] List<GameObject> cardStack;
 
     public void SetValue(int value)
     {
         cardValue = value;
+    }
+
+    void Update()
+    {
+        
     }
 
     public void ApplyChild(GameObject newChild)
