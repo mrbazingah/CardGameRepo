@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public IEnumerator ProcessWin()
+    public IEnumerator ProcessWin(string playerName)
     {
         yield return new WaitForSeconds(0.001f);
 
@@ -106,15 +106,16 @@ public class GameManager : MonoBehaviour
             if (playerHand.GetCards().Count == 0)
             {
                 winText.gameObject.SetActive(true);
-                winText.text = "Player Wins!";
+                winText.transform.position = new Vector2(-winText.transform.position.x, 0f);
                 winner = true;
             }
             else if (aiHand.GetCards().Count == 0)
             {
                 winText.gameObject.SetActive(true);
-                winText.text = "AI Wins!";
                 winner = true;
             }
+
+            winText.text = playerName + " Wins!";
         }
     }
 

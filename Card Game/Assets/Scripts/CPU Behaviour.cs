@@ -262,7 +262,7 @@ public class AIHand : MonoBehaviour
             gameManager.NextTurn(cardInHand);
         }
 
-        StartCoroutine(gameManager.ProcessWin());
+        StartCoroutine(gameManager.ProcessWin("Ai"));
     }
 
     void PickUpPile()

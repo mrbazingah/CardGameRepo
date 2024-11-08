@@ -13,11 +13,6 @@ public class Card : MonoBehaviour
         cardValue = value;
     }
 
-    void Update()
-    {
-        
-    }
-
     public void ApplyChild(GameObject newChild)
     {
         child = newChild;
