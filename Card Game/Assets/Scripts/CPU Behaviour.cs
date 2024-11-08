@@ -265,6 +265,8 @@ public class AIHand : MonoBehaviour
     void PickUpPile()
     {
         List<GameObject> pileCards = pile.GetCardsInPile();
+        pile.ClearPile();
+
         handCards.AddRange(pileCards);
 
         for (int i = 0; i < handCards.Count; i++)
@@ -274,7 +276,6 @@ public class AIHand : MonoBehaviour
         }
 
         audioManager.PlayShufflingSFX();
-        pile.ClearPile();
     }
 
     void RemoveCardFromList(GameObject cardInHand)
