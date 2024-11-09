@@ -14,13 +14,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayCardSFX()
     {
-        myAudioSource.clip = playCardSFX;
-        myAudioSource.Play();
+        myAudioSource.PlayOneShot(playCardSFX);
     }
 
     public void PlayShufflingSFX()
     {
-        myAudioSource.clip = shufflingSFX;
-        myAudioSource.Play();
+        myAudioSource.PlayOneShot(shufflingSFX);
     }
 }
