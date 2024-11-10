@@ -136,7 +136,7 @@ public class CardGenrator : MonoBehaviour
     {
         if (otherPlayer != null) { return; }
 
-        for (int ii = 0; ii < cardsPerPlayer; ii++)
+        for (int i = 0; i < cardsPerPlayer; i++)
         {
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
@@ -150,14 +150,14 @@ public class CardGenrator : MonoBehaviour
         List<GameObject> underSideCards = new List<GameObject>(3);
         List<GameObject> overSideCards = new List<GameObject>(3);
 
-        for (int ii = 0; ii < 6; ii++)
+        for (int i = 0; i < 6; i++)
         {
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
 
-            obj.GetComponent<SpriteRenderer>().sortingOrder = ii;
+            obj.GetComponent<SpriteRenderer>().sortingOrder = i;
 
-            if (ii <= 2)
+            if (i <= 2)
             {
                 underSideCards.Add(obj);
                 ApplyCoverOnCards(obj);
@@ -172,6 +172,8 @@ public class CardGenrator : MonoBehaviour
 
         ai.SetUnderSideCards(underSideCards);
         ai.SetOverSideCards(overSideCards);
+
+        ai.SwitchOutSideCards();
     }
 
     public void DrawNewCard(int amount, bool isPlayer)

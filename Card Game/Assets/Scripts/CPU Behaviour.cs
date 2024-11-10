@@ -70,6 +70,69 @@ public class AIHand : MonoBehaviour
         }
     }
 
+    public void SwitchOutSideCards()
+    {
+        // Create a list to store all card values and their corresponding GameObjects
+        List<(int value, GameObject card)> allCards = new List<(int, GameObject)>();
+
+        // Collect all cards from handCards
+        for (int i = 0; i < handCards.Count; i++)
+        {
+            int value = handCards[i].GetComponent<Card>().GetValue();
+            allCards.Add((value, handCards[i]));
+        }
+
+        // Collect all cards from overSideCards
+        for (int i = 0; i < overSideCards.Count; i++)
+        {
+            int value = overSideCards[i].GetComponent<Card>().GetValue();
+            allCards.Add((value, overSideCards[i]));
+        }
+
+        // Sort the combined list with special priority for cards 2, 10, and 14 (Ace)
+        allCards.Sort((a, b) =>
+        {
+            // Check if either card is a special card
+            bool aIsSpecial = (a.value == 2 || a.value == 10 || a.value == 14);
+            bool bIsSpecial = (b.value == 2 || b.value == 10 || b.value == 14);
+
+            // Prioritize special cards
+            if (aIsSpecial && !bIsSpecial) return 1;  // a is special, b is not
+            if (!aIsSpecial && bIsSpecial) return -1; // b is special, a is not
+            if (aIsSpecial && bIsSpecial) return a.value.CompareTo(b.value); // Both are special; sort by value
+
+            // For non-special cards, sort by value in ascending order
+            return a.value.CompareTo(b.value);
+        });
+
+        // Distribute sorted cards: lowest values to handCards, highest (including special) to overSideCards
+        for (int i = 0; i < handCards.Count; i++)
+        {
+            handCards[i] = allCards[i].card;
+
+            // Remove covers on switched cards
+            Card currentCardScript = handCards[i].GetComponent<Card>();
+            if (currentCardScript.GetChild() == null)
+            {
+                cardGenerator.ApplyCoverOnCards(handCards[i]);
+            }
+        }
+
+        for (int i = 0; i < overSideCards.Count; i++)
+        {
+            overSideCards[i] = allCards[handCards.Count + i].card;
+
+            // Add covers to switched cards
+            Card currentCardScript = overSideCards[i].GetComponent<Card>();
+            if (currentCardScript.GetChild() != null)
+            {
+                currentCardScript.RemoveChild();
+            }
+
+            overSideCards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+        }
+    }
+
     #region Sorting
     void UpdateSideUsage()
     {
@@ -203,11 +266,28 @@ public class AIHand : MonoBehaviour
                 int cardValue = selectedCard.GetComponent<Card>().GetValue();
                 if (cardValue == 2 || ShouldDiscard(cardValue) || HasSameValueCard(cardValue))
                 {
+                    yield return new WaitForSeconds(0.1f);
+
                     playAgain = true;
+                    if (GetCards().Count == 0 && (cardValue == 2 || cardValue == 10 || cardValue == 14))
+                    {
+                        playAgain = false;
+                        PickUpPile();
+                        gameManager.NextTurn(selectedCard);
+                    }
+
+                    if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0 && !playAgain)
+                    {
+                        cardGenerator.DrawNewCard(3 - handCards.Count, false);
+                    }
+
+                    StartCoroutine(gameManager.ProcessWin("Ai"));
+
                     yield return new WaitForSeconds(playDelay);
                 }
                 else
                 {
+                    StartCoroutine(gameManager.ProcessWin("Ai"));
                     gameManager.NextTurn(selectedCard);
                     playAgain = false;
                 }
@@ -244,11 +324,6 @@ public class AIHand : MonoBehaviour
             pile.AddCardsToPile(cardInHand);
             audioManager.PlayCardSFX();
 
-            if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
-            {
-                cardGenerator.DrawNewCard(3 - handCards.Count, false);
-            }
-
             if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
             {
                 StartCoroutine(pile.DiscardCardsInPile());
@@ -262,7 +337,6 @@ public class AIHand : MonoBehaviour
             gameManager.NextTurn(cardInHand);
         }
 
-        StartCoroutine(gameManager.ProcessWin("Ai"));
     }
 
     void PickUpPile()
