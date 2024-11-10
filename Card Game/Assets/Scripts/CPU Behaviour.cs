@@ -276,11 +276,6 @@ public class AIHand : MonoBehaviour
                         gameManager.NextTurn(selectedCard);
                     }
 
-                    if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0 && !playAgain)
-                    {
-                        cardGenerator.DrawNewCard(3 - handCards.Count, false);
-                    }
-
                     StartCoroutine(gameManager.ProcessWin("Ai"));
 
                     yield return new WaitForSeconds(playDelay);
@@ -327,6 +322,11 @@ public class AIHand : MonoBehaviour
             if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
             {
                 StartCoroutine(pile.DiscardCardsInPile());
+            }
+
+            if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
+            {
+                cardGenerator.DrawNewCard(3 - handCards.Count, false);
             }
         }
         else if (usingUnderSideCards || usingOverSideCards)
