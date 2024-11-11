@@ -531,12 +531,7 @@ public class PlayerHand : MonoBehaviour
 
     public bool CanChance()
     {
-        if (isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards))
-        {
-            return true;
-        }
-
-        return false;
+        return isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards);
     }
     #endregion
 

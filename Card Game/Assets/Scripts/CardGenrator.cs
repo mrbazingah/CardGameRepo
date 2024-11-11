@@ -220,7 +220,7 @@ public class CardGenrator : MonoBehaviour
         int randomNumber = Random.Range(0, deck.Count);
         GameObject obj = deck[randomNumber];
 
-        if (!player.CanChance()) { return null; }
+        if ((!player.CanChance() && player.GetTurn()) || (!ai.CanChance() && ai.GetTurn())) { return null; }
 
         deck.Remove(obj);
         pile.AddCardsToPile(obj);

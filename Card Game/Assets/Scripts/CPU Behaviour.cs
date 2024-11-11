@@ -170,6 +170,20 @@ public class AIHand : MonoBehaviour
         {
             cards[i].transform.SetParent(parent);
 
+            if (cards == handCards)
+            {
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+            }
+            else if (cards == overSideCards)
+            {
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+            }
+            else
+            {
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<Card>().GetChild().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+            }
+
             if (cards.Count > 1)
             {
                 float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
@@ -200,6 +214,11 @@ public class AIHand : MonoBehaviour
     {
         isTurn = turnNumber == gameManager.GetTurn();
     }
+
+    public bool GetTurn()
+    {
+        return isTurn;
+    }
     #endregion
 
     #region Play
@@ -223,7 +242,7 @@ public class AIHand : MonoBehaviour
                 Card cardComponent = card.GetComponent<Card>();
                 int cardValue = cardComponent.GetValue();
 
-                if (CanPlayCard(cardValue))
+                if (CanPlayCard(cardValue, false))
                 {
                     if (cardValue == 2 || cardValue == 10)
                     {
@@ -261,7 +280,7 @@ public class AIHand : MonoBehaviour
 
             if (selectedCard != null)
             {
-                PlayCard(selectedCard);
+                PlayCard(selectedCard, false);
 
                 int cardValue = selectedCard.GetComponent<Card>().GetValue();
                 if (cardValue == 2 || ShouldDiscard(cardValue) || HasSameValueCard(cardValue))
@@ -291,9 +310,23 @@ public class AIHand : MonoBehaviour
             {
                 if (pile.GetCardsInPile().Count > 0)
                 {
-                    PickUpPile();
-                    gameManager.NextTurn(null);
+                    int random = 0;
+                    if (cardGenerator.GetDeck().Count != 0)
+                    {
+                        random = Random.Range(0, 2);
+                    }
+
+                    if (random == 0)
+                    {
+                        PickUpPile();
+                        gameManager.NextTurn(null);
+                    }
+                    else
+                    {
+                        PlayChanceCard();
+                    }
                 }
+
                 playAgain = false;
             }
 
@@ -309,11 +342,11 @@ public class AIHand : MonoBehaviour
         isPlaying = false;
     }
 
-    void PlayCard(GameObject cardInHand)
+    void PlayCard(GameObject cardInHand, bool isChance)
     {
         if (!isTurn || gameManager.GetWinner() || !gameManager.GetGameHasStarted()) return;
 
-        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue()))
+        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue(), isChance))
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
@@ -331,16 +364,45 @@ public class AIHand : MonoBehaviour
         }
         else if (usingUnderSideCards || usingOverSideCards)
         {
-            pile.AddCardsToPile(cardInHand);
-            RemoveCardFromList(cardInHand);
-            PickUpPile();
-            gameManager.NextTurn(cardInHand);
-        }
+            int random = 0;
+            if (cardGenerator.GetDeck().Count != 0)
+            {
+                random = Random.Range(0, 2);
+            }
 
+            if (random == 0)
+            {
+                pile.AddCardsToPile(cardInHand);
+                RemoveCardFromList(cardInHand);
+                PickUpPile();
+                gameManager.NextTurn(cardInHand);
+            }
+            else
+            {
+                PlayChanceCard();
+            }
+        }
+    }
+
+    public void PlayChanceCard()
+    {
+        StartCoroutine(ProcessChanceCard());
+        Debug.Log("Is Playing Chance Card");
+    }
+
+    IEnumerator ProcessChanceCard()
+    {
+        GameObject cardFromDeck = cardGenerator.GetChanceCard();
+        if (cardFromDeck == null) { yield break; }
+
+        PlayCard(cardFromDeck, true);
+        Debug.Log(cardFromDeck.GetComponent<Card>().GetValue().ToString());
     }
 
     void PickUpPile()
     {
+        if (gameManager.GetWinner()) return;
+
         List<GameObject> pileCards = pile.GetCardsInPile();
         pile.ClearPile();
 
@@ -404,7 +466,7 @@ public class AIHand : MonoBehaviour
         return false;
     }
 
-    bool CanPlayCard(float cardValue) => cardValue >= pile.GetCurrentCard(false) || cardValue == 10 || cardValue == 2;
+    bool CanPlayCard(float cardValue, bool isChance) => cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2;
 
     bool HasSameValueCard(int cardValue)
     {
@@ -416,6 +478,26 @@ public class AIHand : MonoBehaviour
             }
         }
         return false;
+    }
+
+    bool HasCardToPlay(List<GameObject> currentList)
+    {
+        bool hasCardToPlay = false;
+
+        for (int i = 0; i < currentList.Count; i++)
+        {
+            if (CanPlayCard(currentList[i].GetComponent<Card>().GetValue(), false))
+            {
+                hasCardToPlay = true;
+            }
+        }
+
+        return hasCardToPlay;
+    }
+
+    public bool CanChance()
+    {
+        return isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards);
     }
     #endregion
 
