@@ -176,6 +176,14 @@ public class CardGenrator : MonoBehaviour
         ai.SwitchOutSideCards();
     }
 
+    void Update()
+    {
+        if (deck.Count == 0)
+        {
+            Destroy(deckImage);
+        }
+    }
+
     public void DrawNewCard(int amount, bool isPlayer)
     {
         if (deck.Count <= 0) { return; }
@@ -197,11 +205,6 @@ public class CardGenrator : MonoBehaviour
 
             audioManager.PlayCardSFX();
             deck.Remove(obj);
-
-            if (deck.Count == 0)
-            {
-                Destroy(deckImage);
-            }
         }
     }
     

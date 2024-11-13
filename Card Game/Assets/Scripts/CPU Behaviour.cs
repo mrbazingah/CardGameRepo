@@ -291,8 +291,7 @@ public class AIHand : MonoBehaviour
                     if (GetCards().Count == 0 && (cardValue == 2 || cardValue == 10 || cardValue == 14))
                     {
                         playAgain = false;
-                        PickUpPile();
-                        gameManager.NextTurn(selectedCard);
+                        PickUpPile(selectedCard);
                     }
 
                     StartCoroutine(gameManager.ProcessWin("Ai"));
@@ -318,8 +317,7 @@ public class AIHand : MonoBehaviour
 
                     if (random == 0)
                     {
-                        PickUpPile();
-                        gameManager.NextTurn(null);
+                        PickUpPile(null);
                     }
                     else
                     {
@@ -362,6 +360,11 @@ public class AIHand : MonoBehaviour
                 cardGenerator.DrawNewCard(3 - handCards.Count, false);
             }
         }
+        else if (isChance)
+        {
+            RemoveCardFromList(cardInHand);
+            PickUpPile(cardInHand);
+        }
         else if (usingUnderSideCards || usingOverSideCards)
         {
             int random = 0;
@@ -374,8 +377,7 @@ public class AIHand : MonoBehaviour
             {
                 pile.AddCardsToPile(cardInHand);
                 RemoveCardFromList(cardInHand);
-                PickUpPile();
-                gameManager.NextTurn(cardInHand);
+                PickUpPile(cardInHand);
             }
             else
             {
@@ -399,7 +401,7 @@ public class AIHand : MonoBehaviour
         Debug.Log(cardFromDeck.GetComponent<Card>().GetValue().ToString());
     }
 
-    void PickUpPile()
+    void PickUpPile(GameObject cardInHand)
     {
         if (gameManager.GetWinner()) return;
 
@@ -407,6 +409,7 @@ public class AIHand : MonoBehaviour
         pile.ClearPile();
 
         handCards.AddRange(pileCards);
+        gameManager.NextTurn(cardInHand);
 
         for (int i = 0; i < handCards.Count; i++)
         {

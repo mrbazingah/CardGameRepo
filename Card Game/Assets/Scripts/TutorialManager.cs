@@ -13,6 +13,13 @@ public class TutorialManager : MonoBehaviour
     int pageIndex;
     Vector2 endPos;
 
+    SceneLoader sceneLoader;
+
+    void Awake()
+    {
+        sceneLoader = FindFirstObjectByType<SceneLoader>();
+    }
+
     void Start()
     {
         transform.position = Vector2.zero;   
@@ -22,15 +29,24 @@ public class TutorialManager : MonoBehaviour
     {
         UpdatePages();
         UpdateColors();
+        ReturnToMainMenu();
+    }
+
+    void ReturnToMainMenu()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            sceneLoader.LoadScene("Start Scene");
+        }
     }
 
     void UpdatePages()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             GoRight();
         }
-        else if (Input.GetKeyDown(KeyCode.Q))
+        else if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             GoLeft();
         }
