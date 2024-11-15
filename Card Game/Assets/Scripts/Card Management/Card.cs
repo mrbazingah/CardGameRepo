@@ -4,7 +4,8 @@ using UnityEngine;
 public class Card : MonoBehaviour
 {
     [SerializeField] int cardValue;
-    [SerializeField] GameObject child;
+    [SerializeField] GameObject back;
+    [SerializeField] GameObject visuals;
     [SerializeField] List<GameObject> cardStack;
 
     public void SetValue(int value)
@@ -14,20 +15,25 @@ public class Card : MonoBehaviour
 
     public void ApplyChild(GameObject newChild)
     {
-        child = newChild;
+        back = newChild;
     }
 
     public void RemoveChild()
     {
-        if (child != null)
+        if (back != null)
         {
-            Destroy(child);
+            Destroy(back);
         }
     }
 
-    public GameObject GetChild()
+    public GameObject GetBack()
     {
-        return child;
+        return back;
+    }
+
+    public GameObject GetVisuals()
+    {
+        return visuals;
     }
 
     public int GetValue()

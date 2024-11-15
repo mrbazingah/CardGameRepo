@@ -112,7 +112,7 @@ public class AIHand : MonoBehaviour
 
             // Remove covers on switched cards
             Card currentCardScript = handCards[i].GetComponent<Card>();
-            if (currentCardScript.GetChild() == null)
+            if (currentCardScript.GetBack() == null)
             {
                 cardGenerator.ApplyCoverOnCards(handCards[i]);
             }
@@ -124,7 +124,7 @@ public class AIHand : MonoBehaviour
 
             // Add covers to switched cards
             Card currentCardScript = overSideCards[i].GetComponent<Card>();
-            if (currentCardScript.GetChild() != null)
+            if (currentCardScript.GetBack() != null)
             {
                 currentCardScript.RemoveChild();
             }
@@ -181,7 +181,7 @@ public class AIHand : MonoBehaviour
             else
             {
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                cards[i].GetComponent<Card>().GetChild().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
 
             if (cards.Count > 1)
@@ -198,7 +198,7 @@ public class AIHand : MonoBehaviour
                 cards[i].transform.localPosition = Vector3.zero;
             }
 
-            GameObject child = cards[i].GetComponent<Card>().GetChild();
+            GameObject child = cards[i].GetComponent<Card>().GetBack();
             if (handCards.Contains(cards[i]) && child != null)
             {
                 child.GetComponent<SpriteRenderer>().sortingLayerName = "BackCard";

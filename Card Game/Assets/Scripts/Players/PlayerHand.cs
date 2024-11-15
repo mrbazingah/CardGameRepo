@@ -107,6 +107,8 @@ public class PlayerHand : MonoBehaviour
                     break;
                 }
             }
+
+            handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
         }
         else if (handCards.Contains(selectedCards[1]) && overSideCards.Contains(selectedCards[0]))
         {
@@ -130,6 +132,8 @@ public class PlayerHand : MonoBehaviour
                     break;
                 }
             }
+
+            handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
         }
         else
         {
@@ -213,16 +217,16 @@ public class PlayerHand : MonoBehaviour
 
             if (cards == handCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = i;
             }
             else if (cards == overSideCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+                cards[i].GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = i + 3;
             }
             else
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                cards[i].GetComponent<Card>().GetChild().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+                cards[i].GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
 
             if (cards.Count > 1)
@@ -232,8 +236,11 @@ public class PlayerHand : MonoBehaviour
                 float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
                 Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
 
+                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed);
+
+                GameObject cardVisual = cards[i].GetComponent<Card>().GetVisuals();
                 Vector3 popUpPosition = new Vector3(0f, popUpHeight, 0f);
-                cards[i].transform.localPosition = cards[i] == hoveredCard ? Vector3.Lerp(cardPosition + popUpPosition, cardPosition, lerpSpeed) : Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed);
+                cardVisual.transform.localPosition = cards[i] == hoveredCard ? Vector2.Lerp(cardVisual.transform.localPosition, popUpPosition, lerpSpeed) : Vector2.zero;
             }
             else
             {
@@ -348,6 +355,8 @@ public class PlayerHand : MonoBehaviour
                 CheckTurn();
                 cardGenerator.DrawNewCard(3 - handCards.Count, true);
             }
+
+            handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
         }
         else if (isChanceCard)
         {
@@ -399,7 +408,9 @@ public class PlayerHand : MonoBehaviour
             pile.ClearPile();
             UpdateCardSortingOrder(handCards);
         }
-        
+
+        handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
+
         savedCardValue = 0;
         canEndTurn = false;
         gameManager.NextTurn(cardInHand);
