@@ -5,7 +5,6 @@ public class Card : MonoBehaviour
 {
     [SerializeField] int cardValue;
     [SerializeField] GameObject back;
-    [SerializeField] GameObject visuals;
     [SerializeField] List<GameObject> cardStack;
 
     public void SetValue(int value)
@@ -29,11 +28,6 @@ public class Card : MonoBehaviour
     public GameObject GetBack()
     {
         return back;
-    }
-
-    public GameObject GetVisuals()
-    {
-        return visuals;
     }
 
     public int GetValue()

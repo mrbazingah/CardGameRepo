@@ -59,7 +59,7 @@ public class CardGenrator : MonoBehaviour
 
             GameObject card = Instantiate(cardPrefab);
 
-            card.GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sprite = cardSprites[i];
+            card.GetComponent<Card>().GetComponent<SpriteRenderer>().sprite = cardSprites[i];
 
             if (currentValue == 1)
             {
@@ -107,7 +107,7 @@ public class CardGenrator : MonoBehaviour
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
 
-            obj.GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = ii;
+            obj.GetComponent<SpriteRenderer>().sortingOrder = ii;
 
             if (ii <= 2)
             {
@@ -155,7 +155,7 @@ public class CardGenrator : MonoBehaviour
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
 
-            obj.GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = i;
+            obj.GetComponent<SpriteRenderer>().sortingOrder = i;
 
             if (i <= 2)
             {
@@ -213,7 +213,7 @@ public class CardGenrator : MonoBehaviour
         GameObject card = Instantiate(backCardPrefab);
         card.transform.SetParent(obj.transform);
         card.transform.localPosition = Vector3.zero;
-        card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder + 1;
+        card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
 
         obj.GetComponent<Card>().ApplyChild(card);
     }
@@ -227,7 +227,7 @@ public class CardGenrator : MonoBehaviour
 
         deck.Remove(obj);
         pile.AddCardsToPile(obj);
-        obj.GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = 100;
+        obj.GetComponent<SpriteRenderer>().sortingOrder = 100;
 
         audioManager.PlayCardSFX();
 

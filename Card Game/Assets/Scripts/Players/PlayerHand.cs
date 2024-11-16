@@ -217,15 +217,15 @@ public class PlayerHand : MonoBehaviour
 
             if (cards == handCards)
             {
-                cards[i].GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
             }
             else if (cards == overSideCards)
             {
-                cards[i].GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
             }
             else
             {
-                cards[i].GetComponent<Card>().GetVisuals().GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
                 cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
 
@@ -236,11 +236,10 @@ public class PlayerHand : MonoBehaviour
                 float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
                 Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
 
-                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed);
-
-                GameObject cardVisual = cards[i].GetComponent<Card>().GetVisuals();
-                Vector3 popUpPosition = new Vector3(0f, popUpHeight, 0f);
-                cardVisual.transform.localPosition = cards[i] == hoveredCard ? Vector2.Lerp(cardVisual.transform.localPosition, popUpPosition, lerpSpeed) : Vector2.zero;
+                Vector2 popUpPosition = new Vector3(cards[i].transform.position.x, popUpHeight);
+                cards[i].transform.localPosition = cards[i] == hoveredCard ? 
+                    Vector2.Lerp(cards[i].transform.localPosition, popUpPosition, lerpSpeed) :
+                    Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed);
             }
             else
             {
