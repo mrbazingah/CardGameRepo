@@ -108,6 +108,7 @@ public class PlayerHand : MonoBehaviour
                 }
             }
 
+            audioManager.PlayCardSFX();
             handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
         }
         else if (handCards.Contains(selectedCards[1]) && overSideCards.Contains(selectedCards[0]))
@@ -133,6 +134,7 @@ public class PlayerHand : MonoBehaviour
                 }
             }
 
+            audioManager.PlayCardSFX();
             handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
         }
         else

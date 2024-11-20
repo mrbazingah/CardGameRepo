@@ -80,6 +80,7 @@ public class Pile : MonoBehaviour
         else if (cardsInPile.Count != 0 && isChance)
         {
             currentValue = cardsInPile[cardsInPile.Count - 2].GetComponent<Card>().GetValue();
+            Debug.Log(currentValue.ToString());
         }
 
         return currentValue;
