@@ -550,4 +550,11 @@ public class PlayerHand : MonoBehaviour
         if (usingUnderSideCards) return underSideCards;
         return handCards;
     }
+
+    public int GetCardsIndex()
+    {
+        if (usingOverSideCards) return 0;
+        if (usingUnderSideCards) return 1;
+        return 2;
+    }
 }

@@ -97,6 +97,6 @@ public class TutorialManager : MonoBehaviour
         if (endPos.x == min) return;
 
         pageIndex++;
-        endPos = new Vector2(0f - offset * pageIndex, 0f);
+        endPos.x = 0f - offset * pageIndex;
     }
 }

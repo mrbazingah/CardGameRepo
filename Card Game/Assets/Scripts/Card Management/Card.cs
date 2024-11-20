@@ -1,14 +1,12 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Card : MonoBehaviour
 {
     [SerializeField] int cardValue;
     [SerializeField] GameObject back;
-    [SerializeField] List<GameObject> cardStack;
+    [SerializeField] float zeroPoint;
 
     float popUpHeight;
-    float zeroPoint;
 
     BoxCollider2D myBoxCollider;
     PlayerHand player;
@@ -31,12 +29,10 @@ public class Card : MonoBehaviour
 
     void UpdateCollider()
     {
-        myBoxCollider.offset = new Vector2(myBoxCollider.offset.x, 0);
-    }
+        if (!player.GetCards().Contains(gameObject) || player.GetCardsIndex() != 2) { return; }
 
-    public void SetZeroPoint()
-    {
-        zeroPoint = gameObject.transform.position.y;
+        float currentPosition = gameObject.transform.position.y;
+        myBoxCollider.offset = new Vector2(myBoxCollider.offset.x, zeroPoint - currentPosition);
     }
 
     public void SetValue(int value)

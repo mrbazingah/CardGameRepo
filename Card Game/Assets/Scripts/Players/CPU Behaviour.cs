@@ -59,6 +59,7 @@ public class AIHand : MonoBehaviour
         UpdateSideUsage();
         UpdateColliders();
         SortCards();
+        RemoveDubbleCards();
 
         if (!gameManager.GetGameHasStarted()) return;
 
@@ -198,6 +199,22 @@ public class AIHand : MonoBehaviour
             if (handCards.Contains(cards[i]) && child != null)
             {
                 child.GetComponent<SpriteRenderer>().sortingLayerName = "BackCard";
+            }
+        }
+    }
+
+    void RemoveDubbleCards()
+    {
+        if (handCards.Count == 0) { return; }
+
+        for (int i = 0; i < handCards.Count; i++)
+        {
+            for (int ii = 0; ii < handCards.Count; ii++)
+            {
+                if (handCards[i] == handCards[ii] && ii != i)
+                {
+                    handCards.Remove(handCards[ii]);
+                }
             }
         }
     }
