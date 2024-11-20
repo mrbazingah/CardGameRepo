@@ -250,6 +250,11 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
+    public float GetPopUpHeight()
+    {
+        return popUpHeight;
+    }
+
     #region Hover
     void ApplyHoverEffect(List<GameObject> cards, Transform parent, float spacing, float verticalSpace, float maxWidth, float offset = 0)
     {

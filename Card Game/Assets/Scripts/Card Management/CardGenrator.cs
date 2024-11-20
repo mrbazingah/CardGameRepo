@@ -14,7 +14,6 @@ public class CardGenrator : MonoBehaviour
     [Space]
     [SerializeField] List<GameObject> deck;
     [SerializeField] float lerpSpeed;
-    [SerializeField] PlayerHand otherPlayer;
 
     List<string> cardSuits;
 
@@ -124,18 +123,10 @@ public class CardGenrator : MonoBehaviour
 
         player.SetUnderSideCards(underSideCards);
         player.SetOverSideCards(overSideCards);
-
-        if (otherPlayer != null)
-        {
-            player = otherPlayer;
-            DealPlayerCards();
-        }
     }
 
     void DealAiCards()
     {
-        if (otherPlayer != null) { return; }
-
         for (int i = 0; i < cardsPerPlayer; i++)
         {
             int randomNumber = Random.Range(0, deck.Count);
