@@ -170,18 +170,14 @@ public class AIHand : MonoBehaviour
         {
             cards[i].transform.SetParent(parent);
 
-            if (cards == handCards)
+            if (cards == handCards || cards == underSideCards)
             {
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
             else if (cards == overSideCards)
             {
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
-            }
-            else
-            {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
 
             if (cards.Count > 1)
