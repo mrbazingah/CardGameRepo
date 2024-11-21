@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,9 +14,12 @@ public class CardGenrator : MonoBehaviour
     [SerializeField] int numberOfCards = 52;
     [Space]
     [SerializeField] List<GameObject> deck;
-    [SerializeField] float lerpSpeed;
+    [Space]
+    [SerializeField] float chanceCardDelay;
 
     List<string> cardSuits;
+
+    bool canDrawChanceCard = true;
 
     PlayerHand player;
     AIHand ai;
@@ -212,7 +216,9 @@ public class CardGenrator : MonoBehaviour
         int randomNumber = Random.Range(0, deck.Count);
         GameObject obj = deck[randomNumber];
 
-        if ((!player.CanChance() && player.GetTurn()) || (!ai.CanChance() && ai.GetTurn())) { return null; }
+        if ((!player.CanChance() && player.GetTurn()) || (!ai.CanChance() && ai.GetTurn()) || !canDrawChanceCard) { return null; }
+
+        StartCoroutine(ChanceCardDelay());
 
         deck.Remove(obj);
         pile.AddCardsToPile(obj);
@@ -221,6 +227,15 @@ public class CardGenrator : MonoBehaviour
         audioManager.PlayCardSFX();
 
         return obj;
+    }
+
+    IEnumerator ChanceCardDelay()
+    {
+        canDrawChanceCard = false;
+
+        yield return new WaitForSeconds(chanceCardDelay);
+
+        canDrawChanceCard = true;
     }
 
     public List<GameObject> GetDeck()

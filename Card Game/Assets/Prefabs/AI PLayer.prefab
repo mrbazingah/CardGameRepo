@@ -125,7 +125,7 @@ MonoBehaviour:
   isTurn: 0
   turnNumber: 0
   playDelay: 1
-  lerpSpeed: 0.075
+  lerpSpeed: 0.2
 --- !u!1 &8183546333639245761
 GameObject:
   m_ObjectHideFlags: 0

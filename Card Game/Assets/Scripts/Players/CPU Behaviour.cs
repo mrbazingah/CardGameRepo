@@ -402,7 +402,6 @@ public class AIHand : MonoBehaviour
     public void PlayChanceCard()
     {
         StartCoroutine(ProcessChanceCard());
-        Debug.Log("Is Playing Chance Card");
     }
 
     IEnumerator ProcessChanceCard()

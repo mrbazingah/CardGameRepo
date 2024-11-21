@@ -65,7 +65,7 @@ MonoBehaviour:
   turnNumber: 0
   endTurnButton: {fileID: 0}
   playChanceDelay: 0.5
-  lerpSpeed: 0.075
+  lerpSpeed: 0.2
 --- !u!1 &2614366089162157196
 GameObject:
   m_ObjectHideFlags: 0
