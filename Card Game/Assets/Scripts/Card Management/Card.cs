@@ -6,8 +6,6 @@ public class Card : MonoBehaviour
     [SerializeField] GameObject back;
     [SerializeField] float zeroPoint;
 
-    float popUpHeight;
-
     BoxCollider2D myBoxCollider;
     PlayerHand player;
 
@@ -15,11 +13,6 @@ public class Card : MonoBehaviour
     {
         myBoxCollider = GetComponent<BoxCollider2D>();
         player = FindFirstObjectByType<PlayerHand>();
-    }
-
-    void Start()
-    {
-        popUpHeight = player.GetPopUpHeight();
     }
 
     void Update()

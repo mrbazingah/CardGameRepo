@@ -26,12 +26,12 @@ public class Pile : MonoBehaviour
     {
         for (int i = 0; i < cardsInPile.Count; i++)
         {
-            cardsInPile[i].transform.position = Vector2.Lerp(cardsInPile[i].transform.position, pileTransform.position, lerpSpeed);
+            cardsInPile[i].transform.position = Vector2.Lerp(cardsInPile[i].transform.position, pileTransform.position, lerpSpeed * Time.deltaTime);
         }
 
         for (int i = 0; i < discardedPile.Count; i++)
         {
-            discardedPile[i].transform.position = Vector2.Lerp(discardedPile[i].transform.position, new Vector2(-10, 0), lerpSpeed);
+            discardedPile[i].transform.position = Vector2.Lerp(discardedPile[i].transform.position, new Vector2(-10, 0), lerpSpeed * Time.deltaTime);
         }
     }
 
@@ -80,7 +80,6 @@ public class Pile : MonoBehaviour
         else if (cardsInPile.Count != 0 && isChance)
         {
             currentValue = cardsInPile[cardsInPile.Count - 2].GetComponent<Card>().GetValue();
-            Debug.Log(currentValue.ToString());
         }
 
         return currentValue;

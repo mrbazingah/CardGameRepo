@@ -52,7 +52,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         Vector2 startPos = transform.position;
-        transform.position = Vector2.Lerp(startPos, endPos, speed);
+        transform.position = Vector2.Lerp(startPos, endPos, speed * Time.deltaTime);
     }
 
     void UpdateColors()

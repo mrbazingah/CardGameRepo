@@ -9,9 +9,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] int playerCount = 1;
     [SerializeField] int turn = 1;
     [SerializeField] TextMeshProUGUI winText;
+    [SerializeField] GameObject pauseMenu;
 
     bool gameHasStarted;
     bool winner;
+    bool isOpen;
 
     PlayerHand playerHand;
     AIHand aiHand;
@@ -71,6 +73,41 @@ public class GameManager : MonoBehaviour
             playerHand.SetTurnNumber(1);
             aiHand.SetTurnNumber(2);
         }
+    }
+
+    void Update()
+    {
+        ProcessPauseMenu();
+    }
+
+    void ProcessPauseMenu()
+    {
+        if (!isOpen && Input.GetKeyDown(KeyCode.Escape))
+        {
+            OpenMenu();
+        }
+        else if (isOpen && Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseMenu();
+        }
+
+        pauseMenu.SetActive(isOpen);
+    }
+
+    public void OpenMenu()
+    {
+        Time.timeScale = 0f;
+        isOpen = true;
+
+        Debug.Log(Time.timeScale.ToString());
+    }
+
+    public void CloseMenu()
+    {
+        Time.timeScale = 1f;
+        isOpen = false;
+
+        Debug.Log(Time.timeScale.ToString());
     }
 
     public void NextTurn(GameObject lastPlayed)

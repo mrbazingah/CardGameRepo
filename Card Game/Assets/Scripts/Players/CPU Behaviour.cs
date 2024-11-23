@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class AIHand : MonoBehaviour
@@ -16,10 +17,15 @@ public class AIHand : MonoBehaviour
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
+    [Space]
     [SerializeField] float lerpSpeed;
+    [SerializeField] TextMeshProUGUI cardAmountText;
+    [SerializeField] Vector2 cardAmountTextOffset;
 
     bool usingOverSideCards, usingUnderSideCards;
     bool isPlaying;
+
+    int cardsPerPlayer;
 
     Pile pile;
     CardGenrator cardGenerator;
@@ -37,6 +43,7 @@ public class AIHand : MonoBehaviour
     void Start()
     {
         isPlaying = false;
+        cardsPerPlayer = cardGenerator.GetCardsPerPlayer();
     }
 
     #region Set Cards
@@ -56,6 +63,7 @@ public class AIHand : MonoBehaviour
 
     void Update()
     {
+        SetCardAmountText();
         UpdateSideUsage();
         UpdateColliders();
         SortCards();
@@ -68,6 +76,23 @@ public class AIHand : MonoBehaviour
         if (isTurn && !isPlaying)
         {
             StartCoroutine(PlayAITurnWithDelay());
+        }
+    }
+
+    void SetCardAmountText()
+    {
+        if (handCards.Count > 0)
+        {
+            cardAmountText.text = handCards.Count.ToString();
+            Vector2 cardAmountTextPos = handCards[handCards.Count - 1].transform.position;
+            cardAmountTextPos += cardAmountTextOffset;
+            cardAmountText.transform.position = cardAmountTextPos;
+
+            cardAmountText.gameObject.SetActive(true);
+        }
+        else
+        {
+            cardAmountText.gameObject.SetActive(false);
         }
     }
 
@@ -188,7 +213,7 @@ public class AIHand : MonoBehaviour
                 float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
                 Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
 
-                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed);
+                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
             }
             else
             {
@@ -301,7 +326,7 @@ public class AIHand : MonoBehaviour
                     yield return new WaitForSeconds(0.1f);
 
                     playAgain = true;
-                    if (GetCards().Count == 0 && (cardValue == 2 || cardValue == 10 || cardValue == 14))
+                    if (GetCards().Count == 0 && (cardValue == 14 || cardValue == 2 || cardValue == 10))
                     {
                         playAgain = false;
                         PickUpPile(selectedCard);
@@ -347,7 +372,7 @@ public class AIHand : MonoBehaviour
 
         if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
         {
-            cardGenerator.DrawNewCard(3 - handCards.Count, false);
+            cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
         }
 
         isPlaying = false;
@@ -370,7 +395,7 @@ public class AIHand : MonoBehaviour
 
             if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
             {
-                cardGenerator.DrawNewCard(3 - handCards.Count, false);
+                cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
             }
         }
         else if (isChance)
@@ -410,7 +435,6 @@ public class AIHand : MonoBehaviour
         if (cardFromDeck == null) { yield break; }
 
         PlayCard(cardFromDeck, true);
-        Debug.Log(cardFromDeck.GetComponent<Card>().GetValue().ToString());
     }
 
     void PickUpPile(GameObject cardInHand)

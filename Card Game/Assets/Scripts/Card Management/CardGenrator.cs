@@ -238,6 +238,11 @@ public class CardGenrator : MonoBehaviour
         canDrawChanceCard = true;
     }
 
+    public int GetCardsPerPlayer()
+    {
+        return cardsPerPlayer;
+    }
+
     public List<GameObject> GetDeck()
     {
         return deck;

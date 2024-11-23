@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
@@ -13,7 +14,7 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] float baseCardSpacing = 150f, maxHandWidth = 1000f, popUpHeight = 50f;
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
-    [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
+    [SerializeField] float sideBaseCardSpacing = 150f, sideMaxHandWidth = 1000f, overSideOffset;
     [Header("Turn")]
     [SerializeField] bool isTurn;
     [SerializeField] bool canEndTurn;
@@ -22,10 +23,13 @@ public class PlayerHand : MonoBehaviour
     [Space]
     [SerializeField] float playChanceDelay;
     [SerializeField] float lerpSpeed;
+    [SerializeField] TextMeshProUGUI cardAmountText;
+    [SerializeField] Vector2 cardAmountTextOffset;
 
     GameObject hoveredCard;
     bool usingOverSideCards, usingUnderSideCards;
 
+    int cardsPerPlayer;
     int savedCardValue;
     bool hasDiscarded;
 
@@ -43,6 +47,11 @@ public class PlayerHand : MonoBehaviour
         cardGenerator = FindFirstObjectByType<CardGenrator>();
         gameManager = FindFirstObjectByType<GameManager>();
         audioManager = FindFirstObjectByType<AudioManager>();
+    }
+
+    void Start()
+    {
+        cardsPerPlayer = cardGenerator.GetCardsPerPlayer();
     }
 
     #region SetCards
@@ -73,8 +82,26 @@ public class PlayerHand : MonoBehaviour
         UpdateColliders();
         ChangeSideCards();
         CheckTurn();
+        SetCardAmountText();
 
         handTransform.position = isTurn || !gameManager.GetGameHasStarted() ? new Vector2(0f, -3.55f) : new Vector2(0f, -4.5f);
+    }
+
+    void SetCardAmountText()
+    {
+        if (handCards.Count > 0)
+        {
+            cardAmountText.text = handCards.Count.ToString();
+            Vector2 cardAmountTextPos = handCards[0].transform.position;
+            cardAmountTextPos = new Vector2(cardAmountTextPos.x + cardAmountTextOffset.x, cardAmountTextOffset.y + handTransform.position.y);
+            cardAmountText.transform.position = cardAmountTextPos;
+
+            cardAmountText.gameObject.SetActive(true);
+        }
+        else
+        {
+            cardAmountText.gameObject.SetActive(false);
+        }
     }
 
     void ChangeSideCards()
@@ -202,9 +229,6 @@ public class PlayerHand : MonoBehaviour
         ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
         ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
-
-        ApplyHoverEffect(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
-        ApplyHoverEffect(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
     }
 
     void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
@@ -235,7 +259,7 @@ public class PlayerHand : MonoBehaviour
             {
                 float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
                 Vector2 cardPosition = cards[i] == hoveredCard ? new Vector2(horizontalOffset + offset, offset + popUpHeight) : new Vector2(horizontalOffset + offset, offset);
-                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed);
+                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
             }
             else
             {
@@ -255,33 +279,6 @@ public class PlayerHand : MonoBehaviour
     public float GetPopUpHeight()
     {
         return popUpHeight;
-    }
-
-    #region Hover
-    void ApplyHoverEffect(List<GameObject> cards, Transform parent, float spacing, float verticalSpace, float maxWidth, float offset = 0)
-    {
-        if (cards.Count == 0) return;
-
-        float cardSpacing = Mathf.Min(spacing, maxWidth / cards.Count);
-
-        for (int i = 0; i < cards.Count; i++)
-        {
-            cards[i].transform.SetParent(parent);
-
-            if (cards.Count > 1)
-            {
-                float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
-                float normalizedPosition = 2f * i / (cards.Count - 1) - 1f;
-                float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
-                Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
-
-                cards[i].transform.localPosition = cards[i] == hoveredCard ? cardPosition + new Vector3(0, popUpHeight, 0) : cardPosition;
-            }
-            else
-            {
-                cards[i].transform.localPosition = Vector3.zero;
-            }
-        }
     }
 
     void DetectHover()
@@ -307,7 +304,6 @@ public class PlayerHand : MonoBehaviour
             }
         }
     }
-    #endregion
     #endregion
 
     #region Play
@@ -344,7 +340,7 @@ public class PlayerHand : MonoBehaviour
                 
                 if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0)
                 {
-                    cardGenerator.DrawNewCard(3 - handCards.Count, true);
+                    cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
                 }
             }
             else
@@ -353,7 +349,7 @@ public class PlayerHand : MonoBehaviour
                 canEndTurn = false;
                 gameManager.NextTurn(cardInHand);
                 CheckTurn();
-                cardGenerator.DrawNewCard(3 - handCards.Count, true);
+                cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
             }
 
             handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
@@ -437,7 +433,7 @@ public class PlayerHand : MonoBehaviour
     {
         if (gameManager.GetGameHasStarted()) return;
 
-        cardGenerator.DrawNewCard(3 - handCards.Count, true);
+        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
     }
 
     void RemoveCardFromList(GameObject cardInHand)
