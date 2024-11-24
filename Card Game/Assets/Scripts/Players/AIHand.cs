@@ -17,6 +17,7 @@ public class AIHand : MonoBehaviour
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
+    [SerializeField] int chanceToPlayChance; //Precentage from 0% too 100%
     [Space]
     [SerializeField] float lerpSpeed;
     [SerializeField] TextMeshProUGUI cardAmountText;
@@ -332,13 +333,13 @@ public class AIHand : MonoBehaviour
                         PickUpPile(selectedCard);
                     }
 
-                    StartCoroutine(gameManager.ProcessWin("Ai"));
+                    StartCoroutine(gameManager.ProcessWin("AI"));
 
                     yield return new WaitForSeconds(playDelay);
                 }
                 else
                 {
-                    StartCoroutine(gameManager.ProcessWin("Ai"));
+                    StartCoroutine(gameManager.ProcessWin("AI"));
                     gameManager.NextTurn(selectedCard);
                     playAgain = false;
                 }
@@ -350,15 +351,18 @@ public class AIHand : MonoBehaviour
                     int random = 0;
                     if (cardGenerator.GetDeck().Count != 0)
                     {
-                        random = Random.Range(0, 2);
+                        random = Random.Range(0, 101);
                     }
 
-                    if (random == 0)
+                    Debug.Log(random.ToString());
+
+                    if (random > chanceToPlayChance  || cardGenerator.GetDeck().Count == 0)
                     {
                         PickUpPile(null);
                     }
                     else
                     {
+                        playAgain = false;
                         PlayChanceCard();
                     }
                 }
@@ -382,13 +386,14 @@ public class AIHand : MonoBehaviour
     {
         if (!isTurn || gameManager.GetWinner() || !gameManager.GetGameHasStarted()) return;
 
-        if (CanPlayCard(cardInHand.GetComponent<Card>().GetValue(), isChance))
+        int cardValue = cardInHand.GetComponent<Card>().GetValue();
+        if (CanPlayCard(cardValue, isChance))
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
             audioManager.PlayCardSFX();
 
-            if (ShouldDiscard(cardInHand.GetComponent<Card>().GetValue()))
+            if (ShouldDiscard(cardValue))
             {
                 StartCoroutine(pile.DiscardCardsInPile());
             }
@@ -396,6 +401,11 @@ public class AIHand : MonoBehaviour
             if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
             {
                 cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
+            }
+
+            if (isChance && !ShouldDiscard(cardValue) && cardValue != 2)
+            {
+                gameManager.NextTurn(cardInHand);
             }
         }
         else if (isChance)
@@ -405,22 +415,9 @@ public class AIHand : MonoBehaviour
         }
         else if (usingUnderSideCards || usingOverSideCards)
         {
-            int random = 0;
-            if (cardGenerator.GetDeck().Count != 0)
-            {
-                random = Random.Range(0, 2);
-            }
-
-            if (random == 0)
-            {
-                pile.AddCardsToPile(cardInHand);
-                RemoveCardFromList(cardInHand);
-                PickUpPile(cardInHand);
-            }
-            else
-            {
-                PlayChanceCard();
-            }
+            pile.AddCardsToPile(cardInHand);
+            RemoveCardFromList(cardInHand);
+            PickUpPile(cardInHand);
         }
     }
 

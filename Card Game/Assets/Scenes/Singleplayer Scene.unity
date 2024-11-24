@@ -3411,6 +3411,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 6598386064445770506, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 7938488687534153862, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
       propertyPath: m_fontSize
       value: 25
@@ -3476,17 +3480,9 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 2500706921955742232, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
-      propertyPath: m_fontSize
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 2500706921955742232, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 6106643260078049397, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
-      propertyPath: cardAmountTextOffset.y
-      value: -1.45
+    - target: {fileID: 1372529326163561727, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8148943176141036670, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
       propertyPath: m_Name

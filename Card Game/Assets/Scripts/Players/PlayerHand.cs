@@ -338,7 +338,7 @@ public class PlayerHand : MonoBehaviour
 
                 hasDiscarded = false;
                 
-                if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0)
+                if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0 && !isChanceCard)
                 {
                     cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
                 }
@@ -349,7 +349,11 @@ public class PlayerHand : MonoBehaviour
                 canEndTurn = false;
                 gameManager.NextTurn(cardInHand);
                 CheckTurn();
-                cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+
+                if (!isChanceCard)
+                {
+                    cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+                }
             }
 
             handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
@@ -494,11 +498,11 @@ public class PlayerHand : MonoBehaviour
         {
             if (cardInHand != null)
             {
-                GetCards().Remove(cardInHand);
+                GetCurrentCards().Remove(cardInHand);
                 UpdateSideUsage();
             }
 
-            if ((cardValue == 10 || cardValue == 2 || cardValue == 14) && GetCards().Count == 0)
+            if ((cardValue == 10 || cardValue == 2 || cardValue == 14) && GetCurrentCards().Count == 0)
             {
                 return false;
             }
@@ -542,11 +546,26 @@ public class PlayerHand : MonoBehaviour
     }
     #endregion
 
-    public List<GameObject> GetCards()
+    public List<GameObject> GetCurrentCards()
     {
         if (usingOverSideCards) return overSideCards;
         if (usingUnderSideCards) return underSideCards;
         return handCards;
+    }
+
+    public List<GameObject> GetHandCards()
+    {
+        return handCards;
+    }
+
+    public List<GameObject> GetOverSideCards()
+    {
+        return overSideCards;
+    }
+
+    public List<GameObject> GetUnderSideCards()
+    {
+        return underSideCards;
     }
 
     public int GetCardsIndex()

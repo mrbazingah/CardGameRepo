@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
     public void AsignStartPlayer()
     {
-        List<GameObject> playerCards = playerHand.GetCards();
+        List<GameObject> playerCards = playerHand.GetCurrentCards();
         int playerLowest = 20;
 
         for (int i = 0; i < playerCards.Count; i++)
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
 
         if (!winner && playerHand != null)
         {
-            if (playerHand.GetCards().Count == 0)
+            if (playerHand.GetCurrentCards().Count == 0)
             {
                 winText.gameObject.SetActive(true);
                 winText.transform.position = new Vector2(-winText.transform.position.x, 0f);

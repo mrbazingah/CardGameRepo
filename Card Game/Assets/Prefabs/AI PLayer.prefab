@@ -258,8 +258,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29
-  m_fontSizeBase: 29
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -366,9 +366,10 @@ MonoBehaviour:
   isTurn: 0
   turnNumber: 0
   playDelay: 1
+  chanceToPlayChance: 50
   lerpSpeed: 15
   cardAmountText: {fileID: 2500706921955742232}
-  cardAmountTextOffset: {x: 0.8, y: 1.45}
+  cardAmountTextOffset: {x: 0.8, y: -1.45}
 --- !u!1 &8183546333639245761
 GameObject:
   m_ObjectHideFlags: 0

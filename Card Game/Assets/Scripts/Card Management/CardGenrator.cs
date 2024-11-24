@@ -197,36 +197,37 @@ public class CardGenrator : MonoBehaviour
             }
 
             audioManager.PlayCardSFX();
+
             deck.Remove(obj);
         }
     }
     
-    public void ApplyCoverOnCards(GameObject obj)
+    public void ApplyCoverOnCards(GameObject card)
     {
-        GameObject card = Instantiate(backCardPrefab);
-        card.transform.SetParent(obj.transform);
-        card.transform.localPosition = Vector3.zero;
-        card.GetComponent<SpriteRenderer>().sortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder + 1;
+        GameObject backOfCard = Instantiate(backCardPrefab);
+        backOfCard.transform.SetParent(card.transform);
+        backOfCard.transform.localPosition = Vector3.zero;
+        backOfCard.GetComponent<SpriteRenderer>().sortingOrder = card.GetComponent<SpriteRenderer>().sortingOrder + 1;
 
-        obj.GetComponent<Card>().ApplyChild(card);
+        card.GetComponent<Card>().ApplyChild(backOfCard);
     }
 
     public GameObject GetChanceCard()
     {
         int randomNumber = Random.Range(0, deck.Count);
-        GameObject obj = deck[randomNumber];
+        GameObject chanceCard = deck[randomNumber];
 
         if ((!player.CanChance() && player.GetTurn()) || (!ai.CanChance() && ai.GetTurn()) || !canDrawChanceCard) { return null; }
 
         StartCoroutine(ChanceCardDelay());
 
-        deck.Remove(obj);
-        pile.AddCardsToPile(obj);
-        obj.GetComponent<SpriteRenderer>().sortingOrder = 100;
+        deck.Remove(chanceCard);
+        pile.AddCardsToPile(chanceCard);
+        chanceCard.GetComponent<SpriteRenderer>().sortingOrder = 100;
 
         audioManager.PlayCardSFX();
 
-        return obj;
+        return chanceCard;
     }
 
     IEnumerator ChanceCardDelay()

@@ -149,4 +149,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardValue: 0
   back: {fileID: 0}
-  zeroPoint: -3.6
+  handZeroPoint: -3.6
+  sideZeroPoint: -0.7
