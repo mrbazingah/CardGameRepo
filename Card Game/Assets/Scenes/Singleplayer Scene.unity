@@ -3399,30 +3399,10 @@ PrefabInstance:
       propertyPath: endTurnButton
       value: 
       objectReference: {fileID: 2124886686}
-    - target: {fileID: 6476713371017704230, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
-      propertyPath: cardAmountTextOffset.x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6476713371017704230, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
-      propertyPath: cardAmountTextOffset.y
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6598386064445770506, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 6598386064445770506, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
-      propertyPath: m_SortingOrder
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7938488687534153862, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
-      propertyPath: m_fontSize
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 7938488687534153862, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 25
-      objectReference: {fileID: 0}
     - target: {fileID: 8056431722702432454, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3480,10 +3460,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 1372529326163561727, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
-      propertyPath: m_SortingOrder
-      value: -1
-      objectReference: {fileID: 0}
     - target: {fileID: 8148943176141036670, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
       propertyPath: m_Name
       value: AI PLayer
