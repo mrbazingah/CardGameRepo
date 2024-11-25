@@ -23,7 +23,6 @@ public class CardGenrator : MonoBehaviour
 
     PlayerHand player;
     AIHand ai;
-    GameManager gameManager;
     Pile pile;
     AudioManager audioManager;
 
@@ -31,7 +30,6 @@ public class CardGenrator : MonoBehaviour
     {
         player = FindFirstObjectByType<PlayerHand>();
         ai = FindFirstObjectByType<AIHand>();
-        gameManager = FindFirstObjectByType<GameManager>();
         pile = FindFirstObjectByType<Pile>();  
         audioManager = FindFirstObjectByType<AudioManager>();
     }

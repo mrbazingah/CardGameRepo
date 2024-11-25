@@ -3,17 +3,43 @@ using UnityEngine;
 
 public class SettingsManager : MonoBehaviour
 {
+    [Header("Input Fields")]
     [SerializeField] TMP_InputField cardsPerPlayerField;
+    [SerializeField] TMP_InputField aiChancePrecentageField;
+    [Header("Default Settings")]
+    [SerializeField] int defaultCardsPerPlayer;
+    [SerializeField] int defaultAiChancePrecentage;
 
     void Start()
     {
-        int cardsPerPlayer = PlayerPrefs.GetInt("CardsPerPlayer");
-        if (cardsPerPlayer == 0)
+        SetUpPlayerPrefs();
+    }
+
+    void SetUpPlayerPrefs()
+    {
+        int cardsPerPlayer;
+        if (!PlayerPrefs.HasKey("CardsPerPlayer"))
         {
-            cardsPerPlayer = 3;
+            cardsPerPlayer = defaultCardsPerPlayer;
+        }
+        else
+        {
+            cardsPerPlayer = PlayerPrefs.GetInt("CardsPerPlayer");
         }
 
         cardsPerPlayerField.text = cardsPerPlayer.ToString();
+
+        int aiChancePrecentage;
+        if (!PlayerPrefs.HasKey("AiChancePrecentage"))
+        {
+            aiChancePrecentage = defaultAiChancePrecentage;
+        }
+        else
+        {
+            aiChancePrecentage = PlayerPrefs.GetInt("AiChancePrecentage");
+        }
+
+        aiChancePrecentageField.text = aiChancePrecentage.ToString();
     }
 
     void Update()
@@ -21,7 +47,7 @@ public class SettingsManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             CheckCardsPerPlayer();
-            CheckOther();
+            CheckAiPrecentage();
         }
     }
 
@@ -45,8 +71,19 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetInt("CardsPerPlayer", number);
     }
 
-    void CheckOther()
+    void CheckAiPrecentage()
     {
+        int number;
+        int.TryParse(aiChancePrecentageField.text, out number);
 
+        if (number > 100)
+        {
+            number = 100;
+        }
+        
+        aiChancePrecentageField.GetComponentInChildren<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+
+        aiChancePrecentageField.text = number.ToString();
+        PlayerPrefs.SetInt("AiChancePrecentage", number);
     }
 }

@@ -821,6 +821,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardsPerPlayerField: {fileID: 1978856442}
+  aiChancePrecentageField: {fileID: 1886779557}
+  defaultAiChancePrecentage: 50
+  defaultCardsPerPlayer: 3
 --- !u!1 &1252790456
 GameObject:
   m_ObjectHideFlags: 0
