@@ -28,6 +28,8 @@ public class AIHand : MonoBehaviour
 
     int cardsPerPlayer;
 
+    bool isPaused;
+
     Pile pile;
     CardGenrator cardGenerator;
     GameManager gameManager;
@@ -60,25 +62,6 @@ public class AIHand : MonoBehaviour
 
     public void SetUnderSideCards(List<GameObject> newCards) => underSideCards = newCards;
     public void SetOverSideCards(List<GameObject> newCards) => overSideCards = newCards;
-    #endregion
-
-    void Update()
-    {
-        SetCardAmountText();
-        UpdateSideUsage();
-        UpdateColliders();
-        SortCards();
-        RemoveDubbleCards();
-
-        if (!gameManager.GetGameHasStarted()) return;
-
-        CheckTurn();
-
-        if (isTurn && !isPlaying)
-        {
-            StartCoroutine(PlayAITurnWithDelay());
-        }
-    }
 
     void SetCardAmountText()
     {
@@ -159,6 +142,30 @@ public class AIHand : MonoBehaviour
             overSideCards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
         }
     }
+    #endregion
+
+    void Update()
+    {
+        isPaused = Time.timeScale == 0f;
+        if (isPaused) { return; }
+
+        SetCardAmountText();
+        UpdateSideUsage();
+        UpdateColliders();
+        SortCards();
+        RemoveDubbleCards();
+
+        if (!gameManager.GetGameHasStarted()) return;
+
+        CheckTurn();
+
+        if (isTurn && !isPlaying)
+        {
+            StartCoroutine(PlayAITurnWithDelay());
+        }
+    }
+
+ 
 
     #region Sorting
     void UpdateSideUsage()
@@ -353,8 +360,6 @@ public class AIHand : MonoBehaviour
                     {
                         random = Random.Range(0, 101);
                     }
-
-                    Debug.Log(random.ToString());
 
                     if (random > chanceToPlayChance  || cardGenerator.GetDeck().Count == 0)
                     {

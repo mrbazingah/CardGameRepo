@@ -196,8 +196,6 @@ public class CardGenrator : MonoBehaviour
                 ai.AddHandCards(obj);
             }
 
-            audioManager.PlayCardSFX();
-
             deck.Remove(obj);
         }
     }

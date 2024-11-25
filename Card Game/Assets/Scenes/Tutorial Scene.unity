@@ -5956,7 +5956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: 18
-  speed: 0.1
+  speed: 9.3
   max: 0
   min: -108
   leftButton: {fileID: 1939830094}

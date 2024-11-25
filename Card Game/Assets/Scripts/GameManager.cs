@@ -98,16 +98,12 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
         isOpen = true;
-
-        Debug.Log(Time.timeScale.ToString());
     }
 
     public void CloseMenu()
     {
         Time.timeScale = 1f;
         isOpen = false;
-
-        Debug.Log(Time.timeScale.ToString());
     }
 
     public void NextTurn(GameObject lastPlayed)

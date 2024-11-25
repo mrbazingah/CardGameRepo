@@ -33,6 +33,8 @@ public class PlayerHand : MonoBehaviour
     int savedCardValue;
     bool hasDiscarded;
 
+    bool isPaused; 
+
     List<GameObject> selectedCards = new List<GameObject>(0);
 
     Pile pile;
@@ -71,39 +73,34 @@ public class PlayerHand : MonoBehaviour
             cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
         }
     }
+
+    public void PickupAtBeginning()
+    {
+        if (gameManager.GetGameHasStarted()) return;
+
+        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+    }
+
     #endregion
 
     void Update()
     {
-        CanEndTurn();
-        SortCards();
-        DetectHover();
+        isPaused = Time.timeScale == 0f;
+        if (isPaused) { return; }    
+
+        ChangeSideCards();
+        SetCardAmountText();
         UpdateSideUsage();
         UpdateColliders();
-        ChangeSideCards();
+        SortCards();
+        CanEndTurn();
         CheckTurn();
-        SetCardAmountText();
+        DetectHover();
 
         handTransform.position = isTurn || !gameManager.GetGameHasStarted() ? new Vector2(0f, -3.55f) : new Vector2(0f, -4.5f);
+
     }
-
-    void SetCardAmountText()
-    {
-        if (handCards.Count > 0)
-        {
-            cardAmountText.text = handCards.Count.ToString();
-            Vector2 cardAmountTextPos = handCards[0].transform.position;
-            cardAmountTextPos = new Vector2(cardAmountTextPos.x + cardAmountTextOffset.x, cardAmountTextOffset.y + handTransform.position.y);
-            cardAmountText.transform.position = cardAmountTextPos;
-
-            cardAmountText.gameObject.SetActive(true);
-        }
-        else
-        {
-            cardAmountText.gameObject.SetActive(false);
-        }
-    }
-
+   
     void ChangeSideCards()
     {
         if (gameManager.GetGameHasStarted() || selectedCards.Count != 2) { return; }
@@ -177,38 +174,24 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    #region Turn
-    public void SetTurnNumber(int i)
-    {
-        turnNumber = i;
-    }
-
-    void CheckTurn()
-    {
-        if (!gameManager.GetGameHasStarted()) return;
-        isTurn = turnNumber == gameManager.GetTurn();
-    }
-
-    void CanEndTurn()
-    {
-        endTurnButton.SetActive(canEndTurn);
-    }
-
-    public void EndTurn()
-    {
-        gameManager.NextTurn(null);
-        canEndTurn = false;
-        savedCardValue = 0;
-        endTurnButton.SetActive(false);
-    }
-
-    public bool GetTurn()
-    {
-        return isTurn;
-    }
-    #endregion
-
     #region Sorting
+    void SetCardAmountText()
+    {
+        if (handCards.Count > 0)
+        {
+            cardAmountText.text = handCards.Count.ToString();
+            Vector2 cardAmountTextPos = handCards[0].transform.position;
+            cardAmountTextPos = new Vector2(cardAmountTextPos.x + cardAmountTextOffset.x, cardAmountTextOffset.y + handTransform.position.y);
+            cardAmountText.transform.position = cardAmountTextPos;
+
+            cardAmountText.gameObject.SetActive(true);
+        }
+        else
+        {
+            cardAmountText.gameObject.SetActive(false);
+        }
+    }
+
     void UpdateSideUsage()
     {
         usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
@@ -266,7 +249,7 @@ public class PlayerHand : MonoBehaviour
                 cards[i].transform.localPosition = Vector3.zero;
             }
 
-            for (int ii  = 0; ii < cards.Count; ii++)
+            for (int ii = 0; ii < cards.Count; ii++)
             {
                 if (cards[i] == cards[ii] && ii != i)
                 {
@@ -275,12 +258,40 @@ public class PlayerHand : MonoBehaviour
             }
         }
     }
+    #endregion
 
-    public float GetPopUpHeight()
+    #region Turn
+    public void SetTurnNumber(int i)
     {
-        return popUpHeight;
+        turnNumber = i;
     }
 
+    void CheckTurn()
+    {
+        if (!gameManager.GetGameHasStarted()) return;
+        isTurn = turnNumber == gameManager.GetTurn();
+    }
+
+    void CanEndTurn()
+    {
+        endTurnButton.SetActive(canEndTurn);
+    }
+
+    public void EndTurn()
+    {
+        gameManager.NextTurn(null);
+        canEndTurn = false;
+        savedCardValue = 0;
+        endTurnButton.SetActive(false);
+    }
+
+    public bool GetTurn()
+    {
+        return isTurn;
+    }
+    #endregion
+
+    #region Play
     void DetectHover()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
@@ -292,7 +303,7 @@ public class PlayerHand : MonoBehaviour
                 overSideCards.Contains(hoveredCard) && usingOverSideCards ||
                 underSideCards.Contains(hoveredCard) && usingUnderSideCards)
             {
-                if (hoveredCard != null)
+                if (hoveredCard != null && pile.GetCurrentCard(false) != 10 && !ShouldDiscard(0))
                 {
                     PlayCard(hoveredCard, false);
                 }
@@ -304,9 +315,7 @@ public class PlayerHand : MonoBehaviour
             }
         }
     }
-    #endregion
 
-    #region Play
     void PlayCard(GameObject cardInHand, bool isChanceCard)
     {
         if (!gameManager.GetGameHasStarted()) return;
@@ -398,6 +407,23 @@ public class PlayerHand : MonoBehaviour
         StartCoroutine(gameManager.ProcessWin("Player"));
     }
 
+    public void PlayChanceCard()
+    {
+        StartCoroutine(ProcessChanceCard());
+    }
+
+    IEnumerator ProcessChanceCard()
+    {
+        GameObject cardFromDeck = cardGenerator.GetChanceCard();
+        if (cardFromDeck == null) { yield break; }
+
+        yield return new WaitForSeconds(playChanceDelay);
+
+        PlayCard(cardFromDeck, true);
+    }
+    #endregion
+
+    #region Play Conditions
     void PickUpPile(GameObject cardInHand)
     {
         List<GameObject> pileCards = pile.GetCardsInPile();
@@ -417,29 +443,7 @@ public class PlayerHand : MonoBehaviour
         audioManager.PlayShufflingSFX();
         CheckTurn();
     }
-
-    public void PlayChanceCard()
-    {
-        StartCoroutine(ProcessChanceCard());
-    }
-
-    IEnumerator ProcessChanceCard()
-    {
-        GameObject cardFromDeck = cardGenerator.GetChanceCard();
-        if (cardFromDeck == null) { yield break; }
-
-        yield return new WaitForSeconds(playChanceDelay);
-
-        PlayCard(cardFromDeck, true);
-    }
-
-    public void PickupAtBeginning()
-    {
-        if (gameManager.GetGameHasStarted()) return;
-
-        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
-    }
-
+   
     void RemoveCardFromList(GameObject cardInHand)
     {
         if (usingOverSideCards)
@@ -464,6 +468,9 @@ public class PlayerHand : MonoBehaviour
             return true;
         }
 
+        int stepsBack = cardValue == 0 ? 1 : 2;
+        int idk = cardValue == 0 ? 5 : 4;
+
         List<GameObject> pileCards = pile.GetCardsInPile();
 
         if (pileCards.Count >= 4)
@@ -471,7 +478,7 @@ public class PlayerHand : MonoBehaviour
             int lastCardValue = pileCards[pileCards.Count - 1].GetComponent<Card>().GetValue();
             bool allSame = true;
 
-            for (int i = pileCards.Count - 2; i >= pileCards.Count - 4; i--)
+            for (int i = pileCards.Count - stepsBack; i >= pileCards.Count - 4; i--)
             {
                 int currentCardValue = pileCards[i].GetComponent<Card>().GetValue();
                 if (currentCardValue != lastCardValue)
@@ -483,7 +490,11 @@ public class PlayerHand : MonoBehaviour
 
             if (allSame)
             {
-                hasDiscarded = true;
+                if (cardValue != 0)
+                {
+                    hasDiscarded = true;
+                }
+
                 return true;
             }
         }
@@ -546,6 +557,7 @@ public class PlayerHand : MonoBehaviour
     }
     #endregion
 
+    #region Get Cards
     public List<GameObject> GetCurrentCards()
     {
         if (usingOverSideCards) return overSideCards;
@@ -574,4 +586,5 @@ public class PlayerHand : MonoBehaviour
         if (usingUnderSideCards) return 1;
         return 2;
     }
+    #endregion
 }
