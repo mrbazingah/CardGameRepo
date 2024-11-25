@@ -238,16 +238,18 @@ public class PlayerHand : MonoBehaviour
                 cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
 
+            Vector2 cardPosition;
             if (cards.Count > 1)
             {
                 float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
-                Vector2 cardPosition = cards[i] == hoveredCard ? new Vector2(horizontalOffset + offset, offset + popUpHeight) : new Vector2(horizontalOffset + offset, offset);
-                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
+                cardPosition = cards[i] == hoveredCard ? new Vector2(horizontalOffset + offset, offset + popUpHeight) : new Vector2(horizontalOffset + offset, offset);
             }
             else
             {
-                cards[i].transform.localPosition = Vector3.zero;
+                cardPosition = cards[i] == hoveredCard ? new Vector2(offset, offset + popUpHeight) : new Vector2(offset, offset);
             }
+
+            cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
 
             for (int ii = 0; ii < cards.Count; ii++)
             {

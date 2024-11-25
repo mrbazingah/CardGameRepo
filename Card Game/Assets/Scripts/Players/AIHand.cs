@@ -165,8 +165,6 @@ public class AIHand : MonoBehaviour
         }
     }
 
- 
-
     #region Sorting
     void UpdateSideUsage()
     {
@@ -271,7 +269,9 @@ public class AIHand : MonoBehaviour
     IEnumerator PlayAITurnWithDelay()
     {
         isPlaying = true;
+
         yield return new WaitForSeconds(playDelay);
+
         bool playAgain;
         do
         {
@@ -361,7 +361,7 @@ public class AIHand : MonoBehaviour
                         random = Random.Range(0, 101);
                     }
 
-                    if (random > chanceToPlayChance  || cardGenerator.GetDeck().Count == 0)
+                    if (random > chanceToPlayChance || cardGenerator.GetDeck().Count == 0)
                     {
                         PickUpPile(null);
                     }
