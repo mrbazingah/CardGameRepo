@@ -362,7 +362,7 @@ MonoBehaviour:
   sideBaseCardSpacing: 2
   sideVerticalSpacing: 0
   sideMaxHandWidth: 15
-  overSideOffset: 0.15
+  overSideOffset: -0.15
   isTurn: 0
   turnNumber: 0
   playDelay: 1

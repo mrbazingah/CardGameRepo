@@ -1,14 +1,19 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
     [Header("Input Fields")]
     [SerializeField] TMP_InputField cardsPerPlayerField;
     [SerializeField] TMP_InputField aiChancePrecentageField;
+    [SerializeField] TMP_InputField invisibleCardField;
+    [Header("Toggle")]
+    [SerializeField] Toggle invisibleCardToggle;
     [Header("Default Settings")]
     [SerializeField] int defaultCardsPerPlayer;
     [SerializeField] int defaultAiChancePrecentage;
+    [SerializeField] int defaultInvisibleCard;
 
     void Start()
     {
@@ -40,6 +45,19 @@ public class SettingsManager : MonoBehaviour
         }
 
         aiChancePrecentageField.text = aiChancePrecentage.ToString();
+
+        int invisibleCard;
+        if (!PlayerPrefs.HasKey("InvisibleCard"))
+        {
+            invisibleCard = defaultInvisibleCard;
+            invisibleCardToggle.isOn = false;
+        }
+        else
+        {
+            invisibleCard = PlayerPrefs.GetInt("InvisibleCard");
+        }
+
+        invisibleCardField.text = invisibleCard.ToString();
     }
 
     void Update()
@@ -48,7 +66,10 @@ public class SettingsManager : MonoBehaviour
         {
             CheckCardsPerPlayer();
             CheckAiPrecentage();
+            CheckInvisibleCard();
         }
+
+        invisibleCardField.gameObject.SetActive(invisibleCardToggle.isOn);
     }
 
     void CheckCardsPerPlayer()
@@ -60,9 +81,9 @@ public class SettingsManager : MonoBehaviour
         {
             number = 3;
         }
-        else if (number > 26)
+        else if (number > 20)
         {
-            number = 26;
+            number = 20;
         }
 
         cardsPerPlayerField.GetComponentInChildren<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
@@ -85,5 +106,23 @@ public class SettingsManager : MonoBehaviour
 
         aiChancePrecentageField.text = number.ToString();
         PlayerPrefs.SetInt("AiChancePrecentage", number);
+    }
+
+    void CheckInvisibleCard()
+    {
+        bool isOn = invisibleCardToggle.isOn;
+        if (!isOn) { return; }
+
+        int number;
+        int.TryParse(invisibleCardField.text, out number);
+
+        if (number > 13)
+        {
+            number = 13;
+        }
+
+        invisibleCardField.GetComponentInChildren<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+
+        invisibleCardField.text = number.ToString();
     }
 }

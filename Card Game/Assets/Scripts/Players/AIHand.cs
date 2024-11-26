@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class AIHand : MonoBehaviour
 {
+    [Header("Cards")]
     [SerializeField] List<GameObject> handCards;
     [SerializeField] List<GameObject> underSideCards, overSideCards;
-    [Space]
+    [Header("Transform and Spacing")]
     [SerializeField] Transform handTransform;
     [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f;
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
-    [Space]
+    [Header("Turn and Play")]
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
@@ -47,6 +48,11 @@ public class AIHand : MonoBehaviour
     {
         isPlaying = false;
         cardsPerPlayer = cardGenerator.GetCardsPerPlayer();
+
+        if (PlayerPrefs.HasKey("AiChancePrecentage"))
+        {
+            chanceToPlayChance = PlayerPrefs.GetInt("AiChancePrecentage");
+        }
     }
 
     #region Set Cards

@@ -36,6 +36,11 @@ public class CardGenrator : MonoBehaviour
 
     void Start()
     {
+        if (PlayerPrefs.HasKey("CardsPerPlayer"))
+        {
+            cardsPerPlayer = PlayerPrefs.GetInt("CardsPerPlayer");
+        }
+
         GenerateCards();
         DealPlayerCards();
         DealAiCards();
@@ -123,6 +128,7 @@ public class CardGenrator : MonoBehaviour
 
         player.SetUnderSideCards(underSideCards);
         player.SetOverSideCards(overSideCards);
+        player.SortHandCards();
     }
 
     void DealAiCards()

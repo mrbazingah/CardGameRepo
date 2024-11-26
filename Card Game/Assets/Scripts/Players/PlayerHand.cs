@@ -9,13 +9,13 @@ public class PlayerHand : MonoBehaviour
     [Header("Cards")]
     [SerializeField] List<GameObject> handCards;
     [SerializeField] List<GameObject> underSideCards, overSideCards;
-    [Header("Transform")]
+    [Header("Transform and Spacing")]
     [SerializeField] Transform handTransform;
     [SerializeField] float baseCardSpacing = 150f, maxHandWidth = 1000f, popUpHeight = 50f;
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideMaxHandWidth = 1000f, overSideOffset;
-    [Header("Turn")]
+    [Header("Turn and Play")]
     [SerializeField] bool isTurn;
     [SerializeField] bool canEndTurn;
     [SerializeField] int turnNumber;
@@ -98,9 +98,13 @@ public class PlayerHand : MonoBehaviour
         DetectHover();
 
         handTransform.position = isTurn || !gameManager.GetGameHasStarted() ? new Vector2(0f, -3.55f) : new Vector2(0f, -4.5f);
-
     }
    
+    public void SortHandCards()
+    {
+        handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
+    }
+
     void ChangeSideCards()
     {
         if (gameManager.GetGameHasStarted() || selectedCards.Count != 2) { return; }
@@ -133,7 +137,7 @@ public class PlayerHand : MonoBehaviour
             }
 
             audioManager.PlayCardSFX();
-            handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
+            SortHandCards();
         }
         else if (handCards.Contains(selectedCards[1]) && overSideCards.Contains(selectedCards[0]))
         {
@@ -159,7 +163,7 @@ public class PlayerHand : MonoBehaviour
             }
 
             audioManager.PlayCardSFX();
-            handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
+            SortHandCards();
         }
         else
         {
@@ -367,7 +371,7 @@ public class PlayerHand : MonoBehaviour
                 }
             }
 
-            handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
+            SortHandCards();
         }
         else if (isChanceCard)
         {
@@ -437,7 +441,7 @@ public class PlayerHand : MonoBehaviour
             UpdateCardSortingOrder(handCards);
         }
 
-        handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
+        SortHandCards();
 
         savedCardValue = 0;
         canEndTurn = false;
@@ -507,7 +511,13 @@ public class PlayerHand : MonoBehaviour
 
     public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand)
     {
-        if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2)
+        int invisibleCard = 0;
+        if (PlayerPrefs.HasKey("InvisibleCard"))
+        {
+            invisibleCard = PlayerPrefs.GetInt("InvisibleCard");
+        }
+
+        if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2 || cardValue == invisibleCard)
         {
             if (cardInHand != null)
             {
