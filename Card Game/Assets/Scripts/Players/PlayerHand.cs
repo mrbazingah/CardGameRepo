@@ -163,6 +163,8 @@ public class PlayerHand : MonoBehaviour
             }
 
             audioManager.PlayCardSFX();
+            Debug.Log("player");
+
             SortHandCards();
         }
         else
@@ -331,7 +333,10 @@ public class PlayerHand : MonoBehaviour
 
         if (CanPlayCard(cardValue, isChanceCard, cardInHand))
         {
-            audioManager.PlayCardSFX();
+            if (!isChanceCard)
+            {
+                audioManager.PlayCardSFX();
+            }
 
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);

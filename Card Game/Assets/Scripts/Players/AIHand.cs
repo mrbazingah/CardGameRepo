@@ -322,6 +322,8 @@ public class AIHand : MonoBehaviour
                 {
                     int randomNumber = Random.Range(0, underSideCards.Count);
                     selectedCard = underSideCards[randomNumber];
+
+                    Debug.Log(randomNumber.ToString());
                 }
                 else if (usingOverSideCards)
                 {
