@@ -516,13 +516,7 @@ public class PlayerHand : MonoBehaviour
 
     public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand)
     {
-        int invisibleCard = 0;
-        if (PlayerPrefs.HasKey("InvisibleCard"))
-        {
-            invisibleCard = PlayerPrefs.GetInt("InvisibleCard");
-        }
-
-        if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2 || cardValue == invisibleCard)
+        if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2)
         {
             if (cardInHand != null)
             {

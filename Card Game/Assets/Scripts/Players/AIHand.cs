@@ -322,8 +322,6 @@ public class AIHand : MonoBehaviour
                 {
                     int randomNumber = Random.Range(0, underSideCards.Count);
                     selectedCard = underSideCards[randomNumber];
-
-                    Debug.Log(randomNumber.ToString());
                 }
                 else if (usingOverSideCards)
                 {
@@ -342,7 +340,8 @@ public class AIHand : MonoBehaviour
                     yield return new WaitForSeconds(0.1f);
 
                     playAgain = true;
-                    if (GetCards().Count == 0 && (cardValue == 14 || cardValue == 2 || cardValue == 10))
+
+                    if (GetCards().Count == 0 && (cardValue == 2 || cardValue == 10))
                     {
                         playAgain = false;
                         PickUpPile(selectedCard);
@@ -354,8 +353,16 @@ public class AIHand : MonoBehaviour
                 }
                 else
                 {
-                    StartCoroutine(gameManager.ProcessWin("AI"));
-                    gameManager.NextTurn(selectedCard);
+                    if (GetCards().Count == 0 && cardValue == 14)
+                    {
+                        PickUpPile(selectedCard);
+                    }
+                    else
+                    {
+                        StartCoroutine(gameManager.ProcessWin("AI"));
+                        gameManager.NextTurn(selectedCard);
+                    }
+
                     playAgain = false;
                 }
             }
@@ -446,7 +453,9 @@ public class AIHand : MonoBehaviour
 
         PlayCard(cardFromDeck, true);
     }
+    #endregion
 
+    #region Play Conditions
     void PickUpPile(GameObject cardInHand)
     {
         if (gameManager.GetWinner()) return;
@@ -552,6 +561,8 @@ public class AIHand : MonoBehaviour
 
     public List<GameObject> GetCards()
     {
+        UpdateSideUsage();
+
         if (usingOverSideCards) return overSideCards;
         if (usingUnderSideCards) return underSideCards;
         return handCards;

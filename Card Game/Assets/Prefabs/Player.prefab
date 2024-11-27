@@ -52,7 +52,7 @@ MonoBehaviour:
   underSideCards: []
   overSideCards: []
   handTransform: {fileID: 4925622628156574016}
-  baseCardSpacing: 1.2
+  baseCardSpacing: 1
   maxHandWidth: 15
   popUpHeight: 0.8
   underSideTransform: {fileID: 6273092253405298563}
@@ -67,7 +67,7 @@ MonoBehaviour:
   playChanceDelay: 0.5
   lerpSpeed: 15
   cardAmountText: {fileID: 7938488687534153862}
-  cardAmountTextOffset: {x: -1, y: 1.5}
+  cardAmountTextOffset: {x: -1.2, y: 1.5}
 --- !u!1 &2614366089162157196
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,7 +93,7 @@ Transform:
   m_GameObject: {fileID: 2614366089162157196}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.7, y: -0.85, z: 0}
+  m_LocalPosition: {x: 5.7, y: -1.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -364,7 +364,7 @@ Transform:
   m_GameObject: {fileID: 7716485540196799829}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.7, y: -0.85, z: 0}
+  m_LocalPosition: {x: 5.7, y: -1.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
