@@ -15,6 +15,8 @@ public class PlayerHand : MonoBehaviour
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideMaxHandWidth = 1000f, overSideOffset;
+    [Space]
+    [SerializeField] Vector2 isTurnPos, isNotTurnPos;
     [Header("Turn and Play")]
     [SerializeField] bool isTurn;
     [SerializeField] bool canEndTurn;
@@ -96,13 +98,101 @@ public class PlayerHand : MonoBehaviour
         CanEndTurn();
         CheckTurn();
         DetectHover();
-
-        handTransform.position = isTurn || !gameManager.GetGameHasStarted() ? new Vector2(0f, -3.55f) : new Vector2(0f, -4.5f);
     }
-   
+
+    #region Sorting
+    void SetCardAmountText()
+    {
+        if (handCards.Count > 0)
+        {
+            cardAmountText.text = handCards.Count.ToString();
+            Vector2 cardAmountTextPos = handCards[0].transform.position;
+            cardAmountTextPos = new Vector2(cardAmountTextPos.x + cardAmountTextOffset.x, cardAmountTextOffset.y + handTransform.position.y);
+            cardAmountText.transform.position = cardAmountTextPos;
+
+            cardAmountText.gameObject.SetActive(true);
+        }
+        else
+        {
+            cardAmountText.gameObject.SetActive(false);
+        }
+    }
+
+    void UpdateSideUsage()
+    {
+        usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
+        usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
+    }
+
+    void UpdateColliders()
+    {
+        for (int i = 0; i < underSideCards.Count; i++)
+        {
+            BoxCollider2D boxCollider = underSideCards[i].GetComponent<BoxCollider2D>();
+            boxCollider.enabled = usingUnderSideCards;
+        }
+    }
+
     public void SortHandCards()
     {
         handCards.Sort((a, b) => a.GetComponent<Card>().GetValue().CompareTo(b.GetComponent<Card>().GetValue()));
+    }
+
+    public void SortCards()
+    {
+        ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
+        ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
+        ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
+
+        Vector2 currentPos = isTurn || !gameManager.GetGameHasStarted() ? isTurnPos : isNotTurnPos;
+        handTransform.position = Vector2.Lerp(handTransform.position, currentPos, lerpSpeed * Time.deltaTime);
+    }
+
+    void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
+    {
+        if (cards.Count == 0) return;
+
+        float cardSpacing = Mathf.Min(spacing, maxWidth / cards.Count);
+
+        for (int i = 0; i < cards.Count; i++)
+        {
+            cards[i].transform.SetParent(parent);
+
+            if (cards == handCards)
+            {
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+            }
+            else if (cards == overSideCards)
+            {
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+            }
+            else
+            {
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+            }
+
+            Vector2 cardPosition;
+            if (cards.Count > 1)
+            {
+                float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
+                cardPosition = cards[i] == hoveredCard ? new Vector2(horizontalOffset + offset, offset + popUpHeight) : new Vector2(horizontalOffset + offset, offset);
+            }
+            else
+            {
+                cardPosition = cards[i] == hoveredCard ? new Vector2(offset, offset + popUpHeight) : new Vector2(offset, offset);
+            }
+
+            cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
+
+            for (int ii = 0; ii < cards.Count; ii++)
+            {
+                if (cards[i] == cards[ii] && ii != i)
+                {
+                    cards.RemoveAt(ii);
+                }
+            }
+        }
     }
 
     void ChangeSideCards()
@@ -163,7 +253,6 @@ public class PlayerHand : MonoBehaviour
             }
 
             audioManager.PlayCardSFX();
-            Debug.Log("player");
 
             SortHandCards();
         }
@@ -177,93 +266,6 @@ public class PlayerHand : MonoBehaviour
         if (lastSelectedCard != null)
         {
             selectedCards.Add(lastSelectedCard);
-        }
-    }
-
-    #region Sorting
-    void SetCardAmountText()
-    {
-        if (handCards.Count > 0)
-        {
-            cardAmountText.text = handCards.Count.ToString();
-            Vector2 cardAmountTextPos = handCards[0].transform.position;
-            cardAmountTextPos = new Vector2(cardAmountTextPos.x + cardAmountTextOffset.x, cardAmountTextOffset.y + handTransform.position.y);
-            cardAmountText.transform.position = cardAmountTextPos;
-
-            cardAmountText.gameObject.SetActive(true);
-        }
-        else
-        {
-            cardAmountText.gameObject.SetActive(false);
-        }
-    }
-
-    void UpdateSideUsage()
-    {
-        usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
-        usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
-    }
-
-    void UpdateColliders()
-    {
-        for (int i = 0; i < underSideCards.Count; i++)
-        {
-            BoxCollider2D boxCollider = underSideCards[i].GetComponent<BoxCollider2D>();
-            boxCollider.enabled = usingUnderSideCards;
-        }
-    }
-
-    public void SortCards()
-    {
-        ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
-        ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
-        ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
-    }
-
-    void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
-    {
-        if (cards.Count == 0) return;
-
-        float cardSpacing = Mathf.Min(spacing, maxWidth / cards.Count);
-
-        for (int i = 0; i < cards.Count; i++)
-        {
-            cards[i].transform.SetParent(parent);
-
-            if (cards == handCards)
-            {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-            }
-            else if (cards == overSideCards)
-            {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
-            }
-            else
-            {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
-            }
-
-            Vector2 cardPosition;
-            if (cards.Count > 1)
-            {
-                float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
-                cardPosition = cards[i] == hoveredCard ? new Vector2(horizontalOffset + offset, offset + popUpHeight) : new Vector2(horizontalOffset + offset, offset);
-            }
-            else
-            {
-                cardPosition = cards[i] == hoveredCard ? new Vector2(offset, offset + popUpHeight) : new Vector2(offset, offset);
-            }
-
-            cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
-
-            for (int ii = 0; ii < cards.Count; ii++)
-            {
-                if (cards[i] == cards[ii] && ii != i)
-                {
-                    cards.RemoveAt(ii);
-                }
-            }
         }
     }
     #endregion

@@ -60,6 +60,8 @@ MonoBehaviour:
   sideBaseCardSpacing: 2
   sideMaxHandWidth: 15
   overSideOffset: 0.15
+  isTurnPos: {x: 0, y: -3.5}
+  isNotTurnPos: {x: 0, y: -4.7}
   isTurn: 0
   canEndTurn: 0
   turnNumber: 0

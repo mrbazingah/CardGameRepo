@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class AIHand : MonoBehaviour
 {
+    #region Variables
     [Header("Cards")]
     [SerializeField] List<GameObject> handCards;
     [SerializeField] List<GameObject> underSideCards, overSideCards;
@@ -14,6 +15,8 @@ public class AIHand : MonoBehaviour
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
     [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
+    [Space]
+    [SerializeField] Vector2 isTurnPos, isNotTurnPos;
     [Header("Turn and Play")]
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
@@ -35,6 +38,7 @@ public class AIHand : MonoBehaviour
     CardGenrator cardGenerator;
     GameManager gameManager;
     AudioManager audioManager;
+    #endregion
 
     void Awake()
     {
@@ -160,9 +164,6 @@ public class AIHand : MonoBehaviour
         UpdateColliders();
         SortCards();
         RemoveDubbleCards();
-
-        if (!gameManager.GetGameHasStarted()) return;
-
         CheckTurn();
 
         if (isTurn && !isPlaying)
@@ -196,6 +197,9 @@ public class AIHand : MonoBehaviour
 
         ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
+
+        Vector2 currentPos = isTurn || !gameManager.GetGameHasStarted() ? isTurnPos : isNotTurnPos;
+        handTransform.position = Vector2.Lerp(handTransform.position, currentPos, lerpSpeed * Time.deltaTime);
     }
 
     void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float verticalSpace, float maxWidth, float offset = 0)
@@ -262,6 +266,7 @@ public class AIHand : MonoBehaviour
 
     void CheckTurn()
     {
+        if (!gameManager.GetGameHasStarted()) return;
         isTurn = turnNumber == gameManager.GetTurn();
     }
 
@@ -274,6 +279,8 @@ public class AIHand : MonoBehaviour
     #region Play
     IEnumerator PlayAITurnWithDelay()
     {
+        if (!gameManager.GetGameHasStarted()) yield break;
+
         isPlaying = true;
 
         yield return new WaitForSeconds(playDelay);
@@ -559,6 +566,7 @@ public class AIHand : MonoBehaviour
     }
     #endregion
 
+    #region Gets
     public List<GameObject> GetCards()
     {
         UpdateSideUsage();
@@ -567,4 +575,5 @@ public class AIHand : MonoBehaviour
         if (usingUnderSideCards) return underSideCards;
         return handCards;
     }
+    #endregion
 }

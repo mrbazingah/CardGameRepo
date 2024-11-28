@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -43,16 +42,7 @@ public class SettingsManager : MonoBehaviour
         aiChancePrecentageField.text = aiChancePrecentage.ToString();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            CheckCardsPerPlayer();
-            CheckAiPrecentage();
-        }
-    }
-
-    void CheckCardsPerPlayer()
+    public void CheckCardsPerPlayer()
     {
         int number;
         int.TryParse(cardsPerPlayerField.text, out number);
@@ -72,7 +62,7 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetInt("CardsPerPlayer", number);
     }
 
-    void CheckAiPrecentage()
+    public void CheckAiPrecentage()
     {
         int number;
         int.TryParse(aiChancePrecentageField.text, out number);
@@ -86,5 +76,16 @@ public class SettingsManager : MonoBehaviour
 
         aiChancePrecentageField.text = number.ToString();
         PlayerPrefs.SetInt("AiChancePrecentage", number);
+    }
+
+    public void SaveAll()
+    {
+        int number;
+
+        int.TryParse(aiChancePrecentageField.text, out number);
+        PlayerPrefs.SetInt("AiChancePrecentage", number);
+
+        int.TryParse(cardsPerPlayerField.text, out number);
+        PlayerPrefs.SetInt("CardsPerPlayer", number);
     }
 }
