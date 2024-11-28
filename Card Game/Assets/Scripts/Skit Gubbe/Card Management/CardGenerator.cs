@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardGenrator : MonoBehaviour
+public class CardGenerator : MonoBehaviour
 {
     [SerializeField] GameObject cardPrefab;
     [SerializeField] GameObject backCardPrefab;

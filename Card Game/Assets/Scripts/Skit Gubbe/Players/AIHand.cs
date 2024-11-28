@@ -35,7 +35,7 @@ public class AIHand : MonoBehaviour
     bool isPaused;
 
     Pile pile;
-    CardGenrator cardGenerator;
+    CardGenerator cardGenerator;
     GameManager gameManager;
     AudioManager audioManager;
     #endregion
@@ -43,7 +43,7 @@ public class AIHand : MonoBehaviour
     void Awake()
     {
         pile = FindFirstObjectByType<Pile>();
-        cardGenerator = FindFirstObjectByType<CardGenrator>();
+        cardGenerator = FindFirstObjectByType<CardGenerator>();
         gameManager = FindFirstObjectByType<GameManager>();
         audioManager = FindFirstObjectByType<AudioManager>();
     }

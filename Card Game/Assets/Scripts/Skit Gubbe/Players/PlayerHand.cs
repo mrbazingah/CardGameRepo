@@ -40,7 +40,7 @@ public class PlayerHand : MonoBehaviour
     List<GameObject> selectedCards = new List<GameObject>(0);
 
     Pile pile;
-    CardGenrator cardGenerator;
+    CardGenerator cardGenerator;
     GameManager gameManager;
     AudioManager audioManager;
     #endregion
@@ -48,7 +48,7 @@ public class PlayerHand : MonoBehaviour
     void Awake()
     {
         pile = FindFirstObjectByType<Pile>();
-        cardGenerator = FindFirstObjectByType<CardGenrator>();
+        cardGenerator = FindFirstObjectByType<CardGenerator>();
         gameManager = FindFirstObjectByType<GameManager>();
         audioManager = FindFirstObjectByType<AudioManager>();
     }
