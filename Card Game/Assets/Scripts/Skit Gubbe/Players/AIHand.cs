@@ -11,10 +11,10 @@ public class AIHand : MonoBehaviour
     [SerializeField] List<GameObject> underSideCards, overSideCards;
     [Header("Transform and Spacing")]
     [SerializeField] Transform handTransform;
-    [SerializeField] float baseCardSpacing = 150f, verticalSpacing = 50f, maxHandWidth = 1000f;
+    [SerializeField] float baseCardSpacing = 150f, maxHandWidth = 1000f;
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
-    [SerializeField] float sideBaseCardSpacing = 150f, sideVerticalSpacing = 50f, sideMaxHandWidth = 1000f, overSideOffset;
+    [SerializeField] float sideBaseCardSpacing = 150f, sideMaxHandWidth = 1000f, overSideOffset;
     [Space]
     [SerializeField] Vector2 isTurnPos, isNotTurnPos;
     [Header("Turn and Play")]
@@ -192,17 +192,17 @@ public class AIHand : MonoBehaviour
     {
         if (handCards.Count > 0)
         {
-            ArrangeCards(handCards, handTransform, baseCardSpacing, verticalSpacing, maxHandWidth);
+            ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
         }
 
-        ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth, overSideOffset);
-        ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideVerticalSpacing, sideMaxHandWidth);
+        ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
+        ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
 
         Vector2 currentPos = isTurn || !gameManager.GetGameHasStarted() ? isTurnPos : isNotTurnPos;
         handTransform.position = Vector2.Lerp(handTransform.position, currentPos, lerpSpeed * Time.deltaTime);
     }
 
-    void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float verticalSpace, float maxWidth, float offset = 0)
+    void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
     {
         if (cards.Count == 0) return;
 
@@ -222,19 +222,19 @@ public class AIHand : MonoBehaviour
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
             }
 
+            Vector2 cardPosition;
             if (cards.Count > 1)
             {
                 float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
                 float normalizedPosition = 2f * i / (cards.Count - 1) - 1f;
-                float verticalOffset = verticalSpace * (1 - normalizedPosition * normalizedPosition);
-                Vector3 cardPosition = new Vector3(horizontalOffset + offset, verticalOffset + offset, 0);
-
-                cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
+                cardPosition = new Vector2(horizontalOffset + offset, offset);
             }
             else
             {
-                cards[i].transform.localPosition = Vector3.zero;
+                cardPosition = new Vector2(offset, offset);
             }
+
+            cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
 
             GameObject child = cards[i].GetComponent<Card>().GetBack();
             if (handCards.Contains(cards[i]) && child != null)
