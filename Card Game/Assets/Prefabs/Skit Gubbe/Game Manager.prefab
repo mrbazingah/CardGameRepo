@@ -48,3 +48,6 @@ MonoBehaviour:
   turn: 1
   winText: {fileID: 0}
   pauseMenu: {fileID: 0}
+  score: 50
+  maxScore: 10
+  minScore: 5

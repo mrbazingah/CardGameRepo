@@ -9,9 +9,10 @@ public class GameManager : MonoBehaviour
     #region Variables
     [SerializeField] int playerCount = 1;
     [SerializeField] int turn = 1;
-    [SerializeField] TextMeshProUGUI winText;
-    [SerializeField] GameObject pauseMenu;
-    [SerializeField] int score;
+    [SerializeField] TextMeshProUGUI winText, scoreText, addedScoreText;
+    [SerializeField] GameObject pauseMenu, winMenu;
+    [Space]
+    [SerializeField] int score, maxScore, minScore;
 
     bool gameHasStarted;
     bool winner;
@@ -29,7 +30,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        winText.gameObject.SetActive(false);
+        winMenu.gameObject.SetActive(false);
+        pauseMenu.gameObject.SetActive(false);
+        score = PlayerPrefs.GetInt("Score");
     }
 
     #region Game Start
@@ -146,13 +149,20 @@ public class GameManager : MonoBehaviour
         {
             if (playerHand.GetCurrentCards().Count == 0)
             {
-                winText.gameObject.SetActive(true);
-                winText.transform.position = new Vector2(-winText.transform.position.x, 0f);
+                winMenu.gameObject.SetActive(true);
+
+                int amount = Random.Range(minScore, maxScore + 1); 
+                AddScore(amount);
+
                 winner = true;
             }
             else if (aiHand.GetCards().Count == 0)
             {
-                winText.gameObject.SetActive(true);
+                winMenu.gameObject.SetActive(true);
+
+                int amount = Random.Range(minScore, maxScore + 1);
+                SubtractScore(amount);
+
                 winner = true;
             }
 
@@ -171,6 +181,30 @@ public class GameManager : MonoBehaviour
     void AddScore(int amount)
     {
         score += amount;
+        scoreText.text = "Score: " + score.ToString();
+        addedScoreText.text = "+" + amount.ToString();
+
+        addedScoreText.color = Color.green;
+
+        PlayerPrefs.SetInt("Score", score);
+    }
+
+    void SubtractScore(int amount)
+    {
+        if (score <= 0)
+        {
+            score = 0; 
+            amount = 0;
+        }
+
+        score -= amount;
+
+        scoreText.text = "Score: " + score.ToString();
+        addedScoreText.text = "-" + amount.ToString();
+
+        addedScoreText.color = Color.red;
+
+        PlayerPrefs.SetInt("Score", score);
     }
     #endregion
 
