@@ -56,7 +56,8 @@ public class SettingsManager : MonoBehaviour
             number = 20;
         }
 
-        cardsPerPlayerField.GetComponentInChildren<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+        TextMeshProUGUI cardText = cardsPerPlayerField.GetComponentInChildren<TextMeshProUGUI>();
+        cardText.alignment = cardText.name == "Title" ? TextAlignmentOptions.Left : TextAlignmentOptions.Center;
 
         cardsPerPlayerField.text = number.ToString();   
         PlayerPrefs.SetInt("CardsPerPlayer", number);
@@ -71,8 +72,9 @@ public class SettingsManager : MonoBehaviour
         {
             number = 100;
         }
-        
-        aiChancePrecentageField.GetComponentInChildren<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+
+        TextMeshProUGUI aiText = aiChancePrecentageField.GetComponentInChildren<TextMeshProUGUI>();
+        aiText.alignment = aiText.name == "Title" ? TextAlignmentOptions.Left : TextAlignmentOptions.Center;
 
         aiChancePrecentageField.text = number.ToString();
         PlayerPrefs.SetInt("AiChancePrecentage", number);

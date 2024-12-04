@@ -143,7 +143,6 @@ public class CardGenerator : MonoBehaviour
             deck.Remove(obj);
         }
 
-
         List<GameObject> underSideCards = new List<GameObject>(3);
         List<GameObject> overSideCards = new List<GameObject>(3);
 

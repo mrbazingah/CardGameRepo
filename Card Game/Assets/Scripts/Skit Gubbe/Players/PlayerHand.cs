@@ -22,8 +22,10 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] bool canEndTurn;
     [SerializeField] int turnNumber;
     [SerializeField] GameObject endTurnButton;
-    [Space]
+    [Header("Chance")]
     [SerializeField] float playChanceDelay;
+    [SerializeField] GameObject chanceNotice;
+    [Space]
     [SerializeField] float lerpSpeed;
     [SerializeField] TextMeshProUGUI cardAmountText;
     [SerializeField] Vector2 cardAmountTextOffset;
@@ -35,7 +37,8 @@ public class PlayerHand : MonoBehaviour
     int savedCardValue;
     bool hasDiscarded;
 
-    bool isPaused; 
+    bool isPaused;
+    bool canChance;
 
     List<GameObject> selectedCards = new List<GameObject>(0);
 
@@ -98,6 +101,8 @@ public class PlayerHand : MonoBehaviour
         CanEndTurn();
         CheckTurn();
         DetectHover();
+
+        chanceNotice.SetActive(CanChance());
     }
 
     #region Sorting
@@ -566,7 +571,7 @@ public class PlayerHand : MonoBehaviour
 
     public bool CanChance()
     {
-        return isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards);
+        return isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards) && cardGenerator.GetDeck().Count != 0;
     }
     #endregion
 

@@ -6,10 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    #region Variables
     [SerializeField] int playerCount = 1;
     [SerializeField] int turn = 1;
     [SerializeField] TextMeshProUGUI winText;
     [SerializeField] GameObject pauseMenu;
+    [SerializeField] int score;
 
     bool gameHasStarted;
     bool winner;
@@ -17,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     PlayerHand playerHand;
     AIHand aiHand;
+    #endregion
 
     void Awake()
     {
@@ -29,6 +32,7 @@ public class GameManager : MonoBehaviour
         winText.gameObject.SetActive(false);
     }
 
+    #region Game Start
     public void StartGame(GameObject button)
     {
         AsignStartPlayer();
@@ -74,7 +78,9 @@ public class GameManager : MonoBehaviour
             aiHand.SetTurnNumber(2);
         }
     }
+    #endregion
 
+    #region PauseMenu
     void Update()
     {
         ProcessPauseMenu();
@@ -105,7 +111,9 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         isOpen = false;
     }
+    #endregion
 
+    #region Turn and Win
     public void NextTurn(GameObject lastPlayed)
     {
         if (lastPlayed != null)
@@ -157,7 +165,16 @@ public class GameManager : MonoBehaviour
         int sceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(sceneIndex);
     }
+    #endregion
 
+    #region Score
+    void AddScore(int amount)
+    {
+        score += amount;
+    }
+    #endregion
+
+    #region Gets
     public int GetPlayerCount()
     {
         return playerCount;
@@ -177,4 +194,5 @@ public class GameManager : MonoBehaviour
     {
         return gameHasStarted;
     }
+    #endregion
 }
