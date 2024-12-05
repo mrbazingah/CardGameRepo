@@ -186,6 +186,14 @@ public class GameManager : MonoBehaviour
 
         addedScoreText.color = Color.green;
 
+        if (score > PlayerPrefs.GetInt("Highscore"))
+        {
+            PlayerPrefs.SetInt("Highscore", score);
+        }
+
+        int gamesWon = PlayerPrefs.GetInt("GamesWon") + 1;
+        PlayerPrefs.SetInt("GamesWon", gamesWon);
+
         PlayerPrefs.SetInt("Score", score);
     }
 
@@ -203,6 +211,9 @@ public class GameManager : MonoBehaviour
         addedScoreText.text = "-" + amount.ToString();
 
         addedScoreText.color = Color.red;
+
+        int gamesLost = PlayerPrefs.GetInt("GamesLost") + 1;
+        PlayerPrefs.SetInt("GamesLost", gamesLost);
 
         PlayerPrefs.SetInt("Score", score);
     }
