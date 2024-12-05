@@ -1,14 +1,19 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
     [Header("Input Fields")]
     [SerializeField] TMP_InputField cardsPerPlayerField;
     [SerializeField] TMP_InputField aiChancePrecentageField;
+    [Header("Toggle")]
+    [SerializeField] Toggle canChanceToggle;
     [Header("Default Settings")]
     [SerializeField] int defaultCardsPerPlayer;
     [SerializeField] int defaultAiChancePrecentage;
+    [Header("Other")]
+    [SerializeField] GameObject aiChanceGameObject;
 
     void Start()
     {
@@ -40,6 +45,22 @@ public class SettingsManager : MonoBehaviour
         }
 
         aiChancePrecentageField.text = aiChancePrecentage.ToString();
+
+        int canChance = PlayerPrefs.GetInt("CanChance");
+        if (PlayerPrefs.HasKey("CanChance") || canChance == 0)
+        {
+            canChanceToggle.isOn = true;
+            PlayerPrefs.SetInt("CanChance", 1);
+        }
+        else
+        {
+            canChanceToggle.isOn = false;
+        }
+    }
+
+    void Update()
+    {
+        aiChanceGameObject.SetActive(canChanceToggle.isOn);
     }
 
     public void CheckCardsPerPlayer()
@@ -80,6 +101,18 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetInt("AiChancePrecentage", number);
     }
 
+    public void CheckCanChance()
+    {
+        if (canChanceToggle.isOn)
+        {
+            PlayerPrefs.SetInt("CanChance", 1);
+        }
+        else
+        {
+            PlayerPrefs.DeleteKey("CanChance");
+        }
+    }
+
     public void SaveAll()
     {
         int number;
@@ -89,5 +122,7 @@ public class SettingsManager : MonoBehaviour
 
         int.TryParse(cardsPerPlayerField.text, out number);
         PlayerPrefs.SetInt("CardsPerPlayer", number);
+
+        CheckCanChance();
     }
 }

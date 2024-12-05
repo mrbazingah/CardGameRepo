@@ -11,10 +11,10 @@ public class AIHand : MonoBehaviour
     [SerializeField] List<GameObject> underSideCards, overSideCards;
     [Header("Transform and Spacing")]
     [SerializeField] Transform handTransform;
-    [SerializeField] float baseCardSpacing = 150f, maxHandWidth = 1000f;
+    [SerializeField] float baseCardSpacing, maxHandWidth;
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
-    [SerializeField] float sideBaseCardSpacing = 150f, sideMaxHandWidth = 1000f, overSideOffset;
+    [SerializeField] float sideBaseCardSpacing, sideMaxHandWidth, overSideOffset;
     [Space]
     [SerializeField] Vector2 isTurnPos, isNotTurnPos;
     [Header("Turn and Play")]

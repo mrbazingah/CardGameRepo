@@ -233,8 +233,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a40d25adf0a91cc4dbd5f57e6b4f5c18, type: 2}
+  m_sharedMaterial: {fileID: -191329156657266487, guid: a40d25adf0a91cc4dbd5f57e6b4f5c18, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -258,8 +258,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -355,12 +355,10 @@ MonoBehaviour:
   overSideCards: []
   handTransform: {fileID: 1597473461364064502}
   baseCardSpacing: 1
-  verticalSpacing: 0
   maxHandWidth: 15
   underSideTransform: {fileID: 1287712099297645097}
   overSideTransform: {fileID: 295623690729935902}
   sideBaseCardSpacing: 2
-  sideVerticalSpacing: 0
   sideMaxHandWidth: 15
   overSideOffset: -0.15
   isTurnPos: {x: 0, y: 3.5}
