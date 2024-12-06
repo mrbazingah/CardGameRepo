@@ -387,7 +387,7 @@ MonoBehaviour:
   pointA: {x: 0, y: 0.8}
   pointB: {x: 0, y: 0}
   timeToPauseOnPoint: 0.1
-  timeFromAToB: 1
+  timeFromAToB: 0.8
 --- !u!114 &321392016 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6476713371017704230, guid: 65ce0b8573740ba4a8147933a40a2246, type: 3}
