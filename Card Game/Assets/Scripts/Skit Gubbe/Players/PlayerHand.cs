@@ -38,7 +38,6 @@ public class PlayerHand : MonoBehaviour
     bool hasDiscarded;
 
     bool isPaused;
-    bool canChance;
 
     List<GameObject> selectedCards = new List<GameObject>(0);
 
@@ -487,7 +486,6 @@ public class PlayerHand : MonoBehaviour
         }
 
         int stepsBack = cardValue == 0 ? 1 : 2;
-        int idk = cardValue == 0 ? 5 : 4;
 
         List<GameObject> pileCards = pile.GetCardsInPile();
 

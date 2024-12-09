@@ -205,6 +205,11 @@ public class GameManager : MonoBehaviour
             amount = 0;
         }
 
+        if (amount > score)
+        {
+            amount = score;
+        }
+
         score -= amount;
 
         scoreText.text = "Score: " + score.ToString();
