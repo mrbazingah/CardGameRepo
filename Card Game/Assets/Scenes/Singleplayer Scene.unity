@@ -2733,6 +2733,7 @@ MonoBehaviour:
   pileTransform: {fileID: 6946366299111560538}
   discardDelay: 0.25
   lerpSpeed: 15
+  maxRotation: 20
 --- !u!224 &3521996042480940165
 RectTransform:
   m_ObjectHideFlags: 0

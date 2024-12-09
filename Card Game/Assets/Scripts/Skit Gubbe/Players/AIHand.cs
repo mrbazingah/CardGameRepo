@@ -458,6 +458,8 @@ public class AIHand : MonoBehaviour
         GameObject cardFromDeck = cardGenerator.GetChanceCard();
         if (cardFromDeck == null) { yield break; }
 
+        yield return new WaitForSeconds(playDelay);
+
         PlayCard(cardFromDeck, true);
     }
     #endregion

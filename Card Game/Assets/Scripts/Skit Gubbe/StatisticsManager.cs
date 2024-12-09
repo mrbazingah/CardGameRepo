@@ -27,4 +27,14 @@ public class StatisticsManager : MonoBehaviour
         int gamesLost = PlayerPrefs.GetInt("GamesLost");
         gamesLostText.text = gamesLost.ToString();
     }
+
+    public void DeleteStats()
+    {
+        PlayerPrefs.DeleteKey("Highscore");
+        PlayerPrefs.DeleteKey("Score");
+        PlayerPrefs.DeleteKey("GamesWon");
+        PlayerPrefs.DeleteKey("GamesLost");
+
+        LoadStats();
+    }
 }

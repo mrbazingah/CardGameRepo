@@ -9,6 +9,7 @@ public class Pile : MonoBehaviour
     [SerializeField] Transform pileTransform;
     [SerializeField] float discardDelay;
     [SerializeField] float lerpSpeed;
+    [SerializeField] float maxRotation;
 
     AudioManager audioManager;
 
@@ -20,6 +21,7 @@ public class Pile : MonoBehaviour
     void Update()
     {
         LerpCardsToPile();
+        RotateCards();
     }
 
     void LerpCardsToPile()
@@ -32,6 +34,19 @@ public class Pile : MonoBehaviour
         for (int i = 0; i < discardedPile.Count; i++)
         {
             discardedPile[i].transform.position = Vector2.Lerp(discardedPile[i].transform.position, new Vector2(-10, 0), lerpSpeed * Time.deltaTime);
+        }
+    }
+
+    void RotateCards()
+    {
+        for (int i = 0; i < cardsInPile.Count; i++)
+        {
+            Card cardScript = cardsInPile[i].GetComponent<Card>();
+            if (!cardScript.GetHasBeenTurned())
+            {
+                float rot = Random.Range(-maxRotation, maxRotation + 1);
+                cardScript.Rotate(rot, true);
+            }
         }
     }
 
@@ -64,6 +79,7 @@ public class Pile : MonoBehaviour
         for (int i = 0; i < cardsInPile.Count; i++)
         {
             cardsInPile[i].transform.SetParent(null);
+            cardsInPile[i].GetComponent<Card>().Rotate(0, false);
         }
 
         cardsInPile = new List<GameObject>(0);

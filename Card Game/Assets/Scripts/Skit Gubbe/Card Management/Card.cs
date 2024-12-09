@@ -7,6 +7,8 @@ public class Card : MonoBehaviour
     [SerializeField] float handZeroPoint;
     [SerializeField] float sideZeroPoint;
 
+    bool hasBeenTurned;
+
     BoxCollider2D myBoxCollider;
     PlayerHand player;
 
@@ -53,6 +55,12 @@ public class Card : MonoBehaviour
         }
     }
 
+    public void Rotate(float rot, bool b)
+    {
+        transform.rotation = Quaternion.Euler(0, 0, rot);
+        hasBeenTurned = b;
+    }
+
     public GameObject GetBack()
     {
         return back;
@@ -61,5 +69,10 @@ public class Card : MonoBehaviour
     public int GetValue()
     {
         return cardValue;
+    }
+
+    public bool GetHasBeenTurned()
+    {
+        return hasBeenTurned;
     }
 }
