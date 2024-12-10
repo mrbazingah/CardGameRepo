@@ -2872,6 +2872,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 6106643260078049397, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
+      propertyPath: chanceDelay
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 8148943176141036670, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
       propertyPath: m_Name
       value: AI PLayer

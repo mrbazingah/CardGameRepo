@@ -21,6 +21,7 @@ public class AIHand : MonoBehaviour
     [SerializeField] bool isTurn;
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
+    [SerializeField] float chanceDelay;
     [SerializeField] int chanceToPlayChance; //Precentage from 0% too 100%
     [Space]
     [SerializeField] float lerpSpeed;
@@ -462,7 +463,7 @@ public class AIHand : MonoBehaviour
             yield break; 
         }
 
-        yield return new WaitForSeconds(playDelay);
+        yield return new WaitForSeconds(chanceDelay);
 
         PlayCard(cardFromDeck, true);
     }
