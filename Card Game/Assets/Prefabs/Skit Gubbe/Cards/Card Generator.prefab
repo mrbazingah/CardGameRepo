@@ -136,4 +136,4 @@ MonoBehaviour:
   cardsPerPlayer: 3
   numberOfCards: 52
   deck: []
-  chanceCardDelay: 1
+  chanceCardDelay: 1.1

@@ -163,7 +163,7 @@ public class AIHand : MonoBehaviour
         UpdateSideUsage();
         UpdateColliders();
         SortCards();
-        RemoveDubbleCards();
+        RemoveDublicateCards();
         CheckTurn();
 
         if (isTurn && !isPlaying)
@@ -244,7 +244,7 @@ public class AIHand : MonoBehaviour
         }
     }
 
-    void RemoveDubbleCards()
+    void RemoveDublicateCards()
     {
         if (handCards.Count == 0) { return; }
 
@@ -456,7 +456,11 @@ public class AIHand : MonoBehaviour
     IEnumerator ProcessChanceCard()
     {
         GameObject cardFromDeck = cardGenerator.GetChanceCard();
-        if (cardFromDeck == null) { yield break; }
+        if (cardFromDeck == null) 
+        {
+            isPlaying = false;
+            yield break; 
+        }
 
         yield return new WaitForSeconds(playDelay);
 
