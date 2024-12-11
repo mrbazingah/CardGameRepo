@@ -1,0 +1,1469 @@
+fileFormatVersion: 2
+guid: dd47de3103cee9f4cb151dd155a12e10
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3372641179147985056
+    second: Dark_Theme_Deck_of_Cards_0
+  - first:
+      213: 5976187552563500396
+    second: Dark_Theme_Deck_of_Cards_1
+  - first:
+      213: 7217150795617456249
+    second: Dark_Theme_Deck_of_Cards_2
+  - first:
+      213: -2377564408123160190
+    second: Dark_Theme_Deck_of_Cards_3
+  - first:
+      213: 548313755132838480
+    second: Dark_Theme_Deck_of_Cards_4
+  - first:
+      213: 2207431597428683807
+    second: Dark_Theme_Deck_of_Cards_5
+  - first:
+      213: 5447628687501161262
+    second: Dark_Theme_Deck_of_Cards_6
+  - first:
+      213: 3572763988137179864
+    second: Dark_Theme_Deck_of_Cards_7
+  - first:
+      213: 4970954220432490739
+    second: Dark_Theme_Deck_of_Cards_8
+  - first:
+      213: 7359258863685504616
+    second: Dark_Theme_Deck_of_Cards_9
+  - first:
+      213: -3809649544438896957
+    second: Dark_Theme_Deck_of_Cards_10
+  - first:
+      213: -3911693426883870213
+    second: Dark_Theme_Deck_of_Cards_11
+  - first:
+      213: -6406831680086080066
+    second: Dark_Theme_Deck_of_Cards_12
+  - first:
+      213: -8215919567113667244
+    second: Dark_Theme_Deck_of_Cards_13
+  - first:
+      213: -7024369201192629767
+    second: Dark_Theme_Deck_of_Cards_14
+  - first:
+      213: 3090411520073522997
+    second: Dark_Theme_Deck_of_Cards_15
+  - first:
+      213: 7359250092348056674
+    second: Dark_Theme_Deck_of_Cards_16
+  - first:
+      213: 7434600997096969163
+    second: Dark_Theme_Deck_of_Cards_17
+  - first:
+      213: 894064390428558407
+    second: Dark_Theme_Deck_of_Cards_18
+  - first:
+      213: 8023573582782266981
+    second: Dark_Theme_Deck_of_Cards_19
+  - first:
+      213: 7097120141176576084
+    second: Dark_Theme_Deck_of_Cards_20
+  - first:
+      213: -2705792531299378328
+    second: Dark_Theme_Deck_of_Cards_21
+  - first:
+      213: -1724319957494824620
+    second: Dark_Theme_Deck_of_Cards_22
+  - first:
+      213: 173388791521177898
+    second: Dark_Theme_Deck_of_Cards_23
+  - first:
+      213: -5170346439944741270
+    second: Dark_Theme_Deck_of_Cards_24
+  - first:
+      213: 545718723960863274
+    second: Dark_Theme_Deck_of_Cards_25
+  - first:
+      213: -7500417129130417234
+    second: Dark_Theme_Deck_of_Cards_26
+  - first:
+      213: 3022524173877220225
+    second: Dark_Theme_Deck_of_Cards_27
+  - first:
+      213: 2800290270912453524
+    second: Dark_Theme_Deck_of_Cards_28
+  - first:
+      213: 5530511741025580333
+    second: Dark_Theme_Deck_of_Cards_29
+  - first:
+      213: 3793612777306738946
+    second: Dark_Theme_Deck_of_Cards_30
+  - first:
+      213: 1370482133855647028
+    second: Dark_Theme_Deck_of_Cards_31
+  - first:
+      213: -638005868403915673
+    second: Dark_Theme_Deck_of_Cards_32
+  - first:
+      213: -1330151533088114844
+    second: Dark_Theme_Deck_of_Cards_33
+  - first:
+      213: -6847709166416503719
+    second: Dark_Theme_Deck_of_Cards_34
+  - first:
+      213: 1854119284749405634
+    second: Dark_Theme_Deck_of_Cards_35
+  - first:
+      213: -7494647129454599276
+    second: Dark_Theme_Deck_of_Cards_36
+  - first:
+      213: 3597937504302427475
+    second: Dark_Theme_Deck_of_Cards_37
+  - first:
+      213: 7183002049934210454
+    second: Dark_Theme_Deck_of_Cards_38
+  - first:
+      213: -7025544286466115998
+    second: Dark_Theme_Deck_of_Cards_39
+  - first:
+      213: -6679814685534037079
+    second: Dark_Theme_Deck_of_Cards_40
+  - first:
+      213: 8327969881859583227
+    second: Dark_Theme_Deck_of_Cards_41
+  - first:
+      213: 4113767450904985850
+    second: Dark_Theme_Deck_of_Cards_42
+  - first:
+      213: -5202174695186376451
+    second: Dark_Theme_Deck_of_Cards_43
+  - first:
+      213: -7403175135895668495
+    second: Dark_Theme_Deck_of_Cards_44
+  - first:
+      213: -8074700170284441475
+    second: Dark_Theme_Deck_of_Cards_45
+  - first:
+      213: -2676672200457154963
+    second: Dark_Theme_Deck_of_Cards_46
+  - first:
+      213: -7040484115476931821
+    second: Dark_Theme_Deck_of_Cards_47
+  - first:
+      213: 8134110676608128158
+    second: Dark_Theme_Deck_of_Cards_48
+  - first:
+      213: 5645801768860276894
+    second: Dark_Theme_Deck_of_Cards_49
+  - first:
+      213: 5702608827585574643
+    second: Dark_Theme_Deck_of_Cards_50
+  - first:
+      213: 55674671315133074
+    second: Dark_Theme_Deck_of_Cards_51
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 21
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06f970277b8f131d0800000000000000
+      internalID: -3372641179147985056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_1
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6598a57aeeafe250800000000000000
+      internalID: 5976187552563500396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_2
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 970d4371968782460800000000000000
+      internalID: 7217150795617456249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_3
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 289053784c1310fd0800000000000000
+      internalID: -2377564408123160190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_4
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 052472884700c9700800000000000000
+      internalID: 548313755132838480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_5
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f14b5b6a75f52ae10800000000000000
+      internalID: 2207431597428683807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_6
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e23fbb2bd6dd99b40800000000000000
+      internalID: 5447628687501161262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_7
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8da793bfae1059130800000000000000
+      internalID: 3572763988137179864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_8
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f08b97b6806cf440800000000000000
+      internalID: 4970954220432490739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_9
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86e8e1c02f6512660800000000000000
+      internalID: 7359258863685504616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_10
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c6adf87ce7612bc0800000000000000
+      internalID: -3809649544438896957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_11
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf14b54ad8fd6b9c0800000000000000
+      internalID: -3911693426883870213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_12
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb500c4288c5617a0800000000000000
+      internalID: -6406831680086080066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45d320bfea03bfd80800000000000000
+      internalID: -8215919567113667244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_14
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f908bf9d6d648e90800000000000000
+      internalID: -7024369201192629767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_15
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53fd1cf57e853ea20800000000000000
+      internalID: 3090411520073522997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_16
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 264aaafc7fe412660800000000000000
+      internalID: 7359250092348056674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_17
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc3dab677320d2760800000000000000
+      internalID: 7434600997096969163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_18
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74402dd73da586c00800000000000000
+      internalID: 894064390428558407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_19
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56ef1fea9a5795f60800000000000000
+      internalID: 8023573582782266981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_20
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 458991f8a290e7260800000000000000
+      internalID: 7097120141176576084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_21
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86bdef75708137ad0800000000000000
+      internalID: -2705792531299378328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_22
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 451876e622cf118e0800000000000000
+      internalID: -1724319957494824620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_23
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2177aeef20086200800000000000000
+      internalID: 173388791521177898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_24
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6e53697e4d3f38b0800000000000000
+      internalID: -5170346439944741270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_25
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2a77f0c948c29700800000000000000
+      internalID: 545718723960863274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea32de62c5a29e790800000000000000
+      internalID: -7500417129130417234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_27
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1839bfcd8b922f920800000000000000
+      internalID: 3022524173877220225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_28
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49b18b13a21acd620800000000000000
+      internalID: 2800290270912453524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_29
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d25f4f5602350cc40800000000000000
+      internalID: 5530511741025580333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_30
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20150c6b8be95a430800000000000000
+      internalID: 3793612777306738946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_31
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4353c775d3ee40310800000000000000
+      internalID: 1370482133855647028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_32
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7648b210b095527f0800000000000000
+      internalID: -638005868403915673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_33
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46777d46a3a5a8de0800000000000000
+      internalID: -1330151533088114844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_34
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95cde8a3bcc08f0a0800000000000000
+      internalID: -6847709166416503719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_35
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cd80ba7aa72bb910800000000000000
+      internalID: 1854119284749405634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_36
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49325f3e42aadf790800000000000000
+      internalID: -7494647129454599276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_37
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35d6004f8117ee130800000000000000
+      internalID: 3597937504302427475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_38
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6953b37ae462fa360800000000000000
+      internalID: 7183002049934210454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2667963c1b0408e90800000000000000
+      internalID: -7025544286466115998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_40
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ab5e474fe78c43a0800000000000000
+      internalID: -6679814685534037079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_41
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfc646ceb74e29370800000000000000
+      internalID: 8327969881859583227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_42
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af081cf63b9071930800000000000000
+      internalID: 4113767450904985850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_43
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df8d3e15da92ec7b0800000000000000
+      internalID: -5202174695186376451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_44
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f83fe60073a24990800000000000000
+      internalID: -7403175135895668495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_45
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d70e86a0af6e0ff80800000000000000
+      internalID: -8074700170284441475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_46
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6e8697b0dc8adad0800000000000000
+      internalID: -2676672200457154963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_47
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31b9732cffc2b4e90800000000000000
+      internalID: -7040484115476931821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_48
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9490f2609a22e070800000000000000
+      internalID: 8134110676608128158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_49
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e985039cbcae95e40800000000000000
+      internalID: 5645801768860276894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_50
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f6be35d38cb32f40800000000000000
+      internalID: 5702608827585574643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark_Theme_Deck_of_Cards_51
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 292a9be81dbc5c000800000000000000
+      internalID: 55674671315133074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5a05d43550810f9498b1a1c1c72137d8
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Dark_Theme_Deck_of_Cards_0: -3372641179147985056
+      Dark_Theme_Deck_of_Cards_1: 5976187552563500396
+      Dark_Theme_Deck_of_Cards_10: -3809649544438896957
+      Dark_Theme_Deck_of_Cards_11: -3911693426883870213
+      Dark_Theme_Deck_of_Cards_12: -6406831680086080066
+      Dark_Theme_Deck_of_Cards_13: -8215919567113667244
+      Dark_Theme_Deck_of_Cards_14: -7024369201192629767
+      Dark_Theme_Deck_of_Cards_15: 3090411520073522997
+      Dark_Theme_Deck_of_Cards_16: 7359250092348056674
+      Dark_Theme_Deck_of_Cards_17: 7434600997096969163
+      Dark_Theme_Deck_of_Cards_18: 894064390428558407
+      Dark_Theme_Deck_of_Cards_19: 8023573582782266981
+      Dark_Theme_Deck_of_Cards_2: 7217150795617456249
+      Dark_Theme_Deck_of_Cards_20: 7097120141176576084
+      Dark_Theme_Deck_of_Cards_21: -2705792531299378328
+      Dark_Theme_Deck_of_Cards_22: -1724319957494824620
+      Dark_Theme_Deck_of_Cards_23: 173388791521177898
+      Dark_Theme_Deck_of_Cards_24: -5170346439944741270
+      Dark_Theme_Deck_of_Cards_25: 545718723960863274
+      Dark_Theme_Deck_of_Cards_26: -7500417129130417234
+      Dark_Theme_Deck_of_Cards_27: 3022524173877220225
+      Dark_Theme_Deck_of_Cards_28: 2800290270912453524
+      Dark_Theme_Deck_of_Cards_29: 5530511741025580333
+      Dark_Theme_Deck_of_Cards_3: -2377564408123160190
+      Dark_Theme_Deck_of_Cards_30: 3793612777306738946
+      Dark_Theme_Deck_of_Cards_31: 1370482133855647028
+      Dark_Theme_Deck_of_Cards_32: -638005868403915673
+      Dark_Theme_Deck_of_Cards_33: -1330151533088114844
+      Dark_Theme_Deck_of_Cards_34: -6847709166416503719
+      Dark_Theme_Deck_of_Cards_35: 1854119284749405634
+      Dark_Theme_Deck_of_Cards_36: -7494647129454599276
+      Dark_Theme_Deck_of_Cards_37: 3597937504302427475
+      Dark_Theme_Deck_of_Cards_38: 7183002049934210454
+      Dark_Theme_Deck_of_Cards_39: -7025544286466115998
+      Dark_Theme_Deck_of_Cards_4: 548313755132838480
+      Dark_Theme_Deck_of_Cards_40: -6679814685534037079
+      Dark_Theme_Deck_of_Cards_41: 8327969881859583227
+      Dark_Theme_Deck_of_Cards_42: 4113767450904985850
+      Dark_Theme_Deck_of_Cards_43: -5202174695186376451
+      Dark_Theme_Deck_of_Cards_44: -7403175135895668495
+      Dark_Theme_Deck_of_Cards_45: -8074700170284441475
+      Dark_Theme_Deck_of_Cards_46: -2676672200457154963
+      Dark_Theme_Deck_of_Cards_47: -7040484115476931821
+      Dark_Theme_Deck_of_Cards_48: 8134110676608128158
+      Dark_Theme_Deck_of_Cards_49: 5645801768860276894
+      Dark_Theme_Deck_of_Cards_5: 2207431597428683807
+      Dark_Theme_Deck_of_Cards_50: 5702608827585574643
+      Dark_Theme_Deck_of_Cards_51: 55674671315133074
+      Dark_Theme_Deck_of_Cards_6: 5447628687501161262
+      Dark_Theme_Deck_of_Cards_7: 3572763988137179864
+      Dark_Theme_Deck_of_Cards_8: 4970954220432490739
+      Dark_Theme_Deck_of_Cards_9: 7359258863685504616
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
