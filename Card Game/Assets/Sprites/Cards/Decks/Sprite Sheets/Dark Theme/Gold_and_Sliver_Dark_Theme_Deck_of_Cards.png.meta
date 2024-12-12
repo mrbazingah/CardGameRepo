@@ -1,163 +1,163 @@
 fileFormatVersion: 2
-guid: dd47de3103cee9f4cb151dd155a12e10
+guid: f8c055f55ce62a14cb72947b7c4d2748
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3372641179147985056
-    second: Dark_Theme_Deck_of_Cards_0
+      213: 7519213042054280220
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_0
   - first:
-      213: 5976187552563500396
-    second: Dark_Theme_Deck_of_Cards_1
+      213: -5208443369069809486
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_1
   - first:
-      213: 7217150795617456249
-    second: Dark_Theme_Deck_of_Cards_2
+      213: 4065504391924681347
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_2
   - first:
-      213: -2377564408123160190
-    second: Dark_Theme_Deck_of_Cards_3
+      213: 4658635970346825963
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_3
   - first:
-      213: 548313755132838480
-    second: Dark_Theme_Deck_of_Cards_4
+      213: 1229595124433307312
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_4
   - first:
-      213: 2207431597428683807
-    second: Dark_Theme_Deck_of_Cards_5
+      213: -6347081809062129948
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_5
   - first:
-      213: 5447628687501161262
-    second: Dark_Theme_Deck_of_Cards_6
+      213: 6088152282128148772
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_6
   - first:
-      213: 3572763988137179864
-    second: Dark_Theme_Deck_of_Cards_7
+      213: -3030531117142296268
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_7
   - first:
-      213: 4970954220432490739
-    second: Dark_Theme_Deck_of_Cards_8
+      213: -4214871249511906245
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_8
   - first:
-      213: 7359258863685504616
-    second: Dark_Theme_Deck_of_Cards_9
+      213: 4231347173350548862
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_9
   - first:
-      213: -3809649544438896957
-    second: Dark_Theme_Deck_of_Cards_10
+      213: -1392991567057126714
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_10
   - first:
-      213: -3911693426883870213
-    second: Dark_Theme_Deck_of_Cards_11
+      213: 7395045594972435169
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_11
   - first:
-      213: -6406831680086080066
-    second: Dark_Theme_Deck_of_Cards_12
+      213: 7157162737108088288
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_12
   - first:
-      213: -8215919567113667244
-    second: Dark_Theme_Deck_of_Cards_13
+      213: -2779964947791351709
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_13
   - first:
-      213: -7024369201192629767
-    second: Dark_Theme_Deck_of_Cards_14
+      213: 5991020111185031987
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_14
   - first:
-      213: 3090411520073522997
-    second: Dark_Theme_Deck_of_Cards_15
+      213: -804703739089591347
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_15
   - first:
-      213: 7359250092348056674
-    second: Dark_Theme_Deck_of_Cards_16
+      213: -8774278362965873094
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_16
   - first:
-      213: 7434600997096969163
-    second: Dark_Theme_Deck_of_Cards_17
+      213: -4541035393456875815
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_17
   - first:
-      213: 894064390428558407
-    second: Dark_Theme_Deck_of_Cards_18
+      213: -7683507450559806459
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_18
   - first:
-      213: 8023573582782266981
-    second: Dark_Theme_Deck_of_Cards_19
+      213: -3369939922654587605
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_19
   - first:
-      213: 7097120141176576084
-    second: Dark_Theme_Deck_of_Cards_20
+      213: 4850009999576620127
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_20
   - first:
-      213: -2705792531299378328
-    second: Dark_Theme_Deck_of_Cards_21
+      213: 2284954333008119983
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_21
   - first:
-      213: -1724319957494824620
-    second: Dark_Theme_Deck_of_Cards_22
+      213: -3442773673365767684
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_22
   - first:
-      213: 173388791521177898
-    second: Dark_Theme_Deck_of_Cards_23
+      213: 6543485882386993380
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_23
   - first:
-      213: -5170346439944741270
-    second: Dark_Theme_Deck_of_Cards_24
+      213: 1226256876372047590
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_24
   - first:
-      213: 545718723960863274
-    second: Dark_Theme_Deck_of_Cards_25
+      213: -1310812176986762089
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_25
   - first:
-      213: -7500417129130417234
-    second: Dark_Theme_Deck_of_Cards_26
+      213: 8450318928879230607
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_26
   - first:
-      213: 3022524173877220225
-    second: Dark_Theme_Deck_of_Cards_27
+      213: 4726297064975317715
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_27
   - first:
-      213: 2800290270912453524
-    second: Dark_Theme_Deck_of_Cards_28
+      213: -8461286668578863120
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_28
   - first:
-      213: 5530511741025580333
-    second: Dark_Theme_Deck_of_Cards_29
+      213: 7462503050515093642
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_29
   - first:
-      213: 3793612777306738946
-    second: Dark_Theme_Deck_of_Cards_30
+      213: 1368287820965942412
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_30
   - first:
-      213: 1370482133855647028
-    second: Dark_Theme_Deck_of_Cards_31
+      213: 113568405066219016
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_31
   - first:
-      213: -638005868403915673
-    second: Dark_Theme_Deck_of_Cards_32
+      213: 1451736036527510368
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_32
   - first:
-      213: -1330151533088114844
-    second: Dark_Theme_Deck_of_Cards_33
+      213: 5226494424055213694
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_33
   - first:
-      213: -6847709166416503719
-    second: Dark_Theme_Deck_of_Cards_34
+      213: -4469917049333725975
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_34
   - first:
-      213: 1854119284749405634
-    second: Dark_Theme_Deck_of_Cards_35
+      213: 2142349905958647280
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_35
   - first:
-      213: -7494647129454599276
-    second: Dark_Theme_Deck_of_Cards_36
+      213: -5071972983174117562
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_36
   - first:
-      213: 3597937504302427475
-    second: Dark_Theme_Deck_of_Cards_37
+      213: 332778516072712304
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_37
   - first:
-      213: 7183002049934210454
-    second: Dark_Theme_Deck_of_Cards_38
+      213: 4628120000865405145
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_38
   - first:
-      213: -7025544286466115998
-    second: Dark_Theme_Deck_of_Cards_39
+      213: 209316174418912465
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_39
   - first:
-      213: -6679814685534037079
-    second: Dark_Theme_Deck_of_Cards_40
+      213: -8935337565546336105
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_40
   - first:
-      213: 8327969881859583227
-    second: Dark_Theme_Deck_of_Cards_41
+      213: 6413274310611410242
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_41
   - first:
-      213: 4113767450904985850
-    second: Dark_Theme_Deck_of_Cards_42
+      213: -4045909635429785890
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_42
   - first:
-      213: -5202174695186376451
-    second: Dark_Theme_Deck_of_Cards_43
+      213: -6636343486772438900
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_43
   - first:
-      213: -7403175135895668495
-    second: Dark_Theme_Deck_of_Cards_44
+      213: -2219981825344915702
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_44
   - first:
-      213: -8074700170284441475
-    second: Dark_Theme_Deck_of_Cards_45
+      213: 1403865667498998317
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_45
   - first:
-      213: -2676672200457154963
-    second: Dark_Theme_Deck_of_Cards_46
+      213: -2717560701628589175
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_46
   - first:
-      213: -7040484115476931821
-    second: Dark_Theme_Deck_of_Cards_47
+      213: 6864138283265091014
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_47
   - first:
-      213: 8134110676608128158
-    second: Dark_Theme_Deck_of_Cards_48
+      213: -4170407413966230700
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_48
   - first:
-      213: 5645801768860276894
-    second: Dark_Theme_Deck_of_Cards_49
+      213: 3083796346503907090
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_49
   - first:
-      213: 5702608827585574643
-    second: Dark_Theme_Deck_of_Cards_50
+      213: 1947723741356277983
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_50
   - first:
-      213: 55674671315133074
-    second: Dark_Theme_Deck_of_Cards_51
+      213: 4102375722049723124
+    second: Gold_and_Sliver_Theme_Deck_of_Cards_51
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -253,7 +253,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_0
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_0
       rect:
         serializedVersion: 2
         x: 0
@@ -266,16 +266,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 06f970277b8f131d0800000000000000
-      internalID: -3372641179147985056
+      spriteID: 9a17fc9cce126354c9c58cc2a7deb2d9
+      internalID: -868789345
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_1
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_1
       rect:
         serializedVersion: 2
         x: 30
@@ -288,16 +288,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: c6598a57aeeafe250800000000000000
-      internalID: 5976187552563500396
+      spriteID: 2722368c3cb8dd0499c5c34f9cc04522
+      internalID: -1364780619
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_2
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_2
       rect:
         serializedVersion: 2
         x: 60
@@ -310,16 +310,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 970d4371968782460800000000000000
-      internalID: 7217150795617456249
+      spriteID: 24006545e1a5ed046b0d514ec0175494
+      internalID: 1131183318
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_3
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_3
       rect:
         serializedVersion: 2
         x: 90
@@ -332,16 +332,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 289053784c1310fd0800000000000000
-      internalID: -2377564408123160190
+      spriteID: b671145ea7a77184682942aaa9ecdd4f
+      internalID: 1885898673
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_4
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_4
       rect:
         serializedVersion: 2
         x: 120
@@ -354,16 +354,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 052472884700c9700800000000000000
-      internalID: 548313755132838480
+      spriteID: 5225489e8bbbec94b83963755ffd3bad
+      internalID: 5598019
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_5
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_5
       rect:
         serializedVersion: 2
         x: 150
@@ -376,16 +376,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: f14b5b6a75f52ae10800000000000000
-      internalID: 2207431597428683807
+      spriteID: 20d2bd9cecd2afb41a2d74937ae49d5e
+      internalID: 83138822
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_6
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_6
       rect:
         serializedVersion: 2
         x: 180
@@ -398,16 +398,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: e23fbb2bd6dd99b40800000000000000
-      internalID: 5447628687501161262
+      spriteID: 0ec5d5e651105b244bf3f812e758fc3c
+      internalID: -2110998273
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_7
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_7
       rect:
         serializedVersion: 2
         x: 210
@@ -420,16 +420,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 8da793bfae1059130800000000000000
-      internalID: 3572763988137179864
+      spriteID: d3a6972a96d5a9b419ebafd18f25708b
+      internalID: 681173589
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_8
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_8
       rect:
         serializedVersion: 2
         x: 240
@@ -442,16 +442,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3f08b97b6806cf440800000000000000
-      internalID: 4970954220432490739
+      spriteID: 65c350090c40ce942835b9d0b30f1f2c
+      internalID: 1013476751
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_9
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_9
       rect:
         serializedVersion: 2
         x: 270
@@ -464,16 +464,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 86e8e1c02f6512660800000000000000
-      internalID: 7359258863685504616
+      spriteID: ecbf0b2df22e18c49bea753dc032cbb6
+      internalID: 1062090880
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_10
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_10
       rect:
         serializedVersion: 2
         x: 300
@@ -486,16 +486,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3c6adf87ce7612bc0800000000000000
-      internalID: -3809649544438896957
+      spriteID: ed136ea4e7420fe4eaadb520ffe50c79
+      internalID: 357741825
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_11
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_11
       rect:
         serializedVersion: 2
         x: 330
@@ -508,16 +508,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: bf14b54ad8fd6b9c0800000000000000
-      internalID: -3911693426883870213
+      spriteID: 2f3194614128b8c48b0f9c50e9cdcaba
+      internalID: -1863139080
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_12
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_12
       rect:
         serializedVersion: 2
         x: 360
@@ -530,16 +530,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: eb500c4288c5617a0800000000000000
-      internalID: -6406831680086080066
+      spriteID: ed25c152b37b00b4c9af823c372171e4
+      internalID: -1372733070
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_13
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_13
       rect:
         serializedVersion: 2
         x: 0
@@ -552,16 +552,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 45d320bfea03bfd80800000000000000
-      internalID: -8215919567113667244
+      spriteID: 3f890756faf8ad04c8c6fe580debd09c
+      internalID: -1618391980
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_14
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_14
       rect:
         serializedVersion: 2
         x: 30
@@ -574,16 +574,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9f908bf9d6d648e90800000000000000
-      internalID: -7024369201192629767
+      spriteID: ba014fe289785bf41b132b590174cca3
+      internalID: -2090399198
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_15
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_15
       rect:
         serializedVersion: 2
         x: 60
@@ -596,16 +596,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 53fd1cf57e853ea20800000000000000
-      internalID: 3090411520073522997
+      spriteID: 84f6d811d4a17064ab858083b0f0a9b4
+      internalID: 2097571924
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_16
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_16
       rect:
         serializedVersion: 2
         x: 90
@@ -618,16 +618,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 264aaafc7fe412660800000000000000
-      internalID: 7359250092348056674
+      spriteID: 21ec9989aecc0834fa4db04deb77e4cb
+      internalID: -1522667555
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_17
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_17
       rect:
         serializedVersion: 2
         x: 120
@@ -640,16 +640,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: bc3dab677320d2760800000000000000
-      internalID: 7434600997096969163
+      spriteID: d91e22b7a611feb41a210a044549f72e
+      internalID: -1207965814
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_18
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_18
       rect:
         serializedVersion: 2
         x: 150
@@ -662,16 +662,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 74402dd73da586c00800000000000000
-      internalID: 894064390428558407
+      spriteID: 43bb7d4a73723a3448d63a030ee8a1c4
+      internalID: -1919496521
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_19
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_19
       rect:
         serializedVersion: 2
         x: 180
@@ -684,16 +684,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 56ef1fea9a5795f60800000000000000
-      internalID: 8023573582782266981
+      spriteID: c31939ba664a8cd458a738a7dc1accb7
+      internalID: 891115510
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_20
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_20
       rect:
         serializedVersion: 2
         x: 210
@@ -706,16 +706,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 458991f8a290e7260800000000000000
-      internalID: 7097120141176576084
+      spriteID: e0dc23cc4f58603448b0627210f401f3
+      internalID: -1870995129
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_21
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_21
       rect:
         serializedVersion: 2
         x: 240
@@ -728,16 +728,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 86bdef75708137ad0800000000000000
-      internalID: -2705792531299378328
+      spriteID: c0ab52924b584a34ca0d1f994d1652ed
+      internalID: -1643856768
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_22
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_22
       rect:
         serializedVersion: 2
         x: 270
@@ -750,16 +750,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 451876e622cf118e0800000000000000
-      internalID: -1724319957494824620
+      spriteID: 31595640b5864104c977c99c7a503bed
+      internalID: -1605903225
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_23
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_23
       rect:
         serializedVersion: 2
         x: 300
@@ -772,16 +772,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: a2177aeef20086200800000000000000
-      internalID: 173388791521177898
+      spriteID: 0cafe49cbd8dd4b4983a5c25ffc4c4f7
+      internalID: 720933025
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_24
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_24
       rect:
         serializedVersion: 2
         x: 330
@@ -794,16 +794,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: a6e53697e4d3f38b0800000000000000
-      internalID: -5170346439944741270
+      spriteID: 37795f46a23d88d42aa3216730801024
+      internalID: -1622528068
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_25
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_25
       rect:
         serializedVersion: 2
         x: 360
@@ -816,16 +816,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: a2a77f0c948c29700800000000000000
-      internalID: 545718723960863274
+      spriteID: 8d712ef156766ca4597dd9808f55ea6f
+      internalID: -2099866108
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_26
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_26
       rect:
         serializedVersion: 2
         x: 0
@@ -838,16 +838,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: ea32de62c5a29e790800000000000000
-      internalID: -7500417129130417234
+      spriteID: 2cb0e74d3ed14ca4b8f56589c43fba48
+      internalID: -508639910
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_27
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_27
       rect:
         serializedVersion: 2
         x: 30
@@ -860,16 +860,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1839bfcd8b922f920800000000000000
-      internalID: 3022524173877220225
+      spriteID: b334d3a316f29cd4eba2ba3bced17c22
+      internalID: 949506612
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_28
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_28
       rect:
         serializedVersion: 2
         x: 60
@@ -882,16 +882,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 49b18b13a21acd620800000000000000
-      internalID: 2800290270912453524
+      spriteID: 47ebaace208194a409ade4cd581c4543
+      internalID: -778039645
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_29
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_29
       rect:
         serializedVersion: 2
         x: 90
@@ -904,16 +904,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d25f4f5602350cc40800000000000000
-      internalID: 5530511741025580333
+      spriteID: 88db2c790de42b342ade79f438da19f6
+      internalID: -1398185295
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_30
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_30
       rect:
         serializedVersion: 2
         x: 120
@@ -926,16 +926,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 20150c6b8be95a430800000000000000
-      internalID: 3793612777306738946
+      spriteID: 4183ab7bdf9015f49bb80ba2367cbf99
+      internalID: 1203453839
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_31
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_31
       rect:
         serializedVersion: 2
         x: 150
@@ -948,16 +948,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 4353c775d3ee40310800000000000000
-      internalID: 1370482133855647028
+      spriteID: a994fbe0860d92244b4877dd48256da2
+      internalID: 352049290
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_32
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_32
       rect:
         serializedVersion: 2
         x: 180
@@ -970,16 +970,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 7648b210b095527f0800000000000000
-      internalID: -638005868403915673
+      spriteID: 5bbf46d77bc349a4ca6cdd02d3d848b3
+      internalID: 514525511
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_33
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_33
       rect:
         serializedVersion: 2
         x: 210
@@ -992,16 +992,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 46777d46a3a5a8de0800000000000000
-      internalID: -1330151533088114844
+      spriteID: a9729972b5df6244d964dc3727e3127e
+      internalID: -1071918150
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_34
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_34
       rect:
         serializedVersion: 2
         x: 240
@@ -1014,16 +1014,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 95cde8a3bcc08f0a0800000000000000
-      internalID: -6847709166416503719
+      spriteID: 046177c6d3e7ad34881b2a24c18e9df5
+      internalID: -1415162239
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_35
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_35
       rect:
         serializedVersion: 2
         x: 270
@@ -1036,16 +1036,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 2cd80ba7aa72bb910800000000000000
-      internalID: 1854119284749405634
+      spriteID: 6b576e250b1579e4aafd0dce7ef05a00
+      internalID: 836034827
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_36
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_36
       rect:
         serializedVersion: 2
         x: 300
@@ -1058,16 +1058,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 49325f3e42aadf790800000000000000
-      internalID: -7494647129454599276
+      spriteID: 145764a7109e2a249a2c5a40c58d3fbe
+      internalID: -1340168787
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_37
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_37
       rect:
         serializedVersion: 2
         x: 330
@@ -1080,16 +1080,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 35d6004f8117ee130800000000000000
-      internalID: 3597937504302427475
+      spriteID: a702a89a3c7e8e4458ede440e30132dd
+      internalID: -1059279898
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_38
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_38
       rect:
         serializedVersion: 2
         x: 360
@@ -1102,16 +1102,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 6953b37ae462fa360800000000000000
-      internalID: 7183002049934210454
+      spriteID: 85bb4073bb9d8cc44af891653870bd74
+      internalID: -703075612
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_39
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_39
       rect:
         serializedVersion: 2
         x: 0
@@ -1124,16 +1124,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 2667963c1b0408e90800000000000000
-      internalID: -7025544286466115998
+      spriteID: 53a6cd7bb3bdb854b914f499c6938c09
+      internalID: 145638569
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_40
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_40
       rect:
         serializedVersion: 2
         x: 30
@@ -1146,16 +1146,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9ab5e474fe78c43a0800000000000000
-      internalID: -6679814685534037079
+      spriteID: 6f5918863d156b8488974455fd42e9ee
+      internalID: -1034044014
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_41
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_41
       rect:
         serializedVersion: 2
         x: 60
@@ -1168,16 +1168,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: bfc646ceb74e29370800000000000000
-      internalID: 8327969881859583227
+      spriteID: bd1713b242e70a64cb0a621bd6931a98
+      internalID: 815967114
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_42
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_42
       rect:
         serializedVersion: 2
         x: 90
@@ -1190,16 +1190,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: af081cf63b9071930800000000000000
-      internalID: 4113767450904985850
+      spriteID: fce4249f9f4f7544390518bb4a94e267
+      internalID: 1151724681
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_43
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_43
       rect:
         serializedVersion: 2
         x: 120
@@ -1212,16 +1212,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: df8d3e15da92ec7b0800000000000000
-      internalID: -5202174695186376451
+      spriteID: e7f8a547fd0a8bf40bd1606459ab6f03
+      internalID: -874358204
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_44
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_44
       rect:
         serializedVersion: 2
         x: 150
@@ -1234,16 +1234,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1f83fe60073a24990800000000000000
-      internalID: -7403175135895668495
+      spriteID: ae3089baf88ae4e4ebbc2c6780ef792c
+      internalID: 478339779
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_45
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_45
       rect:
         serializedVersion: 2
         x: 180
@@ -1256,16 +1256,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d70e86a0af6e0ff80800000000000000
-      internalID: -8074700170284441475
+      spriteID: e3d0fba6799ed90439b512d93466bb3a
+      internalID: 1718542421
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_46
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_46
       rect:
         serializedVersion: 2
         x: 210
@@ -1278,16 +1278,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d6e8697b0dc8adad0800000000000000
-      internalID: -2676672200457154963
+      spriteID: 354899eedbbd9c84ba645561ee860ef6
+      internalID: -1978741893
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_47
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_47
       rect:
         serializedVersion: 2
         x: 240
@@ -1300,16 +1300,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 31b9732cffc2b4e90800000000000000
-      internalID: -7040484115476931821
+      spriteID: 0644d2e1f9157f14f84e6db7054dfb5e
+      internalID: -613327588
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_48
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_48
       rect:
         serializedVersion: 2
         x: 270
@@ -1322,16 +1322,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: e9490f2609a22e070800000000000000
-      internalID: 8134110676608128158
+      spriteID: d10a34bca899a754a8aa523f1d2cf056
+      internalID: -2081183384
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_49
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_49
       rect:
         serializedVersion: 2
         x: 300
@@ -1344,16 +1344,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: e985039cbcae95e40800000000000000
-      internalID: 5645801768860276894
+      spriteID: 42569dbbb2a9d86489f909d733fc640e
+      internalID: -1173139108
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_50
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_50
       rect:
         serializedVersion: 2
         x: 330
@@ -1366,16 +1366,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3f6be35d38cb32f40800000000000000
-      internalID: 5702608827585574643
+      spriteID: 1f5ecaad52b9e1a40a8de75a0924963f
+      internalID: 173327272
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dark_Theme_Deck_of_Cards_51
+      name: Gold_and_Sliver_Dark_Theme_Deck_of_Cards_51
       rect:
         serializedVersion: 2
         x: 360
@@ -1388,10 +1388,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 292a9be81dbc5c000800000000000000
-      internalID: 55674671315133074
+      spriteID: e54e279079f93dd46ab079e92e257cf9
+      internalID: -1470972515
       vertices: []
       indices: 
       edges: []
@@ -1400,7 +1400,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5a05d43550810f9498b1a1c1c72137d8
+    spriteID: 6ee31d673cca9c1409d8303d3d0dc90c
     internalID: 0
     vertices: []
     indices: 
@@ -1410,58 +1410,58 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Dark_Theme_Deck_of_Cards_0: -3372641179147985056
-      Dark_Theme_Deck_of_Cards_1: 5976187552563500396
-      Dark_Theme_Deck_of_Cards_10: -3809649544438896957
-      Dark_Theme_Deck_of_Cards_11: -3911693426883870213
-      Dark_Theme_Deck_of_Cards_12: -6406831680086080066
-      Dark_Theme_Deck_of_Cards_13: -8215919567113667244
-      Dark_Theme_Deck_of_Cards_14: -7024369201192629767
-      Dark_Theme_Deck_of_Cards_15: 3090411520073522997
-      Dark_Theme_Deck_of_Cards_16: 7359250092348056674
-      Dark_Theme_Deck_of_Cards_17: 7434600997096969163
-      Dark_Theme_Deck_of_Cards_18: 894064390428558407
-      Dark_Theme_Deck_of_Cards_19: 8023573582782266981
-      Dark_Theme_Deck_of_Cards_2: 7217150795617456249
-      Dark_Theme_Deck_of_Cards_20: 7097120141176576084
-      Dark_Theme_Deck_of_Cards_21: -2705792531299378328
-      Dark_Theme_Deck_of_Cards_22: -1724319957494824620
-      Dark_Theme_Deck_of_Cards_23: 173388791521177898
-      Dark_Theme_Deck_of_Cards_24: -5170346439944741270
-      Dark_Theme_Deck_of_Cards_25: 545718723960863274
-      Dark_Theme_Deck_of_Cards_26: -7500417129130417234
-      Dark_Theme_Deck_of_Cards_27: 3022524173877220225
-      Dark_Theme_Deck_of_Cards_28: 2800290270912453524
-      Dark_Theme_Deck_of_Cards_29: 5530511741025580333
-      Dark_Theme_Deck_of_Cards_3: -2377564408123160190
-      Dark_Theme_Deck_of_Cards_30: 3793612777306738946
-      Dark_Theme_Deck_of_Cards_31: 1370482133855647028
-      Dark_Theme_Deck_of_Cards_32: -638005868403915673
-      Dark_Theme_Deck_of_Cards_33: -1330151533088114844
-      Dark_Theme_Deck_of_Cards_34: -6847709166416503719
-      Dark_Theme_Deck_of_Cards_35: 1854119284749405634
-      Dark_Theme_Deck_of_Cards_36: -7494647129454599276
-      Dark_Theme_Deck_of_Cards_37: 3597937504302427475
-      Dark_Theme_Deck_of_Cards_38: 7183002049934210454
-      Dark_Theme_Deck_of_Cards_39: -7025544286466115998
-      Dark_Theme_Deck_of_Cards_4: 548313755132838480
-      Dark_Theme_Deck_of_Cards_40: -6679814685534037079
-      Dark_Theme_Deck_of_Cards_41: 8327969881859583227
-      Dark_Theme_Deck_of_Cards_42: 4113767450904985850
-      Dark_Theme_Deck_of_Cards_43: -5202174695186376451
-      Dark_Theme_Deck_of_Cards_44: -7403175135895668495
-      Dark_Theme_Deck_of_Cards_45: -8074700170284441475
-      Dark_Theme_Deck_of_Cards_46: -2676672200457154963
-      Dark_Theme_Deck_of_Cards_47: -7040484115476931821
-      Dark_Theme_Deck_of_Cards_48: 8134110676608128158
-      Dark_Theme_Deck_of_Cards_49: 5645801768860276894
-      Dark_Theme_Deck_of_Cards_5: 2207431597428683807
-      Dark_Theme_Deck_of_Cards_50: 5702608827585574643
-      Dark_Theme_Deck_of_Cards_51: 55674671315133074
-      Dark_Theme_Deck_of_Cards_6: 5447628687501161262
-      Dark_Theme_Deck_of_Cards_7: 3572763988137179864
-      Dark_Theme_Deck_of_Cards_8: 4970954220432490739
-      Dark_Theme_Deck_of_Cards_9: 7359258863685504616
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_0: -868789345
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_1: -1364780619
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_10: 357741825
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_11: -1863139080
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_12: -1372733070
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_13: -1618391980
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_14: -2090399198
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_15: 2097571924
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_16: -1522667555
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_17: -1207965814
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_18: -1919496521
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_19: 891115510
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_2: 1131183318
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_20: -1870995129
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_21: -1643856768
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_22: -1605903225
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_23: 720933025
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_24: -1622528068
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_25: -2099866108
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_26: -508639910
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_27: 949506612
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_28: -778039645
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_29: -1398185295
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_3: 1885898673
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_30: 1203453839
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_31: 352049290
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_32: 514525511
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_33: -1071918150
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_34: -1415162239
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_35: 836034827
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_36: -1340168787
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_37: -1059279898
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_38: -703075612
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_39: 145638569
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_4: 5598019
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_40: -1034044014
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_41: 815967114
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_42: 1151724681
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_43: -874358204
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_44: 478339779
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_45: 1718542421
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_46: -1978741893
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_47: -613327588
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_48: -2081183384
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_49: -1173139108
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_5: 83138822
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_50: 173327272
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_51: -1470972515
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_6: -2110998273
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_7: 681173589
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_8: 1013476751
+      Gold_and_Sliver_Dark_Theme_Deck_of_Cards_9: 1062090880
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

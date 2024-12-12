@@ -1,0 +1,1469 @@
+fileFormatVersion: 2
+guid: e56c36e894ee996439c78cabbc400b91
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3530939714566326386
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_0
+  - first:
+      213: -2544152871665745829
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_1
+  - first:
+      213: -7593493966404671286
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_2
+  - first:
+      213: 8939701723183648236
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_3
+  - first:
+      213: 3710433969237165093
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_4
+  - first:
+      213: 4259991687187013666
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_5
+  - first:
+      213: -5998168097343243471
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_6
+  - first:
+      213: -3155911434772817797
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_7
+  - first:
+      213: 2284965486060217754
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_8
+  - first:
+      213: -6944035278562081518
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_9
+  - first:
+      213: -4387760212133745358
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_10
+  - first:
+      213: -5859374141473689528
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_11
+  - first:
+      213: 64595363721515609
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_12
+  - first:
+      213: -245129630961827894
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_13
+  - first:
+      213: 3446769032457747581
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_14
+  - first:
+      213: -2594789351917144960
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_15
+  - first:
+      213: -744954181832873501
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_16
+  - first:
+      213: 7564372245651321777
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_17
+  - first:
+      213: 467808686518196246
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_18
+  - first:
+      213: 2609290304048064644
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_19
+  - first:
+      213: 7936732673565900558
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_20
+  - first:
+      213: -2884814109249154318
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_21
+  - first:
+      213: 5313176176928860279
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_22
+  - first:
+      213: 6035728283391539441
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_23
+  - first:
+      213: -3385236763605466622
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_24
+  - first:
+      213: 3128803674437030138
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_25
+  - first:
+      213: -9162653913018224028
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_26
+  - first:
+      213: -4838224515099670274
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_27
+  - first:
+      213: 8525170036364292656
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_28
+  - first:
+      213: 8869463934508751477
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_29
+  - first:
+      213: 3861280390373927444
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_30
+  - first:
+      213: -1139360355255531674
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_31
+  - first:
+      213: -3147595165165909765
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_32
+  - first:
+      213: 1660612906645739965
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_33
+  - first:
+      213: 6909330468024388165
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_34
+  - first:
+      213: 8761337118781978260
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_35
+  - first:
+      213: 5503107762986942239
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_36
+  - first:
+      213: 3113007062730608591
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_37
+  - first:
+      213: -5635593187832203394
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_38
+  - first:
+      213: -8338325914258091114
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_39
+  - first:
+      213: 2507986054847935992
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_40
+  - first:
+      213: -71852065115958566
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_41
+  - first:
+      213: 6248199682150063166
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_42
+  - first:
+      213: -2156042588876074435
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_43
+  - first:
+      213: 2194910085091189712
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_44
+  - first:
+      213: -8910345686864304747
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_45
+  - first:
+      213: 1933470718049640697
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_46
+  - first:
+      213: 3108481831430303628
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_47
+  - first:
+      213: -4234561632913713421
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_48
+  - first:
+      213: 2323632579742561393
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_49
+  - first:
+      213: -3576116123718818874
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_50
+  - first:
+      213: -8646612847840238596
+    second: Gold_and_Sliver_Light_Theme_Deck_of_Cards_51
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 21
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8774fd89059ffec0800000000000000
+      internalID: -3530939714566326386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_1
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b50c216517a51bcd0800000000000000
+      internalID: -2544152871665745829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_2
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac8a068387d7e9690800000000000000
+      internalID: -7593493966404671286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_3
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ced0f484a53301c70800000000000000
+      internalID: 8939701723183648236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_4
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5248cea490c1e7330800000000000000
+      internalID: 3710433969237165093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_5
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22026ec7ed78e1b30800000000000000
+      internalID: 4259991687187013666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_6
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13b76c625e932cca0800000000000000
+      internalID: -5998168097343243471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_7
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b78d5c35543f334d0800000000000000
+      internalID: -3155911434772817797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_8
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a95a5a8d004d5bf10800000000000000
+      internalID: 2284965486060217754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_9
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 215c68984b4d1af90800000000000000
+      internalID: -6944035278562081518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_10
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23dec2c955b8b13c0800000000000000
+      internalID: -4387760212133745358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_11
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 840f95b33425faea0800000000000000
+      internalID: -5859374141473689528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_12
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 129
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95212cc142d75e000800000000000000
+      internalID: 64595363721515609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acff89e36ef199cf0800000000000000
+      internalID: -245129630961827894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_14
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7cf57a5c2265df20800000000000000
+      internalID: 3446769032457747581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_15
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 084330c05d47dfbd0800000000000000
+      internalID: -2594789351917144960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_16
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e9e8e95e1469a5f0800000000000000
+      internalID: -744954181832873501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_17
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b3fedaca7c0af860800000000000000
+      internalID: 7564372245651321777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_18
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61852c6958dfd7600800000000000000
+      internalID: 467808686518196246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_19
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 488e7a8f4bf063420800000000000000
+      internalID: 2609290304048064644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_20
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0fb125e050f42e60800000000000000
+      internalID: 7936732673565900558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_21
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f25b2f1ad417f7d0800000000000000
+      internalID: -2884814109249154318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_22
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 778a9ee15913cb940800000000000000
+      internalID: 5313176176928860279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_23
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f8b45425e633c350800000000000000
+      internalID: 6035728283391539441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_24
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20204b869193501d0800000000000000
+      internalID: -3385236763605466622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_25
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 86
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af091c26d5ebb6b20800000000000000
+      internalID: 3128803674437030138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 462b4badfc6b7d080800000000000000
+      internalID: -9162653913018224028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_27
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef8c5e1007c2bdcb0800000000000000
+      internalID: -4838224515099670274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_28
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0323c43dafc7f4670800000000000000
+      internalID: 8525170036364292656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_29
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57a588cb47aa61b70800000000000000
+      internalID: 8869463934508751477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_30
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41a6b6e9e06069530800000000000000
+      internalID: 3861280390373927444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_31
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 667c4d12bcd2030f0800000000000000
+      internalID: -1139360355255531674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_32
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf88c8bbfde7154d0800000000000000
+      internalID: -3147595165165909765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_33
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db95c0ae3aeab0710800000000000000
+      internalID: 1660612906645739965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_34
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54a8066147fd2ef50800000000000000
+      internalID: 6909330468024388165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_35
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 496b172a0b5869970800000000000000
+      internalID: 8761337118781978260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_36
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1ff78d8a57fe5c40800000000000000
+      internalID: 5503107762986942239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_37
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcf075d1e6f933b20800000000000000
+      internalID: 3113007062730608591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_38
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 43
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7776a4bad95ac1b0800000000000000
+      internalID: -5635593187832203394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 693563362c0584c80800000000000000
+      internalID: -8338325914258091114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_40
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f538dc67082ec220800000000000000
+      internalID: 2507986054847935992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_41
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad2926e6deab00ff0800000000000000
+      internalID: -71852065115958566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_42
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3c534ca18016b650800000000000000
+      internalID: 6248199682150063166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_43
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d329d6940b23412e0800000000000000
+      internalID: -2156042588876074435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_44
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d368cfd713e57e10800000000000000
+      internalID: 2194910085091189712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_45
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 595e48c8ec7185480800000000000000
+      internalID: -8910345686864304747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_46
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f0e7f4cf5115da10800000000000000
+      internalID: 1933470718049640697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_47
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8fa82991cb832b20800000000000000
+      internalID: 3108481831430303628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_48
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f61eaa61a0db35c0800000000000000
+      internalID: -4234561632913713421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_49
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 174741825833f3020800000000000000
+      internalID: 2323632579742561393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_50
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c3613225551f5ec0800000000000000
+      internalID: -3576116123718818874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gold_and_Sliver_Light_Theme_Deck_of_Cards_51
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 0
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf367263d6f010880800000000000000
+      internalID: -8646612847840238596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: b74e4696cbcb6f342b394279d52e644f
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_0: -3530939714566326386
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_1: -2544152871665745829
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_10: -4387760212133745358
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_11: -5859374141473689528
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_12: 64595363721515609
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_13: -245129630961827894
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_14: 3446769032457747581
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_15: -2594789351917144960
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_16: -744954181832873501
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_17: 7564372245651321777
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_18: 467808686518196246
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_19: 2609290304048064644
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_2: -7593493966404671286
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_20: 7936732673565900558
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_21: -2884814109249154318
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_22: 5313176176928860279
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_23: 6035728283391539441
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_24: -3385236763605466622
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_25: 3128803674437030138
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_26: -9162653913018224028
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_27: -4838224515099670274
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_28: 8525170036364292656
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_29: 8869463934508751477
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_3: 8939701723183648236
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_30: 3861280390373927444
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_31: -1139360355255531674
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_32: -3147595165165909765
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_33: 1660612906645739965
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_34: 6909330468024388165
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_35: 8761337118781978260
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_36: 5503107762986942239
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_37: 3113007062730608591
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_38: -5635593187832203394
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_39: -8338325914258091114
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_4: 3710433969237165093
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_40: 2507986054847935992
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_41: -71852065115958566
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_42: 6248199682150063166
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_43: -2156042588876074435
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_44: 2194910085091189712
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_45: -8910345686864304747
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_46: 1933470718049640697
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_47: 3108481831430303628
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_48: -4234561632913713421
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_49: 2323632579742561393
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_5: 4259991687187013666
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_50: -3576116123718818874
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_51: -8646612847840238596
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_6: -5998168097343243471
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_7: -3155911434772817797
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_8: 2284965486060217754
+      Gold_and_Sliver_Light_Theme_Deck_of_Cards_9: -6944035278562081518
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
