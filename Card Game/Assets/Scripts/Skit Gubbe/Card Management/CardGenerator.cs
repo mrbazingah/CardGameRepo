@@ -25,6 +25,7 @@ public class CardGenerator : MonoBehaviour
     AIHand ai;
     Pile pile;
     AudioManager audioManager;
+    SkinManager skinManager;
 
     void Awake()
     {
@@ -32,6 +33,7 @@ public class CardGenerator : MonoBehaviour
         ai = FindFirstObjectByType<AIHand>();
         pile = FindFirstObjectByType<Pile>();  
         audioManager = FindFirstObjectByType<AudioManager>();
+        skinManager = FindFirstObjectByType<SkinManager>();
     }
 
     void Start()
@@ -48,6 +50,8 @@ public class CardGenerator : MonoBehaviour
 
     void GenerateCards()
     {
+        cardSprites = skinManager.GetEquipedDeck();
+
         int suit = 0;
 
         cardSuits = new List<string>(4);
