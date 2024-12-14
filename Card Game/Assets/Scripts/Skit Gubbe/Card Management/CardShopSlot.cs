@@ -1,11 +1,21 @@
-using System.Collections.Generic;
+using System;
+using TMPro;
 using UnityEngine;
 
 public class CardShopSlot : MonoBehaviour
 {
-    [SerializeField] List<Sprite> deckSprites;
+    [SerializeField] GameObject deckSpriteHolder;
     [SerializeField] Sprite deckImage;
-     
+    [SerializeField] GameObject buyButton, equipButton;
+    [SerializeField] int cost;
+    [SerializeField] bool hasBeenBought;
+
+    bool isEqupied;
+
+    int thisIndex;
+
+    TextMeshProUGUI equipText;
+
     ShopManager shopManager;
     SkinManager skinManager;
 
@@ -13,6 +23,31 @@ public class CardShopSlot : MonoBehaviour
     {
         shopManager = FindFirstObjectByType<ShopManager>();
         skinManager = FindFirstObjectByType<SkinManager>();
+        equipText = equipButton.GetComponentInChildren<TextMeshProUGUI>();
+
+        for (int i = 0; i < skinManager.GetDecks().Count; i++)
+        {
+            if (skinManager.GetDecks()[i] == deckSpriteHolder)
+            {
+                thisIndex = i;
+                break;
+            }
+        }
+    }
+
+    void Start()
+    {
+        isEqupied = skinManager.GetEquipedDeck() == deckSpriteHolder.GetComponent<DeckSkin>().GetMyDeck();
+
+        hasBeenBought = hasBeenBought ? true : PlayerPrefs.HasKey(gameObject.name + "HasBeenBought");
+
+        LoadEquipButton(hasBeenBought);
+        buyButton.GetComponentInChildren<TextMeshProUGUI>().text = cost.ToString();
+    }
+
+    void Update()
+    {
+        equipText.text = isEqupied ? "Equiped" : "Equip";
     }
 
     public void ShowDeck()
@@ -22,17 +57,36 @@ public class CardShopSlot : MonoBehaviour
 
     public void EquipThisDeck()
     {
-        int index = 0;
+        isEqupied = true;
+        skinManager.EquipDeck(thisIndex, this);
+    }
 
-        for (int i = 0; skinManager.GetDecks().Count > 0; i++)
-        {
-            if (skinManager.GetDecks()[i].GetComponent<DeckSkin>().GetMyDeck() == deckSprites)
-            {
-                index = i;
-                break;
-            }
-        }
+    public void UnEquipDeck()
+    {
+        isEqupied = false;
+    }
 
-        skinManager.EquipDeck(index);
+    public void BuyDeck()
+    { 
+        int money = PlayerPrefs.GetInt("Score");
+        if (money < cost || hasBeenBought) { return; }
+
+        hasBeenBought = true;
+        PlayerPrefs.SetInt(gameObject.name + "HasBeenBought", 1);
+
+        LoadEquipButton(true);
+    }
+
+    void LoadEquipButton(bool b)
+    {
+        if (!hasBeenBought) { return; }
+
+        buyButton?.SetActive(!b);
+        equipButton?.SetActive(b);
+    }
+
+    public int GetThisIndex()
+    {
+        return thisIndex;
     }
 }

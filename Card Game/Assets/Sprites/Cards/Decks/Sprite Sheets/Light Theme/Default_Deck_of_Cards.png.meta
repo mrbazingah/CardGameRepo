@@ -253,7 +253,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Updated Deck of Cards_0
+      name: Default_Deck_of_Cards_0
       rect:
         serializedVersion: 2
         x: 0
@@ -266,16 +266,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: a696a3e5931bb48a0800000000000000
-      internalID: -6319762792132220566
+      spriteID: 480c1849332358947a637c602b155450
+      internalID: 94438014
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_1
+      name: Default_Deck_of_Cards_1
       rect:
         serializedVersion: 2
         x: 30
@@ -288,16 +288,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5198711168727acc0800000000000000
-      internalID: -3699945112095717099
+      spriteID: 70cd3c987740c974581a994b124bead0
+      internalID: -646759100
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_2
+      name: Default_Deck_of_Cards_2
       rect:
         serializedVersion: 2
         x: 60
@@ -310,16 +310,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: c7bcf983f62e602b0800000000000000
-      internalID: -5618554517778871428
+      spriteID: 58c64e97b5a1ec0419e186c008f1399e
+      internalID: -41876505
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_3
+      name: Default_Deck_of_Cards_3
       rect:
         serializedVersion: 2
         x: 90
@@ -332,16 +332,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 6b5450a590e0cbe30800000000000000
-      internalID: 4520503559300924854
+      spriteID: 0e201c2ea275b1148ba9dc6bc735c076
+      internalID: 738240590
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_4
+      name: Default_Deck_of_Cards_4
       rect:
         serializedVersion: 2
         x: 120
@@ -354,16 +354,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: ec10b43cc9da2dff0800000000000000
-      internalID: -12756960125713970
+      spriteID: 0afcffbf340c1b941a73414a8b928719
+      internalID: -851037098
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_5
+      name: Default_Deck_of_Cards_5
       rect:
         serializedVersion: 2
         x: 150
@@ -376,16 +376,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: c78f0e9d1587654f0800000000000000
-      internalID: -840351987514935172
+      spriteID: 9d4db42a16754a849a75f110d8ef3d9c
+      internalID: 1174048532
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_6
+      name: Default_Deck_of_Cards_6
       rect:
         serializedVersion: 2
         x: 180
@@ -398,16 +398,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5ecd588051bc303a0800000000000000
-      internalID: -6700288529399423771
+      spriteID: 50203683d35522d43845e7b84c6aef97
+      internalID: 1136199239
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_7
+      name: Default_Deck_of_Cards_7
       rect:
         serializedVersion: 2
         x: 210
@@ -420,16 +420,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5ed84f486f75dafe0800000000000000
-      internalID: -1176187211369640475
+      spriteID: 6bd3799b694b3f245bf9cc192e392d17
+      internalID: -1065546373
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_8
+      name: Default_Deck_of_Cards_8
       rect:
         serializedVersion: 2
         x: 240
@@ -442,16 +442,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: a3c1ab2d98ddc8b70800000000000000
-      internalID: 8902734147420298298
+      spriteID: ce0280b368225ac4ba57fdc604879e47
+      internalID: 1238517253
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_9
+      name: Default_Deck_of_Cards_9
       rect:
         serializedVersion: 2
         x: 270
@@ -464,16 +464,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 85852e7650131cbf0800000000000000
-      internalID: -305909400396998568
+      spriteID: cee8c73e91419d244997c52a8d13e803
+      internalID: 1533751913
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_10
+      name: Default_Deck_of_Cards_10
       rect:
         serializedVersion: 2
         x: 300
@@ -486,16 +486,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 0add37c6d23705a70800000000000000
-      internalID: 8813671109694315936
+      spriteID: f011e86a084d5d34d8813e866a5f77cf
+      internalID: -243516092
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_11
+      name: Default_Deck_of_Cards_11
       rect:
         serializedVersion: 2
         x: 330
@@ -508,16 +508,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: b33977dc2d4cf1ec0800000000000000
-      internalID: -3593937567949024453
+      spriteID: bd8599fe3d0fe314b8d71b421bd2eacb
+      internalID: -1217866150
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_12
+      name: Default_Deck_of_Cards_12
       rect:
         serializedVersion: 2
         x: 360
@@ -530,16 +530,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 91f6d35a7b5cdfcd0800000000000000
-      internalID: -2522642823715655911
+      spriteID: b259a337747257648ac6dfb59d7b0fe8
+      internalID: -861292487
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_13
+      name: Default_Deck_of_Cards_13
       rect:
         serializedVersion: 2
         x: 0
@@ -552,16 +552,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: f4983241482238100800000000000000
-      internalID: 108968766655924559
+      spriteID: 3747c826c53d71f409b5b361049000b1
+      internalID: -1324670253
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_14
+      name: Default_Deck_of_Cards_14
       rect:
         serializedVersion: 2
         x: 30
@@ -574,16 +574,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: df1bd6c297d1408a0800000000000000
-      internalID: -6339909969157180931
+      spriteID: 6e88456da3f1ce44b9cb83c73c812037
+      internalID: 585681104
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_15
+      name: Default_Deck_of_Cards_15
       rect:
         serializedVersion: 2
         x: 60
@@ -596,16 +596,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 23c2707e4f8bf3f50800000000000000
-      internalID: 6863407719123463218
+      spriteID: dcd333b0b343d3942bb28fb0eebd6f39
+      internalID: -1498058026
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_16
+      name: Default_Deck_of_Cards_16
       rect:
         serializedVersion: 2
         x: 90
@@ -618,16 +618,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 7b40f37c4fa450140800000000000000
-      internalID: 4685233402524140727
+      spriteID: 1fd1016799d351f45832c5cd118d036a
+      internalID: -102383988
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_17
+      name: Default_Deck_of_Cards_17
       rect:
         serializedVersion: 2
         x: 120
@@ -640,16 +640,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: eb0912f499ccf5740800000000000000
-      internalID: 5143054258310058174
+      spriteID: 25a9bf64ee75d924bbe6fce4f5a11198
+      internalID: -895292452
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_18
+      name: Default_Deck_of_Cards_18
       rect:
         serializedVersion: 2
         x: 150
@@ -662,16 +662,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 609a0dbaad31e3890800000000000000
-      internalID: -7476516501482067706
+      spriteID: de01ca86e43b64546a0bf58a0f2b4db3
+      internalID: -971502487
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_19
+      name: Default_Deck_of_Cards_19
       rect:
         serializedVersion: 2
         x: 180
@@ -684,16 +684,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: e766a82b1f4ac6aa0800000000000000
-      internalID: -6166372431787563394
+      spriteID: ae5ea252f08601a448668be7833e7126
+      internalID: -870054127
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_20
+      name: Default_Deck_of_Cards_20
       rect:
         serializedVersion: 2
         x: 210
@@ -706,16 +706,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: f245c9cc3bf9db610800000000000000
-      internalID: 1638641434013488175
+      spriteID: f01ca2f33c3958b409d1702c7176f69b
+      internalID: -1254943801
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_21
+      name: Default_Deck_of_Cards_21
       rect:
         serializedVersion: 2
         x: 240
@@ -728,16 +728,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: ef7dbb2445fccbef0800000000000000
-      internalID: -90969931650443266
+      spriteID: f561eae6a776b3f48b7effb67180f9c8
+      internalID: 1002504158
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_22
+      name: Default_Deck_of_Cards_22
       rect:
         serializedVersion: 2
         x: 270
@@ -750,16 +750,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 6a6b4be8408f7c420800000000000000
-      internalID: 2650359604188591782
+      spriteID: c4ecdfeb32d82f045a60135bdf256e10
+      internalID: 629091363
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_23
+      name: Default_Deck_of_Cards_23
       rect:
         serializedVersion: 2
         x: 300
@@ -772,16 +772,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d664062c5dcb25f00800000000000000
-      internalID: 1104152484934338157
+      spriteID: 95d8ee1e0d2effe45b26b91a8fa0e915
+      internalID: -25745300
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_24
+      name: Default_Deck_of_Cards_24
       rect:
         serializedVersion: 2
         x: 330
@@ -794,16 +794,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: f36852d48fc4fddd0800000000000000
-      internalID: -2459162242191096257
+      spriteID: d695b2d206ef9af48868c2710047a6eb
+      internalID: -958709703
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_25
+      name: Default_Deck_of_Cards_25
       rect:
         serializedVersion: 2
         x: 360
@@ -816,16 +816,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 6b6b859a45aab8b90800000000000000
-      internalID: -7238504695472802122
+      spriteID: 640aeeb3e45c9084e85d8bdeb86fe23f
+      internalID: -2031619715
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_26
+      name: Default_Deck_of_Cards_26
       rect:
         serializedVersion: 2
         x: 0
@@ -838,16 +838,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: fc752d85ec6f0a300800000000000000
-      internalID: 261480144501364687
+      spriteID: e37c87bd91ab2db4aa1fb3154a5d351f
+      internalID: -717607839
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_27
+      name: Default_Deck_of_Cards_27
       rect:
         serializedVersion: 2
         x: 30
@@ -860,16 +860,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1440f05d20e1e8730800000000000000
-      internalID: 4003170116292248641
+      spriteID: 8350ae2def80d8b419acc083f19bd844
+      internalID: -310335764
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_28
+      name: Default_Deck_of_Cards_28
       rect:
         serializedVersion: 2
         x: 60
@@ -882,16 +882,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 959c4c40d40b65210800000000000000
-      internalID: 1321437385518795097
+      spriteID: 26eec7cb25181484382ba0d7e982c49a
+      internalID: -182815855
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_29
+      name: Default_Deck_of_Cards_29
       rect:
         serializedVersion: 2
         x: 90
@@ -904,16 +904,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3a8f270cbca380dc0800000000000000
-      internalID: -3672620849339107165
+      spriteID: 72fe87dd2e64b254f8fb1afd3f042cab
+      internalID: -670063951
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_30
+      name: Default_Deck_of_Cards_30
       rect:
         serializedVersion: 2
         x: 120
@@ -926,16 +926,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d6a5bf0d7c7369190800000000000000
-      internalID: -7956110360359249299
+      spriteID: ec164b26dfe54da4ca3ebbc5d0fbefc6
+      internalID: -298602678
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_31
+      name: Default_Deck_of_Cards_31
       rect:
         serializedVersion: 2
         x: 150
@@ -948,16 +948,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 44397bbda8d1175a0800000000000000
-      internalID: -6525401902854204604
+      spriteID: 560e11909cc0851419c097cd072d81e3
+      internalID: 1354357749
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_32
+      name: Default_Deck_of_Cards_32
       rect:
         serializedVersion: 2
         x: 180
@@ -970,16 +970,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 49e7f7319bed0fb40800000000000000
-      internalID: 5472118433732591252
+      spriteID: 16e1d8eac3dc12d4b8015adc4918a062
+      internalID: -1137138294
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_33
+      name: Default_Deck_of_Cards_33
       rect:
         serializedVersion: 2
         x: 210
@@ -992,16 +992,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3eae488e083f88840800000000000000
-      internalID: 5226695102545849059
+      spriteID: 826ef22b559ed464f93c989996891b46
+      internalID: -2126777593
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_34
+      name: Default_Deck_of_Cards_34
       rect:
         serializedVersion: 2
         x: 240
@@ -1014,16 +1014,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 667a19eaae9966830800000000000000
-      internalID: 4064104946978629478
+      spriteID: d1e288b14c40fbf4197991def619ed7d
+      internalID: -900097529
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_35
+      name: Default_Deck_of_Cards_35
       rect:
         serializedVersion: 2
         x: 270
@@ -1036,16 +1036,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 65ebd02e5708d52b0800000000000000
-      internalID: -5594173918332207530
+      spriteID: b3ecd51bd54517c4094a8c6dedfbe301
+      internalID: -1469193732
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_36
+      name: Default_Deck_of_Cards_36
       rect:
         serializedVersion: 2
         x: 300
@@ -1058,16 +1058,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: bfe4d12cc14f627f0800000000000000
-      internalID: -637553892873384197
+      spriteID: 14aeb1eda0cdf224cb3095b4b8df206c
+      internalID: 1865220336
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_37
+      name: Default_Deck_of_Cards_37
       rect:
         serializedVersion: 2
         x: 330
@@ -1080,16 +1080,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 121a215a396c4bdf0800000000000000
-      internalID: -165288948873912031
+      spriteID: f6b5279dea6e00244886f8b91de04ba6
+      internalID: 1028987416
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_38
+      name: Default_Deck_of_Cards_38
       rect:
         serializedVersion: 2
         x: 360
@@ -1102,16 +1102,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d44192d1793082700800000000000000
-      internalID: 515666104898098253
+      spriteID: 7985d0ebf583ff442be7e6c258a1ca03
+      internalID: 488054491
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_39
+      name: Default_Deck_of_Cards_39
       rect:
         serializedVersion: 2
         x: 0
@@ -1124,16 +1124,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5958e7aef2afd8760800000000000000
-      internalID: 7461895241327347093
+      spriteID: 0347072cd2f8bea46b3ab755033bcae8
+      internalID: 867127539
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_40
+      name: Default_Deck_of_Cards_40
       rect:
         serializedVersion: 2
         x: 30
@@ -1146,16 +1146,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d1e5ba81430d24960800000000000000
-      internalID: 7584853644616097309
+      spriteID: bd9085bf8600c684db2fa6b96b4a9cfd
+      internalID: 612683656
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_41
+      name: Default_Deck_of_Cards_41
       rect:
         serializedVersion: 2
         x: 60
@@ -1168,16 +1168,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: dc433d119ed7d61e0800000000000000
-      internalID: -2202966202734398259
+      spriteID: 72ac5950c43893b48ba20f65c45be4af
+      internalID: -218130021
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_42
+      name: Default_Deck_of_Cards_42
       rect:
         serializedVersion: 2
         x: 90
@@ -1190,16 +1190,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 2bb74696914d93d10800000000000000
-      internalID: 2105947506379881394
+      spriteID: 949561b7bb737d24ea68a94069a94523
+      internalID: 662131758
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_43
+      name: Default_Deck_of_Cards_43
       rect:
         serializedVersion: 2
         x: 120
@@ -1212,16 +1212,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 791ad257c955da730800000000000000
-      internalID: 4011956973526163863
+      spriteID: 9e8268d8770958f48bdba05f3ca2b091
+      internalID: 796902873
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_44
+      name: Default_Deck_of_Cards_44
       rect:
         serializedVersion: 2
         x: 150
@@ -1234,16 +1234,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 8e18a3aaa1fe3d060800000000000000
-      internalID: 6977183145531179496
+      spriteID: ecce7b8a15594d640843bb21ea40e003
+      internalID: -708741231
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_45
+      name: Default_Deck_of_Cards_45
       rect:
         serializedVersion: 2
         x: 180
@@ -1256,16 +1256,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1d99b8e6bc06dd1d0800000000000000
-      internalID: -3324394523080287791
+      spriteID: 19308acdc53bbbf4784a6ad92349a664
+      internalID: 1596025392
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_46
+      name: Default_Deck_of_Cards_46
       rect:
         serializedVersion: 2
         x: 210
@@ -1278,16 +1278,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9e5f9b5a131f9d6c0800000000000000
-      internalID: -4117995188717488663
+      spriteID: 44738020a604c2c4999f6d71e225616a
+      internalID: -643478211
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_47
+      name: Default_Deck_of_Cards_47
       rect:
         serializedVersion: 2
         x: 240
@@ -1300,16 +1300,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9f381f923f4dbb2b0800000000000000
-      internalID: -5567622373467651079
+      spriteID: 964979f366082ba498bc34040e1ce536
+      internalID: -2144397466
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_48
+      name: Default_Deck_of_Cards_48
       rect:
         serializedVersion: 2
         x: 270
@@ -1322,16 +1322,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 29f51d12fe26958d0800000000000000
-      internalID: -2857143709385793646
+      spriteID: c079369d8603fdd4681808ec37ad8980
+      internalID: -1010974199
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_49
+      name: Default_Deck_of_Cards_49
       rect:
         serializedVersion: 2
         x: 300
@@ -1344,16 +1344,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 76f1cc681479f74b0800000000000000
-      internalID: -5440463517150077081
+      spriteID: afd90d0fc3a99b04fa6edd324a21711c
+      internalID: -191300639
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_50
+      name: Default_Deck_of_Cards_50
       rect:
         serializedVersion: 2
         x: 330
@@ -1366,16 +1366,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 58d3240a33d34f6e0800000000000000
-      internalID: -1804750258727404155
+      spriteID: 8cc699988dfc51a41b148d00d74afe26
+      internalID: 584433776
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Updated Deck of Cards_51
+      name: Default_Deck_of_Cards_51
       rect:
         serializedVersion: 2
         x: 360
@@ -1388,10 +1388,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: fb4352413646ea0a0800000000000000
-      internalID: -6868442004990905153
+      spriteID: 3790b5a3d9d6ad2448b4d66c89d5fa44
+      internalID: 1442643606
       vertices: []
       indices: 
       edges: []
@@ -1410,58 +1410,58 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Updated Deck of Cards_0: -6319762792132220566
-      Updated Deck of Cards_1: -3699945112095717099
-      Updated Deck of Cards_10: 8813671109694315936
-      Updated Deck of Cards_11: -3593937567949024453
-      Updated Deck of Cards_12: -2522642823715655911
-      Updated Deck of Cards_13: 108968766655924559
-      Updated Deck of Cards_14: -6339909969157180931
-      Updated Deck of Cards_15: 6863407719123463218
-      Updated Deck of Cards_16: 4685233402524140727
-      Updated Deck of Cards_17: 5143054258310058174
-      Updated Deck of Cards_18: -7476516501482067706
-      Updated Deck of Cards_19: -6166372431787563394
-      Updated Deck of Cards_2: -5618554517778871428
-      Updated Deck of Cards_20: 1638641434013488175
-      Updated Deck of Cards_21: -90969931650443266
-      Updated Deck of Cards_22: 2650359604188591782
-      Updated Deck of Cards_23: 1104152484934338157
-      Updated Deck of Cards_24: -2459162242191096257
-      Updated Deck of Cards_25: -7238504695472802122
-      Updated Deck of Cards_26: 261480144501364687
-      Updated Deck of Cards_27: 4003170116292248641
-      Updated Deck of Cards_28: 1321437385518795097
-      Updated Deck of Cards_29: -3672620849339107165
-      Updated Deck of Cards_3: 4520503559300924854
-      Updated Deck of Cards_30: -7956110360359249299
-      Updated Deck of Cards_31: -6525401902854204604
-      Updated Deck of Cards_32: 5472118433732591252
-      Updated Deck of Cards_33: 5226695102545849059
-      Updated Deck of Cards_34: 4064104946978629478
-      Updated Deck of Cards_35: -5594173918332207530
-      Updated Deck of Cards_36: -637553892873384197
-      Updated Deck of Cards_37: -165288948873912031
-      Updated Deck of Cards_38: 515666104898098253
-      Updated Deck of Cards_39: 7461895241327347093
-      Updated Deck of Cards_4: -12756960125713970
-      Updated Deck of Cards_40: 7584853644616097309
-      Updated Deck of Cards_41: -2202966202734398259
-      Updated Deck of Cards_42: 2105947506379881394
-      Updated Deck of Cards_43: 4011956973526163863
-      Updated Deck of Cards_44: 6977183145531179496
-      Updated Deck of Cards_45: -3324394523080287791
-      Updated Deck of Cards_46: -4117995188717488663
-      Updated Deck of Cards_47: -5567622373467651079
-      Updated Deck of Cards_48: -2857143709385793646
-      Updated Deck of Cards_49: -5440463517150077081
-      Updated Deck of Cards_5: -840351987514935172
-      Updated Deck of Cards_50: -1804750258727404155
-      Updated Deck of Cards_51: -6868442004990905153
-      Updated Deck of Cards_6: -6700288529399423771
-      Updated Deck of Cards_7: -1176187211369640475
-      Updated Deck of Cards_8: 8902734147420298298
-      Updated Deck of Cards_9: -305909400396998568
+      Default_Deck_of_Cards_0: 94438014
+      Default_Deck_of_Cards_1: -646759100
+      Default_Deck_of_Cards_10: -243516092
+      Default_Deck_of_Cards_11: -1217866150
+      Default_Deck_of_Cards_12: -861292487
+      Default_Deck_of_Cards_13: -1324670253
+      Default_Deck_of_Cards_14: 585681104
+      Default_Deck_of_Cards_15: -1498058026
+      Default_Deck_of_Cards_16: -102383988
+      Default_Deck_of_Cards_17: -895292452
+      Default_Deck_of_Cards_18: -971502487
+      Default_Deck_of_Cards_19: -870054127
+      Default_Deck_of_Cards_2: -41876505
+      Default_Deck_of_Cards_20: -1254943801
+      Default_Deck_of_Cards_21: 1002504158
+      Default_Deck_of_Cards_22: 629091363
+      Default_Deck_of_Cards_23: -25745300
+      Default_Deck_of_Cards_24: -958709703
+      Default_Deck_of_Cards_25: -2031619715
+      Default_Deck_of_Cards_26: -717607839
+      Default_Deck_of_Cards_27: -310335764
+      Default_Deck_of_Cards_28: -182815855
+      Default_Deck_of_Cards_29: -670063951
+      Default_Deck_of_Cards_3: 738240590
+      Default_Deck_of_Cards_30: -298602678
+      Default_Deck_of_Cards_31: 1354357749
+      Default_Deck_of_Cards_32: -1137138294
+      Default_Deck_of_Cards_33: -2126777593
+      Default_Deck_of_Cards_34: -900097529
+      Default_Deck_of_Cards_35: -1469193732
+      Default_Deck_of_Cards_36: 1865220336
+      Default_Deck_of_Cards_37: 1028987416
+      Default_Deck_of_Cards_38: 488054491
+      Default_Deck_of_Cards_39: 867127539
+      Default_Deck_of_Cards_4: -851037098
+      Default_Deck_of_Cards_40: 612683656
+      Default_Deck_of_Cards_41: -218130021
+      Default_Deck_of_Cards_42: 662131758
+      Default_Deck_of_Cards_43: 796902873
+      Default_Deck_of_Cards_44: -708741231
+      Default_Deck_of_Cards_45: 1596025392
+      Default_Deck_of_Cards_46: -643478211
+      Default_Deck_of_Cards_47: -2144397466
+      Default_Deck_of_Cards_48: -1010974199
+      Default_Deck_of_Cards_49: -191300639
+      Default_Deck_of_Cards_5: 1174048532
+      Default_Deck_of_Cards_50: 584433776
+      Default_Deck_of_Cards_51: 1442643606
+      Default_Deck_of_Cards_6: 1136199239
+      Default_Deck_of_Cards_7: -1065546373
+      Default_Deck_of_Cards_8: 1238517253
+      Default_Deck_of_Cards_9: 1533751913
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

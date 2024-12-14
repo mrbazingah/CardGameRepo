@@ -3072,7 +3072,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2262102085766092034, guid: ccc85b75e23df5045aa6e988bbadf281, type: 3}
       propertyPath: cardSprites.Array.size
-      value: 52
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2262102085766092034, guid: ccc85b75e23df5045aa6e988bbadf281, type: 3}
       propertyPath: 'cardSprites.Array.data[0]'

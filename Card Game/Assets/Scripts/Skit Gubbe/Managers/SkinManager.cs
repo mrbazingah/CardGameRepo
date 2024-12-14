@@ -5,23 +5,49 @@ public class SkinManager : MonoBehaviour
 {
     [SerializeField] List<GameObject> decks;
     [SerializeField] int deckEquipedIndex;
+    [SerializeField] List<Sprite> spritesInDeck;
+    [SerializeField] List<CardShopSlot> slots;
 
-    List<Sprite> spritesInDeck;
+    CardShopSlot slot;
 
-    public void EquipDeck(int index)
+    void Start()
     {
+        deckEquipedIndex = PlayerPrefs.GetInt("DeckEquipedIndex");
+        CardShopSlot tempSlot = null;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i].GetThisIndex() == deckEquipedIndex)
+            {
+                tempSlot = slots[i];
+                break;
+            }
+        }
+
+        EquipDeck(deckEquipedIndex, tempSlot);
+    }
+
+    public void EquipDeck(int index, CardShopSlot thisSlot)
+    {
+        if (thisSlot == slot && slot != null)
+        {
+            return;
+        }
+
+        if (slot != null)
+        {
+            slot.UnEquipDeck();
+        }
+        
         deckEquipedIndex = index;
-        spritesInDeck = decks[deckEquipedIndex].GetComponent<DeckSkin>().GetMyDeck();
+        slot = thisSlot;
 
         PlayerPrefs.SetInt("DeckEquipedIndex", deckEquipedIndex);
     }
 
     public List<Sprite> GetEquipedDeck()
     {
-        deckEquipedIndex = PlayerPrefs.GetInt("DeckEquipedIndex");
-        EquipDeck(deckEquipedIndex);
-
-        return spritesInDeck;
+        return decks[deckEquipedIndex].GetComponent<DeckSkin>().GetMyDeck();
     }
 
     public List<GameObject> GetDecks()
