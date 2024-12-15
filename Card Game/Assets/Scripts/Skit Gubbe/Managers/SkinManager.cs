@@ -17,6 +17,8 @@ public class SkinManager : MonoBehaviour
 
         for (int i = 0; i < slots.Count; i++)
         {
+            if (slots[i] == null) { break; }
+
             if (slots[i].GetThisIndex() == deckEquipedIndex)
             {
                 tempSlot = slots[i];
@@ -42,7 +44,10 @@ public class SkinManager : MonoBehaviour
         deckEquipedIndex = index;
         slot = thisSlot;
 
-        PlayerPrefs.SetInt("DeckEquipedIndex", deckEquipedIndex);
+        if (PlayerPrefs.GetInt("DeckEquipedIndex") != deckEquipedIndex)
+        {
+            PlayerPrefs.SetInt("DeckEquipedIndex", deckEquipedIndex);
+        }
     }
 
     public List<Sprite> GetEquipedDeck()

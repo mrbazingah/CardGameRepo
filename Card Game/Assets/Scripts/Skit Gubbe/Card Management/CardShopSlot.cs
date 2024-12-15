@@ -9,8 +9,7 @@ public class CardShopSlot : MonoBehaviour
     [SerializeField] GameObject buyButton, equipButton;
     [SerializeField] int cost;
     [SerializeField] bool hasBeenBought;
-
-    bool isEqupied;
+    [SerializeField] bool isEqupied;
 
     int thisIndex;
 
@@ -42,7 +41,11 @@ public class CardShopSlot : MonoBehaviour
         hasBeenBought = hasBeenBought ? true : PlayerPrefs.HasKey(gameObject.name + "HasBeenBought");
 
         LoadEquipButton(hasBeenBought);
-        buyButton.GetComponentInChildren<TextMeshProUGUI>().text = cost.ToString();
+
+        if (buyButton != null)
+        {
+            buyButton.GetComponentInChildren<TextMeshProUGUI>().text = cost.ToString();
+        }
     }
 
     void Update()
@@ -79,10 +82,10 @@ public class CardShopSlot : MonoBehaviour
 
     void LoadEquipButton(bool b)
     {
-        if (!hasBeenBought) { return; }
+        if (!hasBeenBought || buyButton == null || equipButton == null) { return; }
 
-        buyButton?.SetActive(!b);
         equipButton?.SetActive(b);
+        buyButton?.SetActive(!b);
     }
 
     public int GetThisIndex()
