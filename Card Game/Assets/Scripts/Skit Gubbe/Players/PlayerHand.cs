@@ -24,6 +24,7 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] GameObject endTurnButton;
     [Header("Chance")]
     [SerializeField] float playChanceDelay;
+    [SerializeField] bool canChance;
     [SerializeField] GameObject chanceNotice;
     [Space]
     [SerializeField] float lerpSpeed;
@@ -389,7 +390,7 @@ public class PlayerHand : MonoBehaviour
             RemoveCardFromList(cardInHand); 
             PickUpPile(cardInHand);
         }
-        else
+        else if (!isChanceCard)
         {
             if (underSideCards.Contains(cardInHand) && usingUnderSideCards)
             {
@@ -569,7 +570,7 @@ public class PlayerHand : MonoBehaviour
 
     public bool CanChance()
     {
-        return isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards) && cardGenerator.GetDeck().Count != 0 && PlayerPrefs.HasKey("CanChance");
+        return canChance || (isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards) && cardGenerator.GetDeck().Count != 0 && PlayerPrefs.HasKey("CanChance"));
     }
     #endregion
 

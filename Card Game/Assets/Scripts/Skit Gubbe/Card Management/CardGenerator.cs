@@ -50,7 +50,7 @@ public class CardGenerator : MonoBehaviour
 
     void GenerateCards()
     {
-        cardSprites = skinManager.GetEquipedDeck();
+        //cardSprites = skinManager.GetEquipedDeck();
 
         int suit = 0;
 

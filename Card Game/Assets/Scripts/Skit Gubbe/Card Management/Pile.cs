@@ -54,13 +54,23 @@ public class Pile : MonoBehaviour
     {
         newCard.transform.SetParent(pileTransform);
 
-        cardsInPile.Add(newCard);
+        List<GameObject> cardsBefore = cardsInPile;
+        cardsBefore.Add(newCard);
 
-        for (int i = 0; i < cardsInPile.Count; i++)
+        for (int i = 0; i < cardsBefore.Count; i++)
         {
-            cardsInPile[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+            cardsBefore[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+
+            for (int ii = 0; ii < cardsBefore.Count; ii++)
+            {
+                if (cardsBefore[i] == cardsBefore[ii] && i != ii)
+                {
+                    cardsBefore.RemoveAt(ii);
+                }
+            }
         }
 
+        cardsInPile = cardsBefore;
         newCard.GetComponent<Card>().RemoveChild();
     }
 
@@ -89,7 +99,7 @@ public class Pile : MonoBehaviour
     {
         int currentValue = 0;
 
-        if (cardsInPile.Count != 0 && !isChance)
+        if (cardsInPile.Count != 0)
         {
             currentValue = cardsInPile[cardsInPile.Count - 1].GetComponent<Card>().GetValue();
         }
