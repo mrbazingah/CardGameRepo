@@ -99,7 +99,7 @@ public class Pile : MonoBehaviour
     {
         int currentValue = 0;
 
-        if (cardsInPile.Count != 0)
+        if (cardsInPile.Count != 0 && !isChance)
         {
             currentValue = cardsInPile[cardsInPile.Count - 1].GetComponent<Card>().GetValue();
         }

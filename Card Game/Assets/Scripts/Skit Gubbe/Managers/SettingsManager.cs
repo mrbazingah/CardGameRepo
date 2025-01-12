@@ -18,6 +18,7 @@ public class SettingsManager : MonoBehaviour
     void Start()
     {
         SetUpPlayerPrefs();
+        PlayerPrefs.SetInt("HasOpenedSettings", 1);
     }
 
     void SetUpPlayerPrefs()

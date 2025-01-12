@@ -570,7 +570,12 @@ public class PlayerHand : MonoBehaviour
 
     public bool CanChance()
     {
-        return canChance || (isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards) && cardGenerator.GetDeck().Count != 0 && PlayerPrefs.HasKey("CanChance"));
+        if (PlayerPrefs.HasKey("HasOpenedSettings"))
+        {
+            return canChance || (isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards) && cardGenerator.GetDeck().Count != 0 && PlayerPrefs.HasKey("CanChance"));
+        }
+
+        return false;
     }
     #endregion
 
