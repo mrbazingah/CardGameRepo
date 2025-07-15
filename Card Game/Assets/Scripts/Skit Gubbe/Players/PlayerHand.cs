@@ -110,8 +110,6 @@ public class PlayerHand : MonoBehaviour
     {
         if (handCards.Count > 0)
         {
-            //Set the text to show the amount of cards in hand
-
             cardAmountText.text = handCards.Count.ToString();
             Vector2 cardAmountTextPos = handCards[0].transform.position;
             cardAmountTextPos = new Vector2(cardAmountTextPos.x + cardAmountTextOffset.x, cardAmountTextOffset.y + handTransform.position.y);
@@ -157,17 +155,14 @@ public class PlayerHand : MonoBehaviour
 
     void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
     {
-        //If there are no cards, return
         if (cards.Count == 0) return;
 
-        //Space cards evenly
         float cardSpacing = Mathf.Min(spacing, maxWidth / cards.Count);
 
         for (int i = 0; i < cards.Count; i++)
         {
             cards[i].transform.SetParent(parent);
 
-            //Set sorting order
             if (cards == handCards)
             {
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
@@ -182,7 +177,6 @@ public class PlayerHand : MonoBehaviour
                 cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
 
-            //Calculate position and space them
             Vector2 cardPosition;
             if (cards.Count > 1)
             {
@@ -196,7 +190,6 @@ public class PlayerHand : MonoBehaviour
 
             cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
 
-            //Remove duplicates
             for (int ii = 0; ii < cards.Count; ii++)
             {
                 if (cards[i] == cards[ii] && ii != i)
@@ -209,7 +202,6 @@ public class PlayerHand : MonoBehaviour
 
     void ChangeSideCards()
     {
-        //Replace hand cards with over side cards
         if (gameManager.GetGameHasStarted() || selectedCards.Count != 2) { return; }
 
         GameObject handCard = null;
@@ -230,7 +222,6 @@ public class PlayerHand : MonoBehaviour
                 }
             }
 
-            //Replace current cards
             for (int i = 0; i < overSideCards.Count; i++)
             {
                 if (overSideCards[i] == sideCard)
@@ -318,13 +309,11 @@ public class PlayerHand : MonoBehaviour
     #region Play
     void DetectHover()
     {
-        //Raycast with mouse position to detect hovered card
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         hoveredCard = hit.collider ? hit.collider.gameObject : null;
 
         if (hoveredCard != null && Input.GetKeyDown(KeyCode.Mouse0))
         {
-            //Check if the hovered card is in hand, over side or under side cards
             if (handCards.Contains(hoveredCard) && !usingOverSideCards && !usingUnderSideCards ||
                 overSideCards.Contains(hoveredCard) && usingOverSideCards ||
                 underSideCards.Contains(hoveredCard) && usingUnderSideCards)
@@ -335,7 +324,6 @@ public class PlayerHand : MonoBehaviour
                 }
             }
 
-            //Add to selected card if game not started
             if (!gameManager.GetGameHasStarted() && selectedCards.Count < 2)
             {
                 selectedCards.Add(hoveredCard);
@@ -350,7 +338,6 @@ public class PlayerHand : MonoBehaviour
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
-        //If card is avalible to play, play it
         if (CanPlayCard(cardValue, isChanceCard, cardInHand))
         {
             if (!isChanceCard)
@@ -361,7 +348,6 @@ public class PlayerHand : MonoBehaviour
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
 
-            //Discard pile if conditions are met
             if (ShouldDiscard(cardValue))
             {
                 StartCoroutine(pile.DiscardCardsInPile());
@@ -369,10 +355,8 @@ public class PlayerHand : MonoBehaviour
                 canEndTurn = false;
             }
 
-            //Check for special conditions
             if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10 || hasDiscarded)
             {
-                //Continue turn if conditions are met   
                 if (HasSameValueCard(cardValue) && cardValue != 2 && cardValue != 10)
                 {
                     savedCardValue = cardValue;
@@ -381,7 +365,6 @@ public class PlayerHand : MonoBehaviour
 
                 hasDiscarded = false;
                 
-                //Draw new card when placed
                 if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0 && !isChanceCard)
                 {
                     cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
@@ -389,7 +372,6 @@ public class PlayerHand : MonoBehaviour
             }
             else
             {
-                //End turn if no special conditions are met
                 savedCardValue = 0;
                 canEndTurn = false;
                 gameManager.NextTurn(cardInHand);
@@ -405,13 +387,11 @@ public class PlayerHand : MonoBehaviour
         }
         else if (isChanceCard)
         {
-            //If chance card isnt playable, pick up pile
             RemoveCardFromList(cardInHand); 
             PickUpPile(cardInHand);
         }
         else if (!isChanceCard)
         {
-            //If card is not playable, check conditions
             if (underSideCards.Contains(cardInHand) && usingUnderSideCards)
             {
                 pile.AddCardsToPile(cardInHand);
@@ -466,7 +446,6 @@ public class PlayerHand : MonoBehaviour
     {
         List<GameObject> pileCards = pile.GetCardsInPile();
 
-        //Add cards and remove pile
         if (pileCards.Count > 0)
         {
             handCards.AddRange(pileCards);
