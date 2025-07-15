@@ -1,57 +1,60 @@
 using UnityEngine;
 using Fusion;
 using UnityEngine.SceneManagement;
-using TMPro; // if you use TextMeshPro for UI
+using TMPro;  // Import TextMeshPro namespace
 
 public class LobbyManager : MonoBehaviour
 {
     public NetworkRunner runnerPrefab;
     private NetworkRunner runner;
 
-    public TMP_InputField joinInputField;  // For player to type room code
-    public TMP_Text hostCodeText;          // To display generated room code
+    [SerializeField] private TMP_Text roomCodeText;  // Reference to the UI Text where code is displayed
 
-    public async void HostGame()
+    private async void Start()
     {
-        string roomCode = GenerateRoomCode();
-        hostCodeText.text = $"Room Code: {roomCode}";
+        // Display the room code as soon as the lobby scene loads
+        if (roomCodeText != null)
+            roomCodeText.text = $"Room Code: {GameSession.RoomCode}";
+        else
+            Debug.LogWarning("RoomCodeText UI element is not assigned in the Inspector!");
 
         runner = Instantiate(runnerPrefab);
         DontDestroyOnLoad(runner.gameObject);
 
-        await runner.StartGame(new StartGameArgs
+        if (string.IsNullOrEmpty(GameSession.RoomCode))
         {
-            GameMode = GameMode.Host,
-            SessionName = roomCode,
-            Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex)
-        });
-    }
-
-    public async void JoinGame()
-    {
-        string roomCode = joinInputField.text.Trim();
-
-        if (string.IsNullOrEmpty(roomCode))
-        {
-            Debug.LogWarning("Enter a valid room code!");
+            Debug.LogError("No room code set! Cannot start game.");
             return;
         }
 
-        runner = Instantiate(runnerPrefab);
-        DontDestroyOnLoad(runner.gameObject);
-
-        await runner.StartGame(new StartGameArgs
+        var startGameArgs = new StartGameArgs
         {
-            GameMode = GameMode.Client,
-            SessionName = roomCode,
+            SessionName = GameSession.RoomCode,
             Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex)
-        });
-    }
+        };
 
-    // Add this method anywhere inside the LobbyManager class
-    private string GenerateRoomCode()
-    {
-        int code = UnityEngine.Random.Range(0, 10000); // 0 to 9999 inclusive
-        return code.ToString("D4"); // Pads with zeros, e.g. "0007"
+        if (GameSession.IsHost)
+        {
+            startGameArgs.GameMode = GameMode.Host;
+            Debug.Log($"Hosting game with code: {GameSession.RoomCode}");
+        }
+        else
+        {
+            startGameArgs.GameMode = GameMode.Client;
+            Debug.Log($"Joining game with code: {GameSession.RoomCode}");
+        }
+
+        StartGameResult result = await runner.StartGame(startGameArgs);
+        Debug.Log($"StartGame result: {result}");
+
+        if (result.Ok)
+        {
+            Debug.Log("Successfully started/joined the game.");
+        }
+        else
+        {
+            Debug.LogWarning($"Failed to start/join game with code {GameSession.RoomCode}. Returning to Start scene.");
+            SceneManager.LoadScene("Start Scene");
+        }
     }
 }
