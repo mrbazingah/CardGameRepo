@@ -366,6 +366,7 @@ MonoBehaviour:
   isTurn: 0
   turnNumber: 0
   playDelay: 1
+  chanceDelay: 0.5
   chanceToPlayChance: 50
   lerpSpeed: 15
   cardAmountText: {fileID: 2500706921955742232}
