@@ -4,42 +4,39 @@ using UnityEngine;
 
 public class PlayerProfileNetwork : NetworkBehaviour
 {
-    [Networked(OnChanged = nameof(OnDisplayNameChanged))]
-    public NetworkString<_32> DisplayName { get; set; }
+    [Networked] public string NetworkDisplayName { get; set; }
 
-    private TMP_Text nameText;
+    [SerializeField] private TMP_Text displayNameText;
 
-    public override void Spawned()
+    // Local copy of the last known value
+    private string lastDisplayName = "";
+
+    public override void FixedUpdateNetwork()
     {
-        nameText = GetComponentInChildren<TMP_Text>();
-
-        // If this profile belongs to the local player on the client, send display name to server
-        if (Object.HasStateAuthority == false && Object.InputAuthority == Runner.LocalPlayer)
+        // Only run this on clients to update UI when value changes
+        if (Object.HasStateAuthority || Object.HasInputAuthority)
         {
-            string localDisplayName = PlayerPrefs.GetString("DisplayName", $"Player {Object.InputAuthority.PlayerId}");
-            RPC_SendDisplayName(localDisplayName);
+            // If the value has changed since last check
+            if (NetworkDisplayName != lastDisplayName)
+            {
+                lastDisplayName = NetworkDisplayName;
+                UpdateDisplayNameUI(NetworkDisplayName);
+            }
         }
-
-        UpdateDisplayNameUI();
     }
 
+    private void UpdateDisplayNameUI(string newName)
+    {
+        if (displayNameText != null)
+        {
+            displayNameText.text = newName;
+        }
+    }
+
+    // RPC to set display name from the client to the server
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    public void RPC_SendDisplayName(string displayName, RpcInfo info = default)
+    public void RPC_SendDisplayName(string displayName)
     {
-        DisplayName = displayName;
-    }
-
-    private static void OnDisplayNameChanged(Changed<PlayerProfileNetwork> changed)
-    {
-        changed.Behaviour.UpdateDisplayNameUI();
-    }
-
-    private void UpdateDisplayNameUI()
-    {
-        if (nameText == null)
-            nameText = GetComponentInChildren<TMP_Text>();
-
-        if (nameText != null)
-            nameText.text = DisplayName.Value.ToString();
+        NetworkDisplayName = displayName;
     }
 }
