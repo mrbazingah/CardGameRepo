@@ -17,13 +17,22 @@ public class MultiplayerManager : MonoBehaviour
     [SerializeField] GameObject codePanel;
     [SerializeField] TMP_InputField joinInputField; 
     [SerializeField] TMP_Text errorText;
-    [Header("")]
+    [Header("Display Name")]
+    [SerializeField] GameObject profilePanel;
+    [SerializeField] TMP_InputField displayNameInputField;
+    [SerializeField] string defaultDisplayName = "Player";
 
     private NetworkRunner tempRunner;
 
     void Start()
     {
         Close();
+        displayNameInputField.text = PlayerPrefs.GetString("DisplayName");
+        if (string.IsNullOrEmpty(displayNameInputField.text))
+        {
+            displayNameInputField.text = defaultDisplayName;
+        }
+
         if (errorText != null) errorText.text = "";
     }
 
@@ -31,6 +40,7 @@ public class MultiplayerManager : MonoBehaviour
     {
         hostPanel.SetActive(false);
         codePanel.SetActive(false);
+        profilePanel.SetActive(false);
         if (errorText != null) errorText.text = "";
     }
 
@@ -117,5 +127,22 @@ public class MultiplayerManager : MonoBehaviour
         }
 
         return success;
+    }
+
+    public void OpenProfilePanel()
+    {
+        profilePanel.SetActive(true);
+    }
+
+    public void OnDisplayNameChanged()
+    {
+        string newName = displayNameInputField.text.Trim();
+
+        if (string.IsNullOrEmpty(newName))
+        {
+            newName = defaultDisplayName;
+        }
+   
+        PlayerPrefs.SetString("DisplayName", newName);
     }
 }
