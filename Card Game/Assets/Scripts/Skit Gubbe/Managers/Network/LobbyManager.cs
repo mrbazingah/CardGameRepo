@@ -80,13 +80,6 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         profileNetObj.transform.SetParent(playerProfilesParent, false);
 
         playerProfiles[player] = profileNetObj.gameObject;
-
-        // Client sends display name to host via RPC
-        if (player == runner.LocalPlayer)
-        {
-            string localDisplayName = PlayerPrefs.GetString("DisplayName", $"Player {player.PlayerId}");
-            profileNetObj.GetComponent<PlayerProfileNetwork>().RPC_SendDisplayName(localDisplayName);
-        }
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -100,8 +93,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // === Fully implement all INetworkRunnerCallbacks methods ===
-
+    // INetworkRunnerCallbacks methods (empty implementations for now)
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
