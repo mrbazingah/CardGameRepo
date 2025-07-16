@@ -225,7 +225,7 @@ MonoBehaviour:
   runnerPrefab: {fileID: 1295048657}
   roomCodeText: {fileID: 376890072}
   playerProfilesParent: {fileID: 1087714149}
-  playerProfilePrefab: {fileID: 5468490618029545336, guid: 5a0d65b7ef627c643b2cf73960316c40, type: 3}
+  playerProfilePrefab: {fileID: 3192987755023284511, guid: 5a0d65b7ef627c643b2cf73960316c40, type: 3}
   spawnPos: {x: -160, y: 50}
   spawnOffset: {x: 0, y: -70}
 --- !u!4 &270313541

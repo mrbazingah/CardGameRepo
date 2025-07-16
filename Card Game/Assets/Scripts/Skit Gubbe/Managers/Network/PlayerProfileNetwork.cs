@@ -4,23 +4,33 @@ using UnityEngine;
 
 public class PlayerProfileNetwork : NetworkBehaviour
 {
-    [Networked] public string DisplayName { get; set; }
+    [Networked] public NetworkString<_128> DisplayName { get; set; }
+
+    private TMP_Text nameText;
 
     public override void Spawned()
     {
-        TMP_Text nameText = GetComponentInChildren<TMP_Text>();
-        if (nameText != null)
-        {
-            nameText.text = DisplayName;
-        }
+        nameText = GetComponentInChildren<TMP_Text>();
+        UpdateDisplayName();
     }
 
     public override void Render()
     {
-        TMP_Text nameText = GetComponentInChildren<TMP_Text>();
+        UpdateDisplayName();
+    }
+
+    private void UpdateDisplayName()
+    {
+        if (nameText == null)
+            nameText = GetComponentInChildren<TMP_Text>();
+
         if (nameText != null)
-        {
-            nameText.text = DisplayName;
-        }
+            nameText.text = (string)DisplayName;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_SendDisplayName(string displayName, RpcInfo info = default)
+    {
+        DisplayName = displayName;
     }
 }

@@ -13,21 +13,19 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     [SerializeField] private TMP_Text roomCodeText;
     [SerializeField] private Transform playerProfilesParent;
-    [SerializeField] private GameObject playerProfilePrefab;
+    [SerializeField] private NetworkObject playerProfilePrefab;
     [SerializeField] private Vector2 spawnPos;
     [SerializeField] private Vector2 spawnOffset;
 
-    private Dictionary<PlayerRef, PlayerProfileNetwork> playerProfiles = new();
+    private Dictionary<PlayerRef, GameObject> playerProfiles = new();
 
     private async void Start()
     {
-        // Display room code
         if (roomCodeText != null)
             roomCodeText.text = $"Room Code: {GameSession.RoomCode}";
         else
             Debug.LogWarning("RoomCodeText UI element is not assigned!");
 
-        // Set up and start runner
         runner = Instantiate(runnerPrefab);
         DontDestroyOnLoad(runner.gameObject);
         runner.ProvideInput = true;
@@ -59,29 +57,36 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         Debug.Log($"Player joined: {player}");
 
-        if (playerProfilePrefab == null || playerProfilesParent == null)
+        if (!runner.IsServer)
+            return;
+
+        if (playerProfiles.ContainsKey(player))
         {
-            Debug.LogWarning("Player profile prefab or parent not assigned!");
+            Debug.Log($"Player {player} profile already exists.");
             return;
         }
 
-        Vector2 spawnPosition = spawnPos;
-        if (playerProfiles.Count > 0)
+        int index = playerProfiles.Count;
+        Vector2 positionOffset = spawnOffset * index;
+        Vector2 spawnPositionAdjusted = spawnPos + positionOffset;
+
+        NetworkObject profileNetObj = runner.Spawn(
+            playerProfilePrefab,
+            (Vector3)spawnPositionAdjusted,
+            Quaternion.identity,
+            player // owner
+        );
+
+        profileNetObj.transform.SetParent(playerProfilesParent, false);
+
+        playerProfiles[player] = profileNetObj.gameObject;
+
+        // Client sends display name to host via RPC
+        if (player == runner.LocalPlayer)
         {
-            spawnPosition += spawnOffset * playerProfiles.Count;
+            string localDisplayName = PlayerPrefs.GetString("DisplayName", $"Player {player.PlayerId}");
+            profileNetObj.GetComponent<PlayerProfileNetwork>().RPC_SendDisplayName(localDisplayName);
         }
-
-        PlayerProfileNetwork profile = runner.Spawn(playerProfilePrefab, spawnPosition, Quaternion.identity, player).GetComponent<PlayerProfileNetwork>();
-
-        string displayName = PlayerPrefs.GetString("DisplayName", $"Player {player.PlayerId}");
-        if (player == runner.LocalPlayer && GameSession.IsHost)
-            displayName += " (Host)";
-
-        profile.DisplayName = displayName;
-
-        profile.transform.SetParent(playerProfilesParent, false);
-
-        playerProfiles[player] = profile;
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -90,10 +95,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (playerProfiles.TryGetValue(player, out var profile))
         {
-            if (runner.IsServer)
-            {
-                runner.Despawn(profile.GetComponent<NetworkObject>());
-            }
+            Destroy(profile);
             playerProfiles.Remove(player);
         }
     }
