@@ -22,7 +22,7 @@ public class MultiplayerManager : MonoBehaviour
     [SerializeField] TMP_InputField displayNameInputField;
     [SerializeField] string defaultDisplayName = "Player";
 
-    private NetworkRunner tempRunner;
+    NetworkRunner tempRunner;
 
     void Start()
     {

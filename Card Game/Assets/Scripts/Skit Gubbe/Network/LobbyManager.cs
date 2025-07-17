@@ -8,18 +8,17 @@ using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public NetworkRunner runnerPrefab;
-    private NetworkRunner runner;
+    [SerializeField] NetworkRunner runnerPrefab;
+    [SerializeField] TMP_Text roomCodeText;
+    [SerializeField] Transform playerProfilesParent;
+    [SerializeField] NetworkObject playerProfilePrefab;
+    [SerializeField] Vector2 spawnPos;
+    [SerializeField] Vector2 spawnOffset;
 
-    [SerializeField] private TMP_Text roomCodeText;
-    [SerializeField] private Transform playerProfilesParent;
-    [SerializeField] private NetworkObject playerProfilePrefab;
-    [SerializeField] private Vector2 spawnPos;
-    [SerializeField] private Vector2 spawnOffset;
+    NetworkRunner runner;
+    Dictionary<PlayerRef, GameObject> playerProfiles = new();
 
-    private Dictionary<PlayerRef, GameObject> playerProfiles = new();
-
-    private async void Start()
+    async void Start()
     {
         if (roomCodeText != null)
             roomCodeText.text = $"Room Code: {GameSession.RoomCode}";

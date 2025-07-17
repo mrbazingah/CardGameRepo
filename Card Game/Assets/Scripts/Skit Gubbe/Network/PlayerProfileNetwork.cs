@@ -6,10 +6,10 @@ public class PlayerProfileNetwork : NetworkBehaviour
 {
     [Networked] public string NetworkDisplayName { get; set; }
 
-    [SerializeField] private TMP_Text displayNameText;
+    [SerializeField] TMP_Text displayNameText;
 
     // Local copy of the last known value
-    private string lastDisplayName = "";
+    string lastDisplayName = "";
 
     public override void FixedUpdateNetwork()
     {

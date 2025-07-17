@@ -16,6 +16,8 @@ public class CardGenerator : MonoBehaviour
     [SerializeField] List<GameObject> deck;
     [Space]
     [SerializeField] float chanceCardDelay;
+    [SerializeField] int chanceCardDebugValue;
+    [SerializeField] bool debugChanceCard;
 
     List<string> cardSuits;
 
@@ -43,12 +45,12 @@ public class CardGenerator : MonoBehaviour
             cardsPerPlayer = PlayerPrefs.GetInt("CardsPerPlayer");
         }
 
-        GenerateCards();
+        GenerateDeck();
         DealPlayerCards();
         DealAiCards();
     }
 
-    void GenerateCards()
+    void GenerateDeck()
     {
         //cardSprites = skinManager.GetEquipedDeck();
 
@@ -61,30 +63,30 @@ public class CardGenerator : MonoBehaviour
         cardSuits.Add("Clubs");
 
         deck = new List<GameObject>(numberOfCards);
-        int currentValue = 0;
+        int currentCardValue = 0;
 
         for (int i = 0; i < numberOfCards; i++)
         {
-            currentValue++;
+            currentCardValue++;
 
             GameObject card = Instantiate(cardPrefab);
 
             card.GetComponent<Card>().GetComponent<SpriteRenderer>().sprite = cardSprites[i];
 
-            if (currentValue == 1)
+            if (currentCardValue == 1)
             {
                 card.GetComponent<Card>().SetValue(14);
             }
             else
             {
-                card.GetComponent<Card>().SetValue(currentValue);
+                card.GetComponent<Card>().SetValue(currentCardValue);
             }
 
-            card.name = currentValue.ToString() + " of " + cardSuits[suit];
+            card.name = currentCardValue.ToString() + " of " + cardSuits[suit];
 
-            if (currentValue == 13)
+            if (currentCardValue == 13)
             {
-                currentValue = 0;
+                currentCardValue = 0;
                 suit++;
             }
 
@@ -92,6 +94,38 @@ public class CardGenerator : MonoBehaviour
             card.transform.SetParent(cardParent.transform);
             card.transform.localPosition = Vector3.zero;
         }
+    }
+
+    GameObject GenerateSingleCard()
+    {
+        chanceCardDebugValue = Mathf.Clamp(chanceCardDebugValue, 0, 14);
+
+        int currentCardValue = chanceCardDebugValue; 
+        if (currentCardValue == 14)
+        {
+            currentCardValue = 1; // Ace is represented as 1 in the deck
+        }
+
+        GameObject card = Instantiate(cardPrefab);
+
+        card.GetComponent<Card>().GetComponent<SpriteRenderer>().sprite = cardSprites[currentCardValue - 1];
+
+        if (currentCardValue == 1)
+        {
+            card.GetComponent<Card>().SetValue(14);
+        }
+        else
+        {
+            card.GetComponent<Card>().SetValue(currentCardValue);
+        }
+
+        card.name = currentCardValue.ToString() + " of " + cardSuits[0];
+
+        deck.Add(card);
+        card.transform.SetParent(cardParent.transform);
+        card.transform.localPosition = Vector3.zero;
+
+        return card;
     }
 
     void DealPlayerCards()
@@ -223,6 +257,27 @@ public class CardGenerator : MonoBehaviour
         GameObject chanceCard = deck[randomNumber];
 
         if ((!player.CanChance() && player.GetTurn()) || (!ai.CanChance() && ai.GetTurn()) || !canDrawChanceCard) { return null; }
+
+        //Sets chosen card to chance card as debug
+        if (debugChanceCard)
+        {
+            chanceCard = null;
+
+            for (int i = 0; i < deck.Count; i++)
+            {
+                int currentValue = deck[i].GetComponent<Card>().GetValue();
+                if (currentValue == chanceCardDebugValue)
+                {
+                    chanceCard = deck[i];
+                    break;
+                }
+            }
+
+            if (chanceCard == null)
+            {
+                chanceCard = GenerateSingleCard();
+            }
+        }
 
         StartCoroutine(ChanceCardDelay());
 
