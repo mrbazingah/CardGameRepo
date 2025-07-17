@@ -289,6 +289,8 @@ public class AIHand : MonoBehaviour
         bool playAgain;
         do
         {
+            if (!isPlaying) { yield break; }
+
             playAgain = false;
             GameObject selectedCard = null;
 
@@ -456,10 +458,13 @@ public class AIHand : MonoBehaviour
 
     IEnumerator ProcessChanceCard()
     {
+        if (!isTurn || !isPlaying) { yield break; }
+
         GameObject cardFromDeck = cardGenerator.GetChanceCard();
         if (cardFromDeck == null) 
         {
             isPlaying = false;
+            isTurn = false;
             yield break; 
         }
 

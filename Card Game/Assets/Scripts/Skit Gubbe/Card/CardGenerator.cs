@@ -16,8 +16,10 @@ public class CardGenerator : MonoBehaviour
     [SerializeField] List<GameObject> deck;
     [Space]
     [SerializeField] float chanceCardDelay;
+    [Header("Debuging")]
     [SerializeField] int chanceCardDebugValue;
     [SerializeField] bool debugChanceCard;
+    [SerializeField] bool removeSpecialCards;
 
     List<string> cardSuits;
 
@@ -68,6 +70,7 @@ public class CardGenerator : MonoBehaviour
         for (int i = 0; i < numberOfCards; i++)
         {
             currentCardValue++;
+            if ((currentCardValue == 2 || currentCardValue == 10) && removeSpecialCards) { continue; } // Skip 2's if removeSpecialCards is true
 
             GameObject card = Instantiate(cardPrefab);
 
