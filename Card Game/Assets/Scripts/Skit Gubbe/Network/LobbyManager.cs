@@ -77,8 +77,24 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         );
 
         profileNetObj.transform.SetParent(playerProfilesParent, false);
-
         playerProfiles[player] = profileNetObj.gameObject;
+
+        // Now, ask the local player to set their display name if this profile belongs to them
+        if (player == runner.LocalPlayer)
+        {
+            var profileNetwork = profileNetObj.GetComponent<PlayerProfileNetwork>();
+            if (profileNetwork != null)
+            {
+                // Call the RPC to set the display name on the server
+                profileNetwork.RPC_SendDisplayName(GameSession.DisplayName);
+            }
+        }
+    }
+
+
+    public void LeaveRoom()
+    {
+        SceneManager.LoadScene("Start Scene");
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)

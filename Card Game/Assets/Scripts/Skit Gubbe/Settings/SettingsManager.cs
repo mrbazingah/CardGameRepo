@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class SettingsManager : MonoBehaviour
 {
     [Header("Input Fields")]
@@ -18,7 +19,6 @@ public class SettingsManager : MonoBehaviour
     void Start()
     {
         SetUpPlayerPrefs();
-        PlayerPrefs.SetInt("HasOpenedSettings", 1);
     }
 
     void SetUpPlayerPrefs()
@@ -107,6 +107,7 @@ public class SettingsManager : MonoBehaviour
         if (canChanceToggle.isOn)
         {
             PlayerPrefs.SetInt("CanChance", 1);
+
         }
         else
         {

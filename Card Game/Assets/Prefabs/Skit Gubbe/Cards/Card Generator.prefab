@@ -137,3 +137,6 @@ MonoBehaviour:
   numberOfCards: 52
   deck: []
   chanceCardDelay: 1.1
+  chanceCardDebugValue: 14
+  debugChanceCard: 0
+  removeSpecialCards: 0

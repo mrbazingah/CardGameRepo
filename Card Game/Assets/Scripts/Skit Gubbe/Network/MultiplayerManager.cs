@@ -8,6 +8,7 @@ public static class GameSession
 {
     public static string RoomCode;
     public static bool IsHost;
+    public static string DisplayName;
 }
 
 public class MultiplayerManager : MonoBehaviour
@@ -27,14 +28,21 @@ public class MultiplayerManager : MonoBehaviour
     void Start()
     {
         Close();
-        displayNameInputField.text = PlayerPrefs.GetString("DisplayName");
-        if (string.IsNullOrEmpty(displayNameInputField.text))
+
+        string savedName = PlayerPrefs.GetString("DisplayName");
+        if (string.IsNullOrEmpty(savedName))
         {
-            displayNameInputField.text = defaultDisplayName;
+            savedName = defaultDisplayName;
         }
 
+        displayNameInputField.text = savedName;
+        GameSession.DisplayName = savedName; 
+
         if (errorText != null) errorText.text = "";
+
+        Debug.Log(GameSession.DisplayName);
     }
+
 
     public void Close()
     {
@@ -144,5 +152,7 @@ public class MultiplayerManager : MonoBehaviour
         }
    
         PlayerPrefs.SetString("DisplayName", newName);
+
+        GameSession.DisplayName = newName;
     }
 }

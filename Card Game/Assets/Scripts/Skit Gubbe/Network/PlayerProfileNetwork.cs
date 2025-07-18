@@ -7,36 +7,43 @@ public class PlayerProfileNetwork : NetworkBehaviour
     [Networked] public string NetworkDisplayName { get; set; }
 
     [SerializeField] TMP_Text displayNameText;
+    [SerializeField] GameObject readyIcon;
 
-    // Local copy of the last known value
     string lastDisplayName = "";
+
+    private void Start()
+    {
+        // Reparent to UI canvas on all clients
+        Transform parentCanvas = GameObject.Find("PlayerProfilesParent")?.transform;
+        if (parentCanvas != null)
+            transform.SetParent(parentCanvas, false);
+        else
+            Debug.LogWarning("PlayerProfilesParent not found in scene.");
+    }
 
     public override void FixedUpdateNetwork()
     {
-        // Only run this on clients to update UI when value changes
-        if (Object.HasStateAuthority || Object.HasInputAuthority)
+        if (NetworkDisplayName != lastDisplayName)
         {
-            // If the value has changed since last check
-            if (NetworkDisplayName != lastDisplayName)
-            {
-                lastDisplayName = NetworkDisplayName;
-                UpdateDisplayNameUI(NetworkDisplayName);
-            }
+            lastDisplayName = NetworkDisplayName;
+            UpdateDisplayNameUI(NetworkDisplayName);
         }
     }
 
     private void UpdateDisplayNameUI(string newName)
     {
         if (displayNameText != null)
-        {
             displayNameText.text = newName;
-        }
     }
 
-    // RPC to set display name from the client to the server
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_SendDisplayName(string displayName)
     {
         NetworkDisplayName = displayName;
+    }
+
+    public void ReadyPLayer()
+    {
+        readyIcon.SetActive(!readyIcon.activeSelf);
     }
 }

@@ -3009,18 +3009,6 @@ PrefabInstance:
       propertyPath: deckImage
       value: 
       objectReference: {fileID: 5774818471360900971}
-    - target: {fileID: 2262102085766092034, guid: ccc85b75e23df5045aa6e988bbadf281, type: 3}
-      propertyPath: debugChanceCard
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2262102085766092034, guid: ccc85b75e23df5045aa6e988bbadf281, type: 3}
-      propertyPath: removeSpecialCards
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2262102085766092034, guid: ccc85b75e23df5045aa6e988bbadf281, type: 3}
-      propertyPath: chanceCardDebugValue
-      value: 14
-      objectReference: {fileID: 0}
     - target: {fileID: 3458451284564360503, guid: ccc85b75e23df5045aa6e988bbadf281, type: 3}
       propertyPath: m_Name
       value: Card Generator
@@ -3952,7 +3940,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -222, y: -164}
+  m_AnchoredPosition: {x: -264, y: -91}
   m_SizeDelta: {x: 135, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7926833880265453137
