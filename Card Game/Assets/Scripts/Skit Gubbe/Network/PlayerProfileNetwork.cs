@@ -4,17 +4,33 @@ using UnityEngine;
 
 public class PlayerProfileNetwork : NetworkBehaviour
 {
-    [Networked] public string NetworkDisplayName { get; set; }
+    [Networked]
+    public string NetworkDisplayName { get; set; }
+
+    [Networked]
+    public Vector2 SpawnPosition { get; set; }
 
     [SerializeField] TMP_Text displayNameText;
     [SerializeField] GameObject readyIcon;
 
+    Transform profilesParent;
     string lastDisplayName = "";
 
     // Called on every runner as soon as this object is spawned
     public override void Spawned()
     {
-        // If this profile belongs to *me*, tell the server my display name
+        profilesParent = LobbyManager.ProfilesParent;
+        transform.SetParent(profilesParent, false);
+
+        // Position locally under the UI parent
+        transform.localPosition = new Vector3(SpawnPosition.x, SpawnPosition.y, transform.localPosition.z);
+
+        if (!string.IsNullOrEmpty(NetworkDisplayName))
+        {
+            UpdateDisplayNameUI(NetworkDisplayName);
+            lastDisplayName = NetworkDisplayName;
+        }
+
         if (Object.HasInputAuthority)
         {
             RPC_SendDisplayName(GameSession.DisplayName);

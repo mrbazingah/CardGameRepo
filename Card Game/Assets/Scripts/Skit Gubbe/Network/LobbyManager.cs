@@ -15,8 +15,15 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] Vector2 spawnPos;
     [SerializeField] Vector2 spawnOffset;
 
+    public static Transform ProfilesParent;  // Added static reference
+
     NetworkRunner runner;
     Dictionary<PlayerRef, GameObject> playerProfiles = new();
+
+    void Awake()
+    {
+        ProfilesParent = playerProfilesParent;
+    }
 
     async void Start()
     {
@@ -77,9 +84,11 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         );
 
         profileNetObj.transform.SetParent(playerProfilesParent, false);
+        var net = profileNetObj.GetComponent<PlayerProfileNetwork>();
+        net.SpawnPosition = spawnPositionAdjusted;  // Network the UI position
         playerProfiles[player] = profileNetObj.gameObject;
 
-        // **Removed display-name RPC from here; each client will now send its own name.**
+        // Removed display-name RPC from here; clients send their own names now
     }
 
     public void LeaveRoom()
@@ -98,7 +107,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // ... rest of INetworkRunnerCallbacks unchanged ...
+    // Unchanged INetworkRunnerCallbacks
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
