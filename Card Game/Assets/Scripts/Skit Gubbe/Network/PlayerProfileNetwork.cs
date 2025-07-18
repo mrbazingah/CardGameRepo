@@ -57,8 +57,14 @@ public class PlayerProfileNetwork : NetworkBehaviour
         }
     }
 
-    private void UpdateDisplayNameUI(string newName)
+    void UpdateDisplayNameUI(string newName)
     {
+        if (IsHost)
+        {
+            newName += " (Host)";
+            GameSession.DisplayName = newName;
+        }
+
         if (displayNameText != null)
             displayNameText.text = newName;
     }
@@ -66,12 +72,6 @@ public class PlayerProfileNetwork : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     void RPC_SendDisplayName(string displayName)
     {
-        // Append "(Host)" only if this profile is the host
-        if (IsHost)
-        {
-            displayName += " (Host)";
-        }
-
         NetworkDisplayName = displayName;
     }
 

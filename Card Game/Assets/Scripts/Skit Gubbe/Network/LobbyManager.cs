@@ -103,6 +103,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             Destroy(runner.gameObject);
         }
 
+        GameSession.DisplayName = null;
         GameSession.RoomCode = null; // Clear room code when leaving
         SceneManager.LoadScene("Start Scene");
     }
