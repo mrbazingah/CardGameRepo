@@ -4,26 +4,23 @@ using UnityEngine;
 
 public class PlayerProfileNetwork : NetworkBehaviour
 {
-    [Networked]
-    public string NetworkDisplayName { get; set; }
-
-    [Networked]
-    public Vector2 SpawnPosition { get; set; }
+    [Networked] public string NetworkDisplayName { get; set; }
+    [Networked] public Vector2 SpawnPosition { get; set; }
+    [Networked] public bool IsHost { get; set; }  // Flag to mark if this player is host
 
     [SerializeField] TMP_Text displayNameText;
     [SerializeField] GameObject readyIcon;
 
     Transform profilesParent;
     string lastDisplayName = "";
+    bool positionSet = false;
 
-    // Called on every runner as soon as this object is spawned
     public override void Spawned()
     {
         profilesParent = LobbyManager.ProfilesParent;
         transform.SetParent(profilesParent, false);
 
-        // Position locally under the UI parent
-        transform.localPosition = new Vector3(SpawnPosition.x, SpawnPosition.y, transform.localPosition.z);
+        TrySetPosition();
 
         if (!string.IsNullOrEmpty(NetworkDisplayName))
         {
@@ -39,10 +36,24 @@ public class PlayerProfileNetwork : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        if (!positionSet)
+        {
+            TrySetPosition();
+        }
+
         if (NetworkDisplayName != lastDisplayName)
         {
             lastDisplayName = NetworkDisplayName;
             UpdateDisplayNameUI(lastDisplayName);
+        }
+    }
+
+    private void TrySetPosition()
+    {
+        if (!positionSet && SpawnPosition != default)
+        {
+            transform.localPosition = new Vector3(SpawnPosition.x, SpawnPosition.y, transform.localPosition.z);
+            positionSet = true;
         }
     }
 
@@ -55,6 +66,12 @@ public class PlayerProfileNetwork : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     void RPC_SendDisplayName(string displayName)
     {
+        // Append "(Host)" only if this profile is the host
+        if (IsHost)
+        {
+            displayName += " (Host)";
+        }
+
         NetworkDisplayName = displayName;
     }
 

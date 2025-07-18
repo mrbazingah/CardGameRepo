@@ -39,8 +39,6 @@ public class MultiplayerManager : MonoBehaviour
         GameSession.DisplayName = savedName;
 
         if (errorText != null) errorText.text = "";
-
-        Debug.Log(GameSession.DisplayName);
     }
 
     public void Close()
@@ -122,6 +120,7 @@ public class MultiplayerManager : MonoBehaviour
 
         if (!success)
         {
+            GameSession.RoomCode = null; // <-- clear room code if join failed
             Destroy(tempRunner.gameObject);
         }
         else
@@ -148,7 +147,6 @@ public class MultiplayerManager : MonoBehaviour
         }
 
         PlayerPrefs.SetString("DisplayName", newName);
-
         GameSession.DisplayName = newName;
     }
 }
