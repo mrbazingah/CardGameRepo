@@ -3,6 +3,7 @@ using Fusion.Sockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,8 +20,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] GameObject loadingPanel;
     [SerializeField] float loadingSwitchDelay;
 
-    public static Transform ProfilesParent;  // Added static reference
-
+    public static Transform ProfilesParent;
 
     NetworkRunner runner;
     Dictionary<PlayerRef, GameObject> playerProfiles = new();
@@ -90,14 +90,12 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             playerProfilePrefab,
             (Vector3)spawnPositionAdjusted,
             Quaternion.identity,
-            player // owner
+            player
         );
 
         profileNetObj.transform.SetParent(playerProfilesParent, false);
         var net = profileNetObj.GetComponent<PlayerProfileNetwork>();
         net.SpawnPosition = spawnPositionAdjusted;
-
-        // Set IsHost true only for the host player
         net.IsHost = (player == runner.LocalPlayer);
 
         playerProfiles[player] = profileNetObj.gameObject;
@@ -111,11 +109,9 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             text.text = "Loading.";
 
             yield return new WaitForSeconds(loadingSwitchDelay);
-
             text.text = "Loading..";
 
             yield return new WaitForSeconds(loadingSwitchDelay);
-
             text.text = "Loading...";
 
             yield return new WaitForSeconds(loadingSwitchDelay);
@@ -126,12 +122,12 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (runner != null)
         {
-            await runner.Shutdown(); // Cleanly shut down session
+            await runner.Shutdown();
             Destroy(runner.gameObject);
         }
 
         GameSession.DisplayName = null;
-        GameSession.RoomCode = null; // Clear room code when leaving
+        GameSession.RoomCode = null;
         SceneManager.LoadScene("Start Scene");
     }
 
@@ -146,21 +142,41 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // Shutdown callback from INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
+        Debug.Log($"Shutdown detected: {shutdownReason}");
+
         if (!GameSession.IsHost)
         {
-            Debug.Log("Disconnected from session. Returning to Start Scene...");
+            Debug.Log("Client disconnected. Returning to Start Scene...");
             SceneManager.LoadScene("Start Scene");
         }
     }
 
-    // Unchanged INetworkRunnerCallbacks
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+        if (runner.ActivePlayers.Count() >= 2)
+        {
+            Debug.Log("Connection refused: Lobby full.");
+            request.Refuse();
+        }
+        else
+        {
+            request.Accept();
+        }
+    }
+
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    {
+        Debug.LogWarning($"Connection failed: {reason}");
+        if (!GameSession.IsHost)
+        {
+            SceneManager.LoadScene("Start Scene");
+        }
+    }
+
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
