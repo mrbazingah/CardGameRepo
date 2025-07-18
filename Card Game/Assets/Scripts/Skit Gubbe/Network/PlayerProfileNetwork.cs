@@ -11,14 +11,14 @@ public class PlayerProfileNetwork : NetworkBehaviour
 
     string lastDisplayName = "";
 
-    private void Start()
+    // Called on every runner as soon as this object is spawned
+    public override void Spawned()
     {
-        // Reparent to UI canvas on all clients
-        Transform parentCanvas = GameObject.Find("PlayerProfilesParent")?.transform;
-        if (parentCanvas != null)
-            transform.SetParent(parentCanvas, false);
-        else
-            Debug.LogWarning("PlayerProfilesParent not found in scene.");
+        // If this profile belongs to *me*, tell the server my display name
+        if (Object.HasInputAuthority)
+        {
+            RPC_SendDisplayName(GameSession.DisplayName);
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -26,7 +26,7 @@ public class PlayerProfileNetwork : NetworkBehaviour
         if (NetworkDisplayName != lastDisplayName)
         {
             lastDisplayName = NetworkDisplayName;
-            UpdateDisplayNameUI(NetworkDisplayName);
+            UpdateDisplayNameUI(lastDisplayName);
         }
     }
 
@@ -37,7 +37,7 @@ public class PlayerProfileNetwork : NetworkBehaviour
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    public void RPC_SendDisplayName(string displayName)
+    void RPC_SendDisplayName(string displayName)
     {
         NetworkDisplayName = displayName;
     }

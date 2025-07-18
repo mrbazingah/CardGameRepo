@@ -79,18 +79,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         profileNetObj.transform.SetParent(playerProfilesParent, false);
         playerProfiles[player] = profileNetObj.gameObject;
 
-        // Now, ask the local player to set their display name if this profile belongs to them
-        if (player == runner.LocalPlayer)
-        {
-            var profileNetwork = profileNetObj.GetComponent<PlayerProfileNetwork>();
-            if (profileNetwork != null)
-            {
-                // Call the RPC to set the display name on the server
-                profileNetwork.RPC_SendDisplayName(GameSession.DisplayName);
-            }
-        }
+        // **Removed display-name RPC from here; each client will now send its own name.**
     }
-
 
     public void LeaveRoom()
     {
@@ -108,7 +98,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // INetworkRunnerCallbacks methods (empty implementations for now)
+    // ... rest of INetworkRunnerCallbacks unchanged ...
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }

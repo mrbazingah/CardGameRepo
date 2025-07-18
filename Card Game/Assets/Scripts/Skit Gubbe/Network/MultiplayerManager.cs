@@ -16,7 +16,7 @@ public class MultiplayerManager : MonoBehaviour
     [Header("Join/Host Logic")]
     [SerializeField] GameObject hostPanel;
     [SerializeField] GameObject codePanel;
-    [SerializeField] TMP_InputField joinInputField; 
+    [SerializeField] TMP_InputField joinInputField;
     [SerializeField] TMP_Text errorText;
     [Header("Display Name")]
     [SerializeField] GameObject profilePanel;
@@ -36,13 +36,12 @@ public class MultiplayerManager : MonoBehaviour
         }
 
         displayNameInputField.text = savedName;
-        GameSession.DisplayName = savedName; 
+        GameSession.DisplayName = savedName;
 
         if (errorText != null) errorText.text = "";
 
         Debug.Log(GameSession.DisplayName);
     }
-
 
     public void Close()
     {
@@ -80,12 +79,10 @@ public class MultiplayerManager : MonoBehaviour
         bool canJoin = await ValidateRoomCode(inputCode);
         if (canJoin)
         {
-            // Room exists, load lobby scene
             SceneManager.LoadScene("Lobby Scene");
         }
         else
         {
-            // Show error and stay in start scene
             Debug.LogWarning("Room code not found or unable to join.");
             if (errorText != null) errorText.text = "No lobby with that code found.";
         }
@@ -116,7 +113,7 @@ public class MultiplayerManager : MonoBehaviour
         {
             SessionName = code,
             GameMode = GameMode.Client,
-            Scene = SceneRef.None  // no scene load here, just connect attempt
+            Scene = SceneRef.None
         };
 
         StartGameResult result = await tempRunner.StartGame(startGameArgs);
@@ -129,7 +126,6 @@ public class MultiplayerManager : MonoBehaviour
         }
         else
         {
-            // We successfully joined, so we should shut this temp runner down immediately
             await tempRunner.Shutdown();
             Destroy(tempRunner.gameObject);
         }
@@ -150,7 +146,7 @@ public class MultiplayerManager : MonoBehaviour
         {
             newName = defaultDisplayName;
         }
-   
+
         PlayerPrefs.SetString("DisplayName", newName);
 
         GameSession.DisplayName = newName;
