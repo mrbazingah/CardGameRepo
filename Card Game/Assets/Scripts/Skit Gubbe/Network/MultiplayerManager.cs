@@ -3,6 +3,7 @@ using Fusion;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Threading.Tasks;
+using System.Collections;
 
 public static class GameSession
 {
@@ -16,8 +17,10 @@ public class MultiplayerManager : MonoBehaviour
     [Header("Join/Host Logic")]
     [SerializeField] GameObject hostPanel;
     [SerializeField] GameObject codePanel;
+    [SerializeField] GameObject loadingPanel;
+    [SerializeField] GameObject errorPanel;
+    [SerializeField] float loadingSwitchDelay;
     [SerializeField] TMP_InputField joinInputField;
-    [SerializeField] TMP_Text errorText;
     [Header("Display Name")]
     [SerializeField] GameObject profilePanel;
     [SerializeField] TMP_InputField displayNameInputField;
@@ -38,7 +41,7 @@ public class MultiplayerManager : MonoBehaviour
         displayNameInputField.text = savedName;
         GameSession.DisplayName = savedName;
 
-        if (errorText != null) errorText.text = "";
+        StartCoroutine(LoadingProcess());
     }
 
     public void Close()
@@ -46,7 +49,8 @@ public class MultiplayerManager : MonoBehaviour
         hostPanel.SetActive(false);
         codePanel.SetActive(false);
         profilePanel.SetActive(false);
-        if (errorText != null) errorText.text = "";
+        errorPanel.SetActive(false);
+        loadingPanel.SetActive(false);
     }
 
     public void OpenHostPanel()
@@ -57,6 +61,7 @@ public class MultiplayerManager : MonoBehaviour
     public void OpenCodePanel()
     {
         codePanel.SetActive(true);
+        errorPanel.SetActive(false);
         hostPanel.SetActive(false);
     }
 
@@ -67,12 +72,14 @@ public class MultiplayerManager : MonoBehaviour
         if (string.IsNullOrEmpty(inputCode))
         {
             Debug.LogWarning("Please enter a valid room code");
-            if (errorText != null) errorText.text = "Please enter a valid room code";
             return;
         }
 
         GameSession.RoomCode = inputCode;
         GameSession.IsHost = false;
+
+        loadingPanel.SetActive(true);
+        codePanel.SetActive(false);
 
         bool canJoin = await ValidateRoomCode(inputCode);
         if (canJoin)
@@ -82,7 +89,28 @@ public class MultiplayerManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Room code not found or unable to join.");
-            if (errorText != null) errorText.text = "No lobby with that code found.";
+
+            loadingPanel.SetActive(false);
+            errorPanel.SetActive(true);
+        }
+    }
+
+    IEnumerator LoadingProcess()
+    {
+        while (true)
+        {
+            TextMeshProUGUI text = loadingPanel.GetComponentInChildren<TextMeshProUGUI>();
+            text.text = "Loading.";
+
+            yield return new WaitForSeconds(loadingSwitchDelay);
+
+            text.text = "Loading..";
+
+            yield return new WaitForSeconds(loadingSwitchDelay);
+
+            text.text = "Loading...";
+
+            yield return new WaitForSeconds(loadingSwitchDelay);
         }
     }
 

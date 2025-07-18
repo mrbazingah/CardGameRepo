@@ -1,6 +1,7 @@
 using Fusion;
 using Fusion.Sockets;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -15,6 +16,9 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] Vector2 spawnPos;
     [SerializeField] Vector2 spawnOffset;
 
+    [SerializeField] GameObject loadingPanel;
+    [SerializeField] float loadingSwitchDelay;
+
     public static Transform ProfilesParent;  // Added static reference
 
 
@@ -28,6 +32,9 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     async void Start()
     {
+        loadingPanel.SetActive(true);
+        StartCoroutine(LoadingProcess());
+
         if (roomCodeText != null)
             roomCodeText.text = $"Room Code: {GameSession.RoomCode}";
         else
@@ -62,6 +69,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        loadingPanel.SetActive(false);
+
         Debug.Log($"Player joined: {player}");
 
         if (!runner.IsServer)
@@ -94,6 +103,24 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         playerProfiles[player] = profileNetObj.gameObject;
     }
 
+    IEnumerator LoadingProcess()
+    {
+        while (true)
+        {
+            TextMeshProUGUI text = loadingPanel.GetComponentInChildren<TextMeshProUGUI>();
+            text.text = "Loading.";
+
+            yield return new WaitForSeconds(loadingSwitchDelay);
+
+            text.text = "Loading..";
+
+            yield return new WaitForSeconds(loadingSwitchDelay);
+
+            text.text = "Loading...";
+
+            yield return new WaitForSeconds(loadingSwitchDelay);
+        }
+    }
 
     public async void LeaveRoom()
     {
