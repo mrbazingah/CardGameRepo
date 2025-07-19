@@ -28,29 +28,29 @@ public class PlayerProfileNetwork : NetworkBehaviour
             positionSet = true;
         }
 
-        // Initialize UI name and icon
-        if (!string.IsNullOrEmpty(NetworkDisplayName))
-        {
-            UpdateDisplayNameUI(NetworkDisplayName);
-            lastDisplayName = NetworkDisplayName;
-        }
-        readyIcon.SetActive(IsReady);
+        // Force UI update here regardless of state change
+        UpdateDisplayNameUI(NetworkDisplayName);
+        displayNameText.text = NetworkDisplayName;
+        lastDisplayName = NetworkDisplayName;
 
-        // Send display name if this is the local player
+        readyIcon.SetActive(IsReady);  // <-- force UI to match actual IsReady state
+        lastReady = IsReady;           // <-- sync lastReady so FixedUpdateNetwork doesn't immediately retrigger
+
+        // Send name if local player
         if (Object.HasInputAuthority)
         {
             RPC_SendDisplayName(GameSession.DisplayName);
 
-            // Hook up ready button only for local client
-            var btn = GameObject.Find("Ready Button")?.GetComponent<Button>();
-            if (btn != null)
+            var button = GameObject.Find("Ready Button")?.GetComponent<Button>();
+            if (button != null)
             {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(ReadyPLayer);
-                btn.interactable = true;
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(ReadyPLayer);
+                button.interactable = true;
             }
         }
     }
+
 
     public override void FixedUpdateNetwork()
     {
@@ -87,8 +87,16 @@ public class PlayerProfileNetwork : NetworkBehaviour
 
     public void ReadyPLayer()
     {
-        if (Object.HasInputAuthority)
+        if (Object.HasStateAuthority)
+        {
+            // Directly toggle if we're the server
+            IsReady = !IsReady;
+        }
+        else if (Object.HasInputAuthority)
+        {
+            // Ask the server to toggle it
             RPC_ToggleReady();
+        }
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
