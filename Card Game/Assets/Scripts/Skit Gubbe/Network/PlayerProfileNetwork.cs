@@ -1,82 +1,99 @@
 using Fusion;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerProfileNetwork : NetworkBehaviour
 {
     [Networked] public string NetworkDisplayName { get; set; }
     [Networked] public Vector2 SpawnPosition { get; set; }
-    [Networked] public bool IsHost { get; set; }  // Flag to mark if this player is host
+    [Networked] public bool IsHost { get; set; }
+    [Networked] public bool IsReady { get; set; }
 
     [SerializeField] TMP_Text displayNameText;
     [SerializeField] GameObject readyIcon;
 
-    Transform profilesParent;
     string lastDisplayName = "";
     bool positionSet = false;
+    bool lastReady = false;
 
     public override void Spawned()
     {
-        profilesParent = LobbyManager.ProfilesParent;
+        // Parent and position
+        Transform profilesParent = LobbyManager.ProfilesParent;
         transform.SetParent(profilesParent, false);
-
-        TrySetPosition();
-
-        if (!string.IsNullOrEmpty(NetworkDisplayName))
-        {
-            UpdateDisplayNameUI(NetworkDisplayName);
-            lastDisplayName = NetworkDisplayName;
-        }
-
-        if (Object.HasInputAuthority)
-        {
-            RPC_SendDisplayName(GameSession.DisplayName);
-        }
-    }
-
-    public override void FixedUpdateNetwork()
-    {
-        if (!positionSet)
-        {
-            TrySetPosition();
-        }
-
-        if (NetworkDisplayName != lastDisplayName)
-        {
-            lastDisplayName = NetworkDisplayName;
-            UpdateDisplayNameUI(lastDisplayName);
-        }
-    }
-
-    private void TrySetPosition()
-    {
         if (!positionSet && SpawnPosition != default)
         {
             transform.localPosition = new Vector3(SpawnPosition.x, SpawnPosition.y, transform.localPosition.z);
             positionSet = true;
         }
+
+        // Initialize UI name and icon
+        if (!string.IsNullOrEmpty(NetworkDisplayName))
+        {
+            UpdateDisplayNameUI(NetworkDisplayName);
+            lastDisplayName = NetworkDisplayName;
+        }
+        readyIcon.SetActive(IsReady);
+
+        // Send display name if this is the local player
+        if (Object.HasInputAuthority)
+        {
+            RPC_SendDisplayName(GameSession.DisplayName);
+
+            // Hook up ready button only for local client
+            var btn = GameObject.Find("Ready Button")?.GetComponent<Button>();
+            if (btn != null)
+            {
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(ReadyPLayer);
+                btn.interactable = true;
+            }
+        }
     }
 
-    void UpdateDisplayNameUI(string newName)
+    public override void FixedUpdateNetwork()
     {
-        if (IsHost)
+        // Name update
+        if (NetworkDisplayName != lastDisplayName)
         {
-            newName += " (Host)";
-            GameSession.DisplayName = newName;
+            lastDisplayName = NetworkDisplayName;
+            UpdateDisplayNameUI(lastDisplayName);
         }
 
+        // Ready icon sync
+        if (IsReady != lastReady)
+        {
+            lastReady = IsReady;
+            readyIcon.SetActive(IsReady);
+        }
+    }
+
+    private void UpdateDisplayNameUI(string newName)
+    {
+        string displayName = newName;
+        if (IsHost)
+            displayName += " (Host)";
+
         if (displayNameText != null)
-            displayNameText.text = newName;
+            displayNameText.text = displayName;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    void RPC_ToggleReady()
+    {
+        IsReady = !IsReady;
+    }
+
+    public void ReadyPLayer()
+    {
+        if (Object.HasInputAuthority)
+            RPC_ToggleReady();
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     void RPC_SendDisplayName(string displayName)
     {
         NetworkDisplayName = displayName;
-    }
-
-    public void ReadyPLayer()
-    {
-        readyIcon.SetActive(!readyIcon.activeSelf);
     }
 }

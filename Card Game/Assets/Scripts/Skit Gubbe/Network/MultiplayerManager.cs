@@ -1,9 +1,11 @@
-using UnityEngine;
 using Fusion;
-using UnityEngine.SceneManagement;
-using TMPro;
-using System.Threading.Tasks;
+using Fusion.Sockets;
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class GameSession
 {
@@ -12,7 +14,7 @@ public static class GameSession
     public static string DisplayName;
 }
 
-public class MultiplayerManager : MonoBehaviour
+public class MultiplayerManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     [Header("Join/Host Logic")]
     [SerializeField] GameObject hostPanel;
@@ -21,12 +23,19 @@ public class MultiplayerManager : MonoBehaviour
     [SerializeField] GameObject errorPanel;
     [SerializeField] float loadingSwitchDelay;
     [SerializeField] TMP_InputField joinInputField;
+    [Space]
+    [SerializeField] string roomFullError;
+    [SerializeField] string roomNotFoundError;
+    [SerializeField] string roomShutdownError;
     [Header("Display Name")]
     [SerializeField] GameObject profilePanel;
     [SerializeField] TMP_InputField displayNameInputField;
     [SerializeField] string defaultDisplayName = "Player";
 
+    enum JoinResult { Success, Full, NotFound }
+
     NetworkRunner tempRunner;
+    NetConnectFailedReason? lastJoinFailReason;
 
     void Start()
     {
@@ -34,14 +43,20 @@ public class MultiplayerManager : MonoBehaviour
 
         string savedName = PlayerPrefs.GetString("DisplayName");
         if (string.IsNullOrEmpty(savedName))
-        {
             savedName = defaultDisplayName;
-        }
 
         displayNameInputField.text = savedName;
         GameSession.DisplayName = savedName;
 
         StartCoroutine(LoadingProcess());
+
+        if (LobbyManager.ServerShutdown)
+        {
+            errorPanel.SetActive(true);
+            errorPanel.GetComponentInChildren<TMP_Text>().text = roomShutdownError;
+
+            LobbyManager.ServerShutdown = false;
+        }
     }
 
     public void Close()
@@ -53,10 +68,7 @@ public class MultiplayerManager : MonoBehaviour
         loadingPanel.SetActive(false);
     }
 
-    public void OpenHostPanel()
-    {
-        hostPanel.SetActive(true);
-    }
+    public void OpenHostPanel() => hostPanel.SetActive(true);
 
     public void OpenCodePanel()
     {
@@ -68,7 +80,6 @@ public class MultiplayerManager : MonoBehaviour
     public async void OnJoinClicked()
     {
         string inputCode = joinInputField.text.Trim();
-
         if (string.IsNullOrEmpty(inputCode))
         {
             Debug.LogWarning("Please enter a valid room code");
@@ -81,17 +92,22 @@ public class MultiplayerManager : MonoBehaviour
         loadingPanel.SetActive(true);
         codePanel.SetActive(false);
 
-        bool canJoin = await ValidateRoomCode(inputCode);
-        if (canJoin)
-        {
-            SceneManager.LoadScene("Lobby Scene");
-        }
-        else
-        {
-            Debug.LogWarning("Room code not found or unable to join.");
+        JoinResult joinResult = await ValidateRoomCode(inputCode);
 
-            loadingPanel.SetActive(false);
-            errorPanel.SetActive(true);
+        loadingPanel.SetActive(false);
+        errorPanel.SetActive(true);
+
+        switch (joinResult)
+        {
+            case JoinResult.Success:
+                SceneManager.LoadScene("Lobby Scene");
+                break;
+            case JoinResult.Full:
+                errorPanel.GetComponentInChildren<TMP_Text>().text = roomFullError;
+                break;
+            case JoinResult.NotFound:
+                errorPanel.GetComponentInChildren<TMP_Text>().text = roomNotFoundError;
+                break;
         }
     }
 
@@ -101,15 +117,10 @@ public class MultiplayerManager : MonoBehaviour
         {
             TextMeshProUGUI text = loadingPanel.GetComponentInChildren<TextMeshProUGUI>();
             text.text = "Loading.";
-
             yield return new WaitForSeconds(loadingSwitchDelay);
-
             text.text = "Loading..";
-
             yield return new WaitForSeconds(loadingSwitchDelay);
-
             text.text = "Loading...";
-
             yield return new WaitForSeconds(loadingSwitchDelay);
         }
     }
@@ -119,7 +130,6 @@ public class MultiplayerManager : MonoBehaviour
         string code = GenerateRoomCode();
         GameSession.RoomCode = code;
         GameSession.IsHost = true;
-
         Debug.Log($"Hosting room with code: {code}");
         SceneManager.LoadScene("Lobby Scene");
     }
@@ -130,10 +140,12 @@ public class MultiplayerManager : MonoBehaviour
         return code.ToString("D4");
     }
 
-    private async Task<bool> ValidateRoomCode(string code)
+    private async Task<JoinResult> ValidateRoomCode(string code)
     {
+        lastJoinFailReason = null;
         tempRunner = new GameObject("TempNetworkRunner").AddComponent<NetworkRunner>();
         DontDestroyOnLoad(tempRunner.gameObject);
+        tempRunner.AddCallbacks(this);
 
         var startGameArgs = new StartGameArgs
         {
@@ -143,38 +155,56 @@ public class MultiplayerManager : MonoBehaviour
         };
 
         StartGameResult result = await tempRunner.StartGame(startGameArgs);
-
-        bool success = result.Ok;
-
-        if (!success)
-        {
-            GameSession.RoomCode = null; // <-- clear room code if join failed
-            Destroy(tempRunner.gameObject);
-        }
-        else
+        if (result.Ok)
         {
             await tempRunner.Shutdown();
             Destroy(tempRunner.gameObject);
+            return JoinResult.Success;
         }
-
-        return success;
+        else
+        {
+            Destroy(tempRunner.gameObject);
+            if (lastJoinFailReason == NetConnectFailedReason.ServerFull)
+                return JoinResult.Full;
+            else
+                return JoinResult.NotFound;
+        }
     }
 
-    public void OpenProfilePanel()
-    {
-        profilePanel.SetActive(true);
-    }
+    public void OpenProfilePanel() => profilePanel.SetActive(true);
 
     public void OnDisplayNameChanged()
     {
         string newName = displayNameInputField.text.Trim();
-
         if (string.IsNullOrEmpty(newName))
-        {
             newName = defaultDisplayName;
-        }
-
         PlayerPrefs.SetString("DisplayName", newName);
         GameSession.DisplayName = newName;
     }
+
+    // INetworkRunnerCallbacks:
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    {
+        lastJoinFailReason = reason;
+    }
+
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+    public void OnConnectedToServer(NetworkRunner runner) { }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, System.ArraySegment<byte> data) { }
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
+    public void OnSceneLoadDone(NetworkRunner runner) { }
+    public void OnSceneLoadStart(NetworkRunner runner) { }
+    public void OnInput(NetworkRunner runner, NetworkInput input) { }
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
 }

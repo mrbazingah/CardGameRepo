@@ -746,7 +746,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Couldn't find a room with that code
+  m_text: Room player count is full. Unable to join.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a40d25adf0a91cc4dbd5f57e6b4f5c18, type: 2}
   m_sharedMaterial: {fileID: -191329156657266487, guid: a40d25adf0a91cc4dbd5f57e6b4f5c18, type: 2}
@@ -3756,6 +3756,9 @@ MonoBehaviour:
   errorPanel: {fileID: 1238042883}
   loadingSwitchDelay: 0.5
   joinInputField: {fileID: 1920635979}
+  roomFullError: Room player count is full. Unable to join.
+  roomNotFoundError: Couldn't find a room with that code.
+  roomShutdownError: Server shutdown or host left the room.
   profilePanel: {fileID: 309160215}
   displayNameInputField: {fileID: 287947125}
   defaultDisplayName: Player

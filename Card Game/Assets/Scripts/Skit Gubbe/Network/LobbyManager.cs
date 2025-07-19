@@ -7,6 +7,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -19,8 +20,11 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     [SerializeField] GameObject loadingPanel;
     [SerializeField] float loadingSwitchDelay;
+    [SerializeField] TMP_Text playerCountText;    // shows current count
+    [SerializeField] Button readyButton;          // button to toggle ready state
 
     public static Transform ProfilesParent;
+    public static bool ServerShutdown = false;
 
     NetworkRunner runner;
     Dictionary<PlayerRef, GameObject> playerProfiles = new();
@@ -99,6 +103,18 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         net.IsHost = (player == runner.LocalPlayer);
 
         playerProfiles[player] = profileNetObj.gameObject;
+
+        // update player count UI
+        if (playerCountText != null)
+            playerCountText.text = playerProfiles.Count + "/2";
+
+        // hook up ready button for the local player
+        if (player == runner.LocalPlayer && readyButton != null)
+        {
+            readyButton.onClick.RemoveAllListeners();
+            readyButton.onClick.AddListener(net.ReadyPLayer);
+            readyButton.interactable = true;
+        }
     }
 
     IEnumerator LoadingProcess()
@@ -140,6 +156,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             Destroy(profile);
             playerProfiles.Remove(player);
         }
+
+        // update player count UI
+        if (playerCountText != null)
+            playerCountText.text = playerProfiles.Count + "/2";
     }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
@@ -149,6 +169,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         if (!GameSession.IsHost)
         {
             Debug.Log("Client disconnected. Returning to Start Scene...");
+
+            ServerShutdown = true;
             SceneManager.LoadScene("Start Scene");
         }
     }

@@ -230,6 +230,8 @@ MonoBehaviour:
   spawnOffset: {x: 0, y: -70}
   loadingPanel: {fileID: 1184622903}
   loadingSwitchDelay: 0.5
+  playerCountText: {fileID: 1071198152}
+  readyButton: {fileID: 1126192953}
 --- !u!4 &270313541
 Transform:
   m_ObjectHideFlags: 0
