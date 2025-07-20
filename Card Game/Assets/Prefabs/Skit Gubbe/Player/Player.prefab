@@ -67,6 +67,7 @@ MonoBehaviour:
   turnNumber: 0
   endTurnButton: {fileID: 0}
   playChanceDelay: 0.5
+  canChance: 0
   chanceNotice: {fileID: 0}
   lerpSpeed: 15
   cardAmountText: {fileID: 7938488687534153862}

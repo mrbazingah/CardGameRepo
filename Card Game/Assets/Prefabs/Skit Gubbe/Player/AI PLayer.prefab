@@ -367,7 +367,7 @@ MonoBehaviour:
   turnNumber: 0
   playDelay: 1
   chanceDelay: 0.5
-  chanceToPlayChance: 50
+  chanceToPlayChance: 100
   lerpSpeed: 15
   cardAmountText: {fileID: 2500706921955742232}
   cardAmountTextOffset: {x: 1.2, y: -1.45}
