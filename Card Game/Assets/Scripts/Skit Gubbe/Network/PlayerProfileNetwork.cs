@@ -53,21 +53,16 @@ public class PlayerProfileNetwork : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        Debug.Log($"[FixedUpdateNetwork - {Object.name}] IsReady={IsReady}, HasInputAuthority={Object.HasInputAuthority}, HasStateAuthority={Object.HasStateAuthority}");
-
-        // Name update
         if (NetworkDisplayName != lastDisplayName)
         {
             lastDisplayName = NetworkDisplayName;
             UpdateDisplayNameUI(lastDisplayName);
         }
+    }
 
-        // Ready icon sync
-        if (IsReady != lastReady)
-        {
-            lastReady = IsReady;
-            readyIcon.SetActive(IsReady);
-        }
+    void Update()
+    {
+        readyIcon.SetActive(IsReady);
     }
 
     private void UpdateDisplayNameUI(string newName)
