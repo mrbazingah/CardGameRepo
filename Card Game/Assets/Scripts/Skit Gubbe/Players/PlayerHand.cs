@@ -422,7 +422,7 @@ public class PlayerHand : MonoBehaviour
             }
         }
 
-        StartCoroutine(gameManager.ProcessWin("Player"));
+        StartCoroutine(gameManager.ProcessWin(GameSession.DisplayName));
     }
 
     public void PlayChanceCard()

@@ -22,19 +22,19 @@ public class PlayerProfileNetwork : NetworkBehaviour
         // Parent and position
         Transform profilesParent = LobbyManager.ProfilesParent;
         transform.SetParent(profilesParent, false);
+
         if (!positionSet && SpawnPosition != default)
         {
             transform.localPosition = new Vector3(SpawnPosition.x, SpawnPosition.y, transform.localPosition.z);
             positionSet = true;
         }
 
-        // Force UI update here regardless of state change
+        // Force initial UI update
         UpdateDisplayNameUI(NetworkDisplayName);
         displayNameText.text = NetworkDisplayName;
         lastDisplayName = NetworkDisplayName;
 
-        readyIcon.SetActive(IsReady);  // <-- force UI to match actual IsReady state
-        lastReady = IsReady;           // <-- sync lastReady so FixedUpdateNetwork doesn't immediately retrigger
+        readyIcon.SetActive(IsReady);  // force UI to match actual IsReady state
 
         // Send name if local player
         if (Object.HasInputAuthority)
@@ -51,9 +51,10 @@ public class PlayerProfileNetwork : NetworkBehaviour
         }
     }
 
-
     public override void FixedUpdateNetwork()
     {
+        Debug.Log($"[FixedUpdateNetwork - {Object.name}] IsReady={IsReady}, HasInputAuthority={Object.HasInputAuthority}, HasStateAuthority={Object.HasStateAuthority}");
+
         // Name update
         if (NetworkDisplayName != lastDisplayName)
         {
@@ -89,12 +90,10 @@ public class PlayerProfileNetwork : NetworkBehaviour
     {
         if (Object.HasStateAuthority)
         {
-            // Directly toggle if we're the server
             IsReady = !IsReady;
         }
         else if (Object.HasInputAuthority)
         {
-            // Ask the server to toggle it
             RPC_ToggleReady();
         }
     }
