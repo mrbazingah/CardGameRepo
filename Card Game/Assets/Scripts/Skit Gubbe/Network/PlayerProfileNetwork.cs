@@ -68,8 +68,10 @@ public class PlayerProfileNetwork : NetworkBehaviour
     private void UpdateDisplayNameUI(string newName)
     {
         string displayName = newName;
-        if (IsHost)
+        if (IsHost && !displayName.Contains("Host"))
             displayName += " (Host)";
+
+        NetworkDisplayName = displayName;
 
         if (displayNameText != null)
             displayNameText.text = displayName;
@@ -99,3 +101,5 @@ public class PlayerProfileNetwork : NetworkBehaviour
         NetworkDisplayName = displayName;
     }
 }
+
+
