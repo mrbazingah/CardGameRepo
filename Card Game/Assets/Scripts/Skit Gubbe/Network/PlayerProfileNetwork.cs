@@ -1,6 +1,7 @@
 using Fusion;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerProfileNetwork : NetworkBehaviour
@@ -17,8 +18,12 @@ public class PlayerProfileNetwork : NetworkBehaviour
     bool positionSet = false;
     bool lastReady = false;
 
+    LobbyManager lobbyManager;
+
     public override void Spawned()
     {
+        lobbyManager = FindFirstObjectByType<LobbyManager>();
+
         // Parent and position
         Transform profilesParent = LobbyManager.ProfilesParent;
         transform.SetParent(profilesParent, false);
@@ -78,6 +83,12 @@ public class PlayerProfileNetwork : NetworkBehaviour
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    void RPC_SendDisplayName(string displayName)
+    {
+        NetworkDisplayName = displayName;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     void RPC_ToggleReady()
     {
         IsReady = !IsReady;
@@ -93,12 +104,13 @@ public class PlayerProfileNetwork : NetworkBehaviour
         {
             RPC_ToggleReady();
         }
+
+        lobbyManager.OnPlayerReady();
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    void RPC_SendDisplayName(string displayName)
+    public void LoadGame()
     {
-        NetworkDisplayName = displayName;
+        SceneManager.LoadScene("Multiplayer Scene");
     }
 }
 

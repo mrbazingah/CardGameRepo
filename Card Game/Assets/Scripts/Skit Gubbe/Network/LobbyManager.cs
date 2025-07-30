@@ -26,6 +26,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     public static Transform ProfilesParent;
     public static bool ServerShutdown = false;
 
+    List<int> playersReady = new List<int>();
+
     NetworkRunner runner;
     Dictionary<PlayerRef, GameObject> playerProfiles = new();
 
@@ -114,6 +116,32 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             readyButton.onClick.RemoveAllListeners();
             readyButton.onClick.AddListener(net.ReadyPLayer);
             readyButton.interactable = true;
+        }
+    }
+
+    public void OnPlayerReady()
+    {
+        for (int i = 0; i < playerProfiles.Count; i++)
+        {
+            if (playerProfiles.ElementAt(i).Value.GetComponent<PlayerProfileNetwork>().IsReady)
+            {
+                Debug.Log($"Player {i} is ready.");
+                playersReady.Add(1);
+            }
+            else
+            {
+                Debug.Log($"Player {i} is not ready.");
+                playersReady.RemoveAt(0);
+            }
+
+            if (playersReady.Count == 2)
+            {
+                Debug.Log("All Players are ready");
+                for (int j = 0; j < playerProfiles.Count; j++)
+                {
+                    playerProfiles.ElementAt(j).Value.GetComponent<PlayerProfileNetwork>().LoadGame();
+                }
+            }
         }
     }
 
