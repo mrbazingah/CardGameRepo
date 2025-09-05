@@ -17,6 +17,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] NetworkObject playerProfilePrefab;
     [SerializeField] Vector2 spawnPos;
     [SerializeField] Vector2 spawnOffset;
+    [SerializeField] GameObject startGameButton; // only for host
 
     [SerializeField] GameObject loadingPanel;
     [SerializeField] float loadingSwitchDelay;
@@ -71,6 +72,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             Debug.LogWarning($"Failed to start/join game with code {GameSession.RoomCode}. Returning to Start scene.");
             SceneManager.LoadScene("Start Scene");
         }
+
+        startGameButton.SetActive(false);
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -139,9 +142,17 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
                 Debug.Log("All Players are ready");
                 for (int j = 0; j < playerProfiles.Count; j++)
                 {
-                    playerProfiles.ElementAt(j).Value.GetComponent<PlayerProfileNetwork>().LoadGame();
+                    startGameButton.SetActive(true);
                 }
             }
+        }
+    }
+
+    public void OnStartGame()
+    {
+        for (int i = 0; i < playerProfiles.Count; i++)
+        {
+            playerProfiles.ElementAt(i).Value.GetComponent<PlayerProfileNetwork>().LoadGame();
         }
     }
 
