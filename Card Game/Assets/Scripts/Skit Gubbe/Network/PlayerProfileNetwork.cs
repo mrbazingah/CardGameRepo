@@ -107,11 +107,6 @@ public class PlayerProfileNetwork : NetworkBehaviour
 
         lobbyManager.OnPlayerReady();
     }
-
-    public void LoadGame()
-    {
-        SceneManager.LoadScene("Multiplayer Scene");
-    }
 }
 
 

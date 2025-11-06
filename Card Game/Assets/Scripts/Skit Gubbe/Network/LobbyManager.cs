@@ -150,17 +150,19 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnStartGame()
     {
-        for (int i = 0; i < playerProfiles.Count; i++)
-        {
-            playerProfiles.ElementAt(i).Value.GetComponent<PlayerProfileNetwork>().LoadGame();
-        }
+        if (!runner.IsServer)
+            return;
+
+        // Load the multiplayer scene for everyone
+        runner.LoadScene(SceneRef.FromIndex(3));
     }
 
     IEnumerator LoadingProcess()
     {
+        TextMeshProUGUI text = loadingPanel.GetComponentInChildren<TextMeshProUGUI>();
+
         while (true)
         {
-            TextMeshProUGUI text = loadingPanel.GetComponentInChildren<TextMeshProUGUI>();
             text.text = "Loading.";
 
             yield return new WaitForSeconds(loadingSwitchDelay);

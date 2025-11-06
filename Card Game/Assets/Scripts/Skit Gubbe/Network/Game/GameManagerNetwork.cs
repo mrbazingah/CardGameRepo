@@ -24,7 +24,9 @@ public class GameManagerNetwork : NetworkBehaviour
     [SerializeField] int minScore;
     [SerializeField] int maxScore;
 
-    int score; bool isPausedLocal; NetworkPlayerHand[] playerHands;
+    int score; 
+    bool isPausedLocal; 
+    NetworkPlayerHand[] playerHands;
 
     public override void Spawned()
     {
