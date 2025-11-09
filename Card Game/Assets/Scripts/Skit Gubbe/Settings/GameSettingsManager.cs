@@ -2,8 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class SettingsManager : MonoBehaviour
+public class GameSettingsManager : MonoBehaviour
 {
     [Header("Input Fields")]
     [SerializeField] TMP_InputField cardsPerPlayerField;
@@ -79,7 +78,7 @@ public class SettingsManager : MonoBehaviour
         }
 
         TextMeshProUGUI cardText = cardsPerPlayerField.GetComponentInChildren<TextMeshProUGUI>();
-        cardText.alignment = cardText.name == "Title" ? TextAlignmentOptions.Left : TextAlignmentOptions.Center;
+        cardText.alignment = TextAlignmentOptions.Center;
 
         cardsPerPlayerField.text = number.ToString();   
         PlayerPrefs.SetInt("CardsPerPlayer", number);
@@ -96,7 +95,7 @@ public class SettingsManager : MonoBehaviour
         }
 
         TextMeshProUGUI aiText = aiChancePrecentageField.GetComponentInChildren<TextMeshProUGUI>();
-        aiText.alignment = aiText.name == "Title" ? TextAlignmentOptions.Left : TextAlignmentOptions.Center;
+        aiText.alignment = TextAlignmentOptions.Center;
 
         aiChancePrecentageField.text = number.ToString();
         PlayerPrefs.SetInt("AiChancePrecentage", number);
