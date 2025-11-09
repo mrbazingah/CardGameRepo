@@ -37,7 +37,7 @@ public class PlayerHand : MonoBehaviour
     int cardsPerPlayer;
     int savedCardValue;
     bool hasDiscarded;
-
+    bool gameHasStarted;
     bool isPaused;
 
     List<GameObject> selectedCards = new List<GameObject>(0);
@@ -103,6 +103,7 @@ public class PlayerHand : MonoBehaviour
         DetectHover();
 
         chanceNotice.SetActive(CanChance());
+        gameHasStarted = gameManager.GetGameHasStarted();
     }
 
     #region Sorting
@@ -178,25 +179,39 @@ public class PlayerHand : MonoBehaviour
             }
 
             Vector2 cardPosition;
-            if (cards.Count > 1)
+            bool isHovered = (cards[i] == hoveredCard);
+
+            if (cards == handCards)
             {
                 float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
-                cardPosition = cards[i] == hoveredCard ? new Vector2(horizontalOffset + offset, offset + popUpHeight) : new Vector2(horizontalOffset + offset, offset);
+                float verticalOffset = isHovered ? offset + popUpHeight : offset;
+                cardPosition = new Vector2(horizontalOffset + offset, verticalOffset);
             }
             else
             {
-                cardPosition = cards[i] == hoveredCard ? new Vector2(offset, offset + popUpHeight) : new Vector2(offset, offset);
-            }
+                var cardComp = cards[i].GetComponent<Card>();
 
-            cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
-
-            for (int ii = 0; ii < cards.Count; ii++)
-            {
-                if (cards[i] == cards[ii] && ii != i)
+                if (!gameHasStarted)
                 {
-                    cards.RemoveAt(ii);
+                    float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
+                    float verticalOffset = isHovered ? offset + popUpHeight : offset;
+                    cardPosition = new Vector2(horizontalOffset + offset, verticalOffset);
+
+                    cardComp.basePosition = new Vector2(horizontalOffset + offset, offset);
+                }
+                else
+                {
+                    Vector2 basePos = cardComp.basePosition;
+                    float verticalOffset = isHovered ? basePos.y + popUpHeight : basePos.y;
+                    cardPosition = new Vector2(basePos.x, verticalOffset);
                 }
             }
+
+            cards[i].transform.localPosition = Vector2.Lerp(
+                cards[i].transform.localPosition,
+                cardPosition,
+                lerpSpeed * Time.deltaTime
+            );
         }
     }
 

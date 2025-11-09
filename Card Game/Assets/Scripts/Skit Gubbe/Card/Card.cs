@@ -7,6 +7,8 @@ public class Card : MonoBehaviour
     [SerializeField] float handZeroPoint;
     [SerializeField] float sideZeroPoint;
 
+    public Vector2 basePosition;
+
     bool hasBeenTurned;
 
     BoxCollider2D myBoxCollider;
