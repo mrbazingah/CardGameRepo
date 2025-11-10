@@ -3009,7 +3009,7 @@ PrefabInstance:
       objectReference: {fileID: 5774818471360900971}
     - target: {fileID: 2262102085766092034, guid: ccc85b75e23df5045aa6e988bbadf281, type: 3}
       propertyPath: numberOfCards
-      value: 30
+      value: 52
       objectReference: {fileID: 0}
     - target: {fileID: 3458451284564360503, guid: ccc85b75e23df5045aa6e988bbadf281, type: 3}
       propertyPath: m_Name

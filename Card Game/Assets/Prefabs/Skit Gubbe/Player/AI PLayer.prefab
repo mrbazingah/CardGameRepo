@@ -161,7 +161,7 @@ Transform:
   m_GameObject: {fileID: 2128648111400747902}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.7, y: 2, z: 0}
+  m_LocalPosition: {x: -5.7, y: 1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -192,7 +192,7 @@ Transform:
   m_GameObject: {fileID: 4987307938257600309}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.7, y: 2, z: 0}
+  m_LocalPosition: {x: -5.7, y: 1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -470,8 +470,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -523,7 +523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8244304681938664073}
-  - component: {fileID: 6106643260078049397}
+  - component: {fileID: 6672254915189555265}
   m_Layer: 0
   m_Name: AI PLayer
   m_TagString: Untagged
@@ -550,7 +550,7 @@ Transform:
   - {fileID: 2623673887836426967}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6106643260078049397
+--- !u!114 &6672254915189555265
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -559,7 +559,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8148943176141036670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c64670193744bcc4ba76d8d957494a29, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ed28b511b104d0468c1fdbe4e68adbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   handCards: []
@@ -572,17 +572,17 @@ MonoBehaviour:
   overSideTransform: {fileID: 295623690729935902}
   sideBaseCardSpacing: 1.5
   sideMaxHandWidth: 15
-  overSideOffset: -0.15
-  isTurnPos: {x: 0, y: 3.5}
+  overSideOffset: 0.15
+  isTurnPos: {x: 0, y: 4}
   isNotTurnPos: {x: 0, y: 4.7}
   isTurn: 0
   turnNumber: 0
-  playDelay: 1
+  playDelay: 1.2
   chanceDelay: 0.5
   chanceToPlayChance: 100
   lerpSpeed: 15
   cardAmountText: {fileID: 2500706921955742232}
-  cardAmountTextOffset: {x: 1.2, y: -1.45}
+  cardAmountTextOffset: {x: 1, y: 1.2}
 --- !u!1 &8183546333639245761
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,7 +639,7 @@ Transform:
   m_GameObject: {fileID: 8841262682513310950}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 373, y: 175, z: 0}
+  m_LocalPosition: {x: 373, y: 195, z: 0}
   m_LocalScale: {x: 0.79504395, y: 0.79504395, z: 0.79504395}
   m_ConstrainProportionsScale: 0
   m_Children:

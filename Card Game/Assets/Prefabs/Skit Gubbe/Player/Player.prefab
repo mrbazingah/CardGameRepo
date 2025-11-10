@@ -54,24 +54,24 @@ MonoBehaviour:
   handTransform: {fileID: 4925622628156574016}
   baseCardSpacing: 0.7
   maxHandWidth: 8
-  popUpHeight: 0.8
+  popUpHeight: 0.5
   underSideTransform: {fileID: 6273092253405298563}
   overSideTransform: {fileID: 3635109262854338423}
   sideBaseCardSpacing: 1.5
   sideMaxHandWidth: 15
   overSideOffset: 0.15
-  isTurnPos: {x: 0, y: -3.5}
+  isTurnPos: {x: 0, y: -4}
   isNotTurnPos: {x: 0, y: -4.7}
   isTurn: 0
   canEndTurn: 0
   turnNumber: 0
   endTurnButton: {fileID: 0}
-  playChanceDelay: 0.75
+  playChanceDelay: 0.5
   canChance: 0
   chanceNotice: {fileID: 0}
   lerpSpeed: 15
   cardAmountText: {fileID: 7938488687534153862}
-  cardAmountTextOffset: {x: -1.2, y: 1.5}
+  cardAmountTextOffset: {x: -1, y: 1.2}
 --- !u!1 &1442528388883264576
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,7 +98,7 @@ Transform:
   m_GameObject: {fileID: 1442528388883264576}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -373, y: -175, z: 0}
+  m_LocalPosition: {x: -373, y: -195, z: 0}
   m_LocalScale: {x: 0.79504395, y: 0.79504395, z: 0.79504395}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -144,7 +144,7 @@ Transform:
   m_GameObject: {fileID: 2614366089162157196}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.7, y: -2, z: 0}
+  m_LocalPosition: {x: 5.7, y: -1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -244,8 +244,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -552,7 +552,7 @@ Transform:
   m_GameObject: {fileID: 7716485540196799829}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.7, y: -2, z: 0}
+  m_LocalPosition: {x: 5.7, y: -1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

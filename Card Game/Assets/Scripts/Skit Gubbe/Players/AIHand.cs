@@ -22,7 +22,7 @@ public class AIHand : MonoBehaviour
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
     [SerializeField] float chanceDelay;
-    [SerializeField] int chanceToPlayChance; //Precentage from 0% too 100%
+    [SerializeField, Range(0, 100)] int chanceToPlayChance = 50;
     [Space]
     [SerializeField] float lerpSpeed;
     [SerializeField] TextMeshProUGUI cardAmountText;
