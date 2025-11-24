@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4968159901837846568}
   - component: {fileID: 5960874939198813173}
   m_Layer: 0
-  m_Name: BackCard
+  m_Name: Back Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

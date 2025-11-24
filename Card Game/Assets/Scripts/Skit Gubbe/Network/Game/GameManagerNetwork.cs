@@ -2,15 +2,14 @@ using Fusion;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
-using System.Collections;
 using System.Linq;
 
-[RequireComponent(typeof(NetworkRunner))]
 public class GameManagerNetwork : NetworkBehaviour
 {
     [Networked] public PlayerRef CurrentTurn { get; set; }
     [Networked] public bool GameStarted { get; set; }
     [Networked] public bool WinnerDeclared { get; set; }
+    [Networked] public int PlayersReady { get; set; }
 
     [Header("UI Elements")]
     [SerializeField] GameObject startButton;
@@ -27,6 +26,9 @@ public class GameManagerNetwork : NetworkBehaviour
     int score; 
     bool isPausedLocal; 
     NetworkPlayerHand[] playerHands;
+    NetworkCardGenerator cardGenerator;
+    [Networked] TickTimer startGameDelayTimer { get; set; }
+    bool hasStartedGameDelay;
 
     public override void Spawned()
     {
@@ -34,13 +36,29 @@ public class GameManagerNetwork : NetworkBehaviour
         {
             GameStarted = false;
             WinnerDeclared = false;
+            PlayersReady = 0;
+            hasStartedGameDelay = false;
             var players = Runner.ActivePlayers.ToList();
-            CurrentTurn = players[0];
+            if (players.Count > 0)
+            {
+                CurrentTurn = players[0];
+            }
         }
         score = PlayerPrefs.GetInt("Score", 0);
+        
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " + score;
+        }
     }
 
     void Awake()
+    {
+        RefreshPlayerHands();
+        cardGenerator = FindObjectOfType<NetworkCardGenerator>();
+    }
+
+    void RefreshPlayerHands()
     {
         playerHands = FindObjectsOfType<NetworkPlayerHand>();
     }
@@ -48,7 +66,15 @@ public class GameManagerNetwork : NetworkBehaviour
     void Update()
     {
         if (HasInputAuthority)
+        {
             ProcessPauseToggle();
+        }
+
+        // Refresh player hands periodically to catch newly spawned hands
+        if (playerHands == null || playerHands.Length < 2)
+        {
+            RefreshPlayerHands();
+        }
     }
 
     public void LocalStartGame()
@@ -60,15 +86,59 @@ public class GameManagerNetwork : NetworkBehaviour
         RPC_RequestStartGame();
     }
 
+    public void LocalPlayerReady()
+    {
+        if (!HasInputAuthority)
+            return;
+        RPC_PlayerReady();
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    void RPC_PlayerReady(RpcInfo info = default)
+    {
+        if (!Object.HasStateAuthority)
+            return;
+
+        PlayersReady++;
+        Debug.Log($"Player ready. Total ready: {PlayersReady}");
+
+        // Check if all players are ready
+        var players = Runner.ActivePlayers.ToList();
+        if (PlayersReady >= players.Count && players.Count >= 2)
+        {
+            Debug.Log("All players are ready - Starting game!");
+            // Start the game automatically
+            if (!hasStartedGameDelay)
+            {
+                startGameDelayTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
+                hasStartedGameDelay = true;
+            }
+        }
+    }
+
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     void RPC_RequestStartGame(RpcInfo info = default)
     {
         if (!Object.HasStateAuthority)
             return;
-        AssignStartPlayer();
-        var players = Runner.ActivePlayers.ToList();
-        CurrentTurn = players[0];
-        RPC_BroadcastStart();
+
+        // Wait a moment for cards to be dealt, then assign start player
+        if (!hasStartedGameDelay)
+        {
+            startGameDelayTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
+            hasStartedGameDelay = true;
+        }
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (Object.HasStateAuthority && hasStartedGameDelay && startGameDelayTimer.Expired(Runner))
+        {
+            RefreshPlayerHands();
+            AssignStartPlayer();
+            RPC_BroadcastStart();
+            hasStartedGameDelay = false;
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -93,15 +163,35 @@ public class GameManagerNetwork : NetworkBehaviour
     {
         if (!HasInputAuthority || !GameStarted)
             return;
-        RPC_RequestNextTurn();
+        RPC_RequestNextTurn(0); // 0 means normal turn advance
+    }
+
+    public void LocalEndTurnWithCard(byte cardValue)
+    {
+        if (!HasInputAuthority || !GameStarted)
+            return;
+        // Special cards (2 and 10) don't advance turn
+        if (cardValue == 2 || cardValue == 10)
+        {
+            return; // Don't advance turn
+        }
+        RPC_RequestNextTurn(cardValue);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    void RPC_RequestNextTurn(RpcInfo info = default)
+    void RPC_RequestNextTurn(byte lastCardValue, RpcInfo info = default)
     {
         if (!Object.HasStateAuthority)
             return;
-        AdvanceTurn(); RPC_BroadcastTurn();
+        
+        // Special cards don't advance turn
+        if (lastCardValue == 2 || lastCardValue == 10)
+        {
+            return;
+        }
+        
+        AdvanceTurn();
+        RPC_BroadcastTurn();
     }
 
     void AdvanceTurn()
@@ -122,9 +212,19 @@ public class GameManagerNetwork : NetworkBehaviour
     {
         if (!Object.HasStateAuthority || WinnerDeclared || !GameStarted)
             return;
+
+        RefreshPlayerHands();
+        
+        if (playerHands == null || playerHands.Length < 2)
+            return;
+
         var players = Runner.ActivePlayers.ToList();
-        bool firstEmpty = playerHands[0].HandCount == 0;
-        bool secondEmpty = playerHands.Length > 1 && playerHands[1].HandCount == 0;
+        if (players.Count < 2)
+            return;
+
+        bool firstEmpty = playerHands[0] != null && playerHands[0].HandCount == 0;
+        bool secondEmpty = playerHands.Length > 1 && playerHands[1] != null && playerHands[1].HandCount == 0;
+        
         if (firstEmpty || secondEmpty)
         {
             WinnerDeclared = true;
@@ -168,9 +268,39 @@ public class GameManagerNetwork : NetworkBehaviour
 
     void AssignStartPlayer()
     {
-        int lowestVal = int.MaxValue; int startIdx = 0;
-        for (int i = 0; i < playerHands.Length; i++) { int val = playerHands[i].GetLowestValueExcluding(2, 10); if (val < lowestVal) { lowestVal = val; startIdx = i; } }
-        var players = Runner.ActivePlayers.ToList();
-        CurrentTurn = players[startIdx];
+        RefreshPlayerHands();
+        
+        if (playerHands == null || playerHands.Length < 2)
+        {
+            // Fallback: just use first player
+            var players = Runner.ActivePlayers.ToList();
+            if (players.Count > 0)
+            {
+                CurrentTurn = players[0];
+            }
+            return;
+        }
+
+        int lowestVal = int.MaxValue;
+        int startIdx = 0;
+        
+        for (int i = 0; i < playerHands.Length; i++)
+        {
+            if (playerHands[i] == null)
+                continue;
+                
+            int val = playerHands[i].GetLowestValueExcluding(2, 10);
+            if (val < lowestVal)
+            {
+                lowestVal = val;
+                startIdx = i;
+            }
+        }
+        
+        var playersList = Runner.ActivePlayers.ToList();
+        if (startIdx < playersList.Count)
+        {
+            CurrentTurn = playersList[startIdx];
+        }
     }
 }

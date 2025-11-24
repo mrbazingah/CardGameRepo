@@ -52,6 +52,12 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         runner.ProvideInput = true;
         runner.AddCallbacks(this);
 
+        // Ensure scene manager is set up for scene loading
+        if (runner.gameObject.GetComponent<NetworkSceneManagerDefault>() == null)
+        {
+            runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
+        }
+
         if (string.IsNullOrEmpty(GameSession.RoomCode))
         {
             Debug.LogError("No room code set! Cannot start game.");
@@ -150,10 +156,18 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnStartGame()
     {
-        if (!runner.IsServer)
+        if (runner == null || !runner.IsServer)
             return;
 
+        // Ensure we have at least 2 players
+        if (runner.ActivePlayers.Count() < 2)
+        {
+            Debug.LogWarning("Cannot start game: Need at least 2 players");
+            return;
+        }
+
         // Load the multiplayer scene for everyone
+        // Scene index 3 should be the Multiplayer Scene
         runner.LoadScene(SceneRef.FromIndex(3));
     }
 
