@@ -47,6 +47,7 @@ public class NetworkPlayerHand : NetworkBehaviour
     [Networked] byte savedCardValue { get; set; }
     [Networked] bool hasDiscarded { get; set; }
     [Networked] bool canEndTurn { get; set; }
+    [Networked] public int NetworkedHandCount { get; set; }
     
     bool usingOverSideCards;
     bool usingUnderSideCards;
@@ -54,6 +55,19 @@ public class NetworkPlayerHand : NetworkBehaviour
     int cardsPerPlayer;
     
     public int HandCount => GetCurrentCards().Count;
+
+    public override void FixedUpdateNetwork()
+    {
+        // Update networked hand count so opponent can see it
+        if (Object.HasStateAuthority)
+        {
+            int currentCount = HandCount;
+            if (currentCount != NetworkedHandCount)
+            {
+                NetworkedHandCount = currentCount;
+            }
+        }
+    }
 
     public override void Spawned()
     {

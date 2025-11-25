@@ -11,10 +11,8 @@ GameObject:
   - component: {fileID: 1177629001795760811}
   - component: {fileID: 7949505929561918996}
   - component: {fileID: 7036133180628092396}
-  - component: {fileID: 4291916145979825525}
   - component: {fileID: 965137997308329344}
   - component: {fileID: 7212342613750236455}
-  - component: {fileID: 2985479107958198974}
   m_Layer: 0
   m_Name: Network Card
   m_TagString: Untagged
@@ -138,23 +136,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.1475074, y: 2.2125053}
   m_EdgeRadius: 0
---- !u!114 &4291916145979825525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6334333596411625311}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3aeda818d336cfd4c9aef731387f0b4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardValue: 0
-  back: {fileID: 0}
-  handZeroPoint: -3.6
-  sideZeroPoint: -0.7
-  basePosition: {x: 0, y: 0}
 --- !u!114 &965137997308329344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,17 +174,3 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 965137997308329344}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &2985479107958198974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6334333596411625311}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1541381998, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Guid:
-    RawGuidValue: 1496568683236cc44ad1b48f6d3eb86f
