@@ -167,8 +167,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         // Load the multiplayer scene for everyone
-        // Scene index 3 should be the Multiplayer Scene
-        runner.LoadScene(SceneRef.FromIndex(3));
+        // Scene index 4 is the Multiplayer Scene (0=Start, 1=Lobby, 2=Singleplayer Lobby, 3=Singleplayer, 4=Multiplayer)
+        runner.LoadScene(SceneRef.FromIndex(4));
     }
 
     IEnumerator LoadingProcess()

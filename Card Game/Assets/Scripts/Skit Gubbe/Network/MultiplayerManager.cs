@@ -131,7 +131,9 @@ public class MultiplayerManager : MonoBehaviour, INetworkRunnerCallbacks
         GameSession.RoomCode = code;
         GameSession.IsHost = true;
         Debug.Log($"Hosting room with code: {code}");
-        SceneManager.LoadScene("Lobby Scene");
+        
+        // Load Lobby Scene (index 1 in build settings)
+        SceneManager.LoadScene(1);
     }
 
     private string GenerateRoomCode()

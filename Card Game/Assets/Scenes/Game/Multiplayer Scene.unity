@@ -3345,6 +3345,10 @@ PrefabInstance:
       propertyPath: deckImage
       value: 
       objectReference: {fileID: 5774818471360900971}
+    - target: {fileID: 317442969003964550, guid: 55143ae08ff4abf418e4a32af5ec774d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 322551879138401549, guid: 55143ae08ff4abf418e4a32af5ec774d, type: 3}
       propertyPath: m_Name
       value: Network Card Generator
