@@ -1,17 +1,24 @@
 using Fusion;
 using UnityEngine;
 using System.Linq;
+using System.Collections.Generic;
 
 /// <summary>
-/// Spawns NetworkPlayerHand objects for each player when they join.
-/// This ensures each player gets their own hand at the bottom of the screen.
+/// IMPORTANT: NetworkObjects must be SPAWNED, not manually placed!
 /// 
-/// SETUP: Place this in your Multiplayer Scene and assign the NetworkPlayerHand prefab.
+/// This script finds manually placed NetworkPlayerHand GameObjects (without NetworkObject component),
+/// and spawns NetworkObject versions of them with the correct InputAuthority.
+/// 
+/// ALTERNATIVE: Use NetworkPlayerHandSpawner with a prefab instead (recommended).
 /// </summary>
-public class NetworkPlayerHandSpawner : NetworkBehaviour, INetworkRunnerCallbacks
+public class NetworkPlayerHandAssigner : NetworkBehaviour, INetworkRunnerCallbacks
 {
+    [Header("Manual Setup - Use Prefab Instead!")]
+    [Tooltip("If you manually placed NetworkPlayerHand objects, create a prefab from one and use NetworkPlayerHandSpawner instead.")]
     [SerializeField] NetworkPrefabRef playerHandPrefab;
-    [SerializeField] Vector2 playerHandPosition = new Vector2(0, -4); // Bottom of screen
+    [SerializeField] Vector2 playerHandPosition = new Vector2(0, -4);
+    
+    Dictionary<PlayerRef, NetworkPlayerHand> assignedHands = new Dictionary<PlayerRef, NetworkPlayerHand>();
 
     public override void Spawned()
     {
@@ -23,25 +30,29 @@ public class NetworkPlayerHandSpawner : NetworkBehaviour, INetworkRunnerCallback
         if (!Object.HasStateAuthority)
             return;
 
-        // Spawn a hand for each existing player
+        // Spawn hands for existing players
         var players = Runner.ActivePlayers.ToList();
         foreach (var player in players)
         {
-            SpawnPlayerHand(player);
+            SpawnHandForPlayer(player);
         }
     }
 
-    void SpawnPlayerHand(PlayerRef player)
+    void SpawnHandForPlayer(PlayerRef player)
     {
-        // Check if hand already exists for this player
-        var existingHands = FindObjectsOfType<NetworkPlayerHand>();
-        if (existingHands.Any(h => h.Object != null && h.Object.InputAuthority == player))
+        // Skip if already assigned
+        if (assignedHands.ContainsKey(player))
         {
-            Debug.Log($"NetworkPlayerHand already exists for player {player}");
-            return; // Hand already exists
+            return;
         }
 
-        // Spawn hand with player's input authority (so only they can see/interact with it)
+        if (playerHandPrefab == null || playerHandPrefab == NetworkPrefabRef.Empty)
+        {
+            Debug.LogError("NetworkPlayerHandAssigner: playerHandPrefab is not assigned! Please assign a NetworkPlayerHand prefab.");
+            return;
+        }
+
+        // Spawn hand with player's input authority
         var handObj = Runner.Spawn(
             playerHandPrefab,
             (Vector3)playerHandPosition,
@@ -49,7 +60,16 @@ public class NetworkPlayerHandSpawner : NetworkBehaviour, INetworkRunnerCallback
             player
         );
 
-        Debug.Log($"Spawned NetworkPlayerHand for player {player} at position {playerHandPosition}");
+        var hand = handObj.GetComponent<NetworkPlayerHand>();
+        if (hand != null)
+        {
+            assignedHands[player] = hand;
+            Debug.Log($"Spawned NetworkPlayerHand for player {player} at position {playerHandPosition}");
+        }
+        else
+        {
+            Debug.LogError($"Spawned object doesn't have NetworkPlayerHand component!");
+        }
     }
 
     // INetworkRunnerCallbacks implementation
@@ -57,11 +77,18 @@ public class NetworkPlayerHandSpawner : NetworkBehaviour, INetworkRunnerCallback
     {
         if (Object.HasStateAuthority)
         {
-            SpawnPlayerHand(player);
+            AssignHandToPlayer(player);
         }
     }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        if (assignedHands.ContainsKey(player))
+        {
+            assignedHands.Remove(player);
+        }
+    }
+
     public void onInput(NetworkRunner runner, NetworkInputData data) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInputData data) { }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
@@ -77,7 +104,4 @@ public class NetworkPlayerHandSpawner : NetworkBehaviour, INetworkRunnerCallback
     public void OnSceneLoadDone(NetworkRunner runner) { }
     public void OnSceneLoadStart(NetworkRunner runner) { }
 }
-
-
-
 

@@ -310,7 +310,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5529601107496521917}
-  - component: {fileID: 674328488123650839}
   - component: {fileID: 5199153093504287152}
   - component: {fileID: 7182194343180742970}
   m_Layer: 0
@@ -339,42 +338,6 @@ Transform:
   - {fileID: 7046358714646666534}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &674328488123650839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6236314439777118036}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81e9f22d10fb4ed4ab266017adf5c87d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handCards: []
-  underSideCards: []
-  overSideCards: []
-  handTransform: {fileID: 1267597904657094909}
-  baseCardSpacing: 0.7
-  maxHandWidth: 8
-  popUpHeight: 0.5
-  underSideTransform: {fileID: 5891458837549750828}
-  overSideTransform: {fileID: 6319482942422981857}
-  sideBaseCardSpacing: 1.5
-  sideMaxHandWidth: 15
-  overSideOffset: 0.15
-  isTurnPos: {x: 0, y: -4}
-  isNotTurnPos: {x: 0, y: -4.7}
-  isTurn: 0
-  canEndTurn: 0
-  turnNumber: 0
-  endTurnButton: {fileID: 0}
-  playChanceDelay: 0.5
-  canChance: 0
-  chanceNotice: {fileID: 0}
-  lerpSpeed: 15
-  cardAmountText: {fileID: 5910082671588891982}
-  cardAmountTextOffset: {x: -1, y: 1.2}
 --- !u!114 &5199153093504287152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,6 +371,7 @@ MonoBehaviour:
   cardLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  _NetworkedHandCount: 0
 --- !u!114 &7182194343180742970
 MonoBehaviour:
   m_ObjectHideFlags: 0
