@@ -25,38 +25,61 @@ public class NetworkCardGenerator : NetworkBehaviour
     {
         gameManager = FindFirstObjectByType<GameManagerNetwork>();
         
-        if (Object.HasStateAuthority)
+        Debug.Log($"NetworkCardGenerator: Spawned. IsServer: {Runner?.IsServer}");
+        
+        // Use IsServer for scene objects
+        if (Runner != null && Runner.IsServer)
         {
             CardsDealt = false;
             hasStartedDealing = false;
             CanDrawChanceCard = true;
             InitDeck();
+            Debug.Log($"NetworkCardGenerator: Deck initialized with {deckValues?.Count ?? 0} cards");
         }
     }
 
     public override void FixedUpdateNetwork()
     {
+        // Only server handles card dealing
+        if (Runner == null || !Runner.IsServer)
+            return;
+
         // Wait for game to start and both players to be ready before dealing cards
-        if (Object.HasStateAuthority && !CardsDealt && gameManager != null && gameManager.GameStarted)
+        if (!CardsDealt)
         {
-            if (Runner.ActivePlayers.Count() >= 2)
+            if (gameManager == null)
             {
-                if (!hasStartedDealing)
+                gameManager = FindFirstObjectByType<GameManagerNetwork>();
+                if (gameManager == null)
                 {
-                    dealDelayTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
-                    hasStartedDealing = true;
+                    return; // Will retry next tick
                 }
-                
-                if (dealDelayTimer.Expired(Runner))
+            }
+
+            if (gameManager.GameStarted)
+            {
+                int playerCount = Runner.ActivePlayers.Count();
+                if (playerCount >= 2)
                 {
-                    DealInitialHands();
-                    CardsDealt = true;
+                    if (!hasStartedDealing)
+                    {
+                        Debug.Log($"NetworkCardGenerator: Starting deal timer. Players: {playerCount}, GameStarted: {gameManager.GameStarted}");
+                        dealDelayTimer = TickTimer.CreateFromSeconds(Runner, 0.5f);
+                        hasStartedDealing = true;
+                    }
+                    
+                    if (hasStartedDealing && dealDelayTimer.Expired(Runner))
+                    {
+                        Debug.Log("NetworkCardGenerator: Dealing cards now!");
+                        DealInitialHands();
+                        CardsDealt = true;
+                    }
                 }
             }
         }
 
         // Handle chance card delay
-        if (Object.HasStateAuthority && !CanDrawChanceCard && chanceCardDelayTimer.Expired(Runner))
+        if (!CanDrawChanceCard && chanceCardDelayTimer.Expired(Runner))
         {
             CanDrawChanceCard = true;
         }
@@ -88,14 +111,31 @@ public class NetworkCardGenerator : NetworkBehaviour
 
     void DealInitialHands()
     {
-        if (!Object.HasStateAuthority || deckValues == null || deckValues.Count == 0)
+        if (Runner == null || !Runner.IsServer || deckValues == null || deckValues.Count == 0)
+        {
+            Debug.LogWarning($"DealInitialHands: Cannot deal - IsServer: {Runner?.IsServer}, DeckCount: {deckValues?.Count ?? 0}");
             return;
+        }
 
         var players = Runner.ActivePlayers.ToList();
-        Debug.Log($"Dealing cards to {players.Count} players");
+        Debug.Log($"DealInitialHands: Dealing cards to {players.Count} players");
+
+        // First check if player hands exist
+        var allHands = FindObjectsOfType<NetworkPlayerHand>();
+        Debug.Log($"DealInitialHands: Found {allHands.Length} NetworkPlayerHand objects");
+        
+        foreach (var hand in allHands)
+        {
+            if (hand.Object != null)
+            {
+                Debug.Log($"  Hand belongs to player: {hand.Object.InputAuthority}");
+            }
+        }
 
         foreach (var player in players)
         {
+            Debug.Log($"DealInitialHands: Dealing to player {player}");
+            
             // Deal hand cards
             for (int i = 0; i < cardsPerPlayer; i++)
             {
@@ -127,16 +167,22 @@ public class NetworkCardGenerator : NetworkBehaviour
             var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == player);
             if (targetHand != null)
             {
+                Debug.Log($"DealInitialHands: Sending side cards to player {player}'s hand");
                 targetHand.RPC_SetSideCards(underSideCards.ToArray(), overSideCards.ToArray(), player);
+            }
+            else
+            {
+                Debug.LogWarning($"DealInitialHands: Could not find hand for player {player}");
             }
         }
 
         DeckCount = deckValues.Count;
+        Debug.Log($"DealInitialHands: Complete. Remaining deck: {DeckCount}");
     }
 
     public NetworkObject SpawnCardTo(PlayerRef target, bool isSideCard)
     {
-        if (!Object.HasStateAuthority || deckValues == null || deckValues.Count == 0)
+        if (Runner == null || !Runner.IsServer || deckValues == null || deckValues.Count == 0)
             return null;
 
         byte val = deckValues[0];
@@ -172,10 +218,10 @@ public class NetworkCardGenerator : NetworkBehaviour
         return netObj;
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_DrawNewCard(PlayerRef target, int amount, RpcInfo info = default)
     {
-        if (!Object.HasStateAuthority || deckValues == null || deckValues.Count <= 0)
+        if (Runner == null || !Runner.IsServer || deckValues == null || deckValues.Count <= 0)
             return;
 
         for (int i = 0; i < amount; i++)
@@ -189,10 +235,10 @@ public class NetworkCardGenerator : NetworkBehaviour
         DeckCount = deckValues.Count;
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_GetChanceCard(PlayerRef target, RpcInfo info = default)
     {
-        if (!Object.HasStateAuthority || deckValues == null || deckValues.Count == 0 || !CanDrawChanceCard)
+        if (Runner == null || !Runner.IsServer || deckValues == null || deckValues.Count == 0 || !CanDrawChanceCard)
         {
             RPC_ChanceCardResult(target, 0, info.Source);
             return;

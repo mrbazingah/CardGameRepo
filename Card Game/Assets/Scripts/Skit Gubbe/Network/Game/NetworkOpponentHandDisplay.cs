@@ -1,4 +1,3 @@
-using Fusion;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,84 +5,77 @@ using TMPro;
 
 /// <summary>
 /// Displays the opponent's cards at the top of the screen (face down).
-/// This component shows face-down card representations based on the opponent's hand count.
+/// Each client locally tracks their opponent's hand count and displays face-down cards.
+/// This is NOT a NetworkBehaviour - it runs locally on each client.
 /// Place this at the TOP of the screen (y: 4) - opposite of where player hands are (y: -4).
 /// </summary>
-public class NetworkOpponentHandDisplay : NetworkBehaviour
+public class NetworkOpponentHandDisplay : MonoBehaviour
 {
     [Header("Display - Position at TOP of screen")]
     [SerializeField] Transform opponentHandTransform; // Position this at top (y: 4)
-    [SerializeField] NetworkPrefabRef faceDownCardPrefab; // Prefab for face-down card display
-    [SerializeField] float baseCardSpacing = 150f;
-    [SerializeField] float maxHandWidth = 1000f;
+    [SerializeField] GameObject faceDownCardPrefab; // LOCAL prefab for face-down card display (not networked)
+    [SerializeField] float baseCardSpacing = 0.7f;
+    [SerializeField] float maxHandWidth = 8f;
     [SerializeField] TextMeshProUGUI opponentCardCountText;
     [SerializeField] Vector2 cardCountTextOffset;
     
-    [Networked] public int OpponentHandCount { get; set; }
-    
-    NetworkRunner runner;
-    GameManagerNetwork gm;
-    List<NetworkObject> displayedCards = new List<NetworkObject>();
+    List<GameObject> displayedCards = new List<GameObject>();
     NetworkPlayerHand opponentHand;
     int lastKnownCount = -1;
 
-    public override void Spawned()
-    {
-        runner = Runner;
-        gm = FindObjectOfType<GameManagerNetwork>();
-        
-        if (Object.HasStateAuthority)
-        {
-            OpponentHandCount = 0;
-        }
-    }
-
     void Update()
     {
+        // Try to find opponent hand if not found yet
         if (opponentHand == null)
         {
             FindOpponentHand();
             return;
         }
 
-        // Update opponent hand count on server using networked value
-        if (Object.HasStateAuthority)
-        {
-            int newCount = opponentHand.NetworkedHandCount;
-            if (newCount != OpponentHandCount)
-            {
-                OpponentHandCount = newCount;
-            }
-        }
+        // Locally read opponent's networked hand count
+        int currentCount = opponentHand.NetworkedHandCount;
 
-        // Update display for all clients
-        if (OpponentHandCount != lastKnownCount)
+        // Update display when count changes
+        if (currentCount != lastKnownCount)
         {
-            lastKnownCount = OpponentHandCount;
-            UpdateDisplay();
+            lastKnownCount = currentCount;
+            UpdateDisplay(currentCount);
         }
     }
 
     void FindOpponentHand()
     {
+        // Find the NetworkRunner to get LocalPlayer
+        var runner = Fusion.NetworkRunner.GetRunnerForGameObject(gameObject);
+        if (runner == null)
+        {
+            // Try to find any runner in the scene
+            runner = FindObjectOfType<Fusion.NetworkRunner>();
+        }
+        
+        if (runner == null)
+            return;
+
         var allHands = FindObjectsOfType<NetworkPlayerHand>();
         foreach (var hand in allHands)
         {
-            if (hand.Object != null && hand.Object.InputAuthority != Runner.LocalPlayer)
+            // Find the hand that belongs to the OTHER player (not local player)
+            if (hand.Object != null && hand.Object.InputAuthority != runner.LocalPlayer)
             {
                 opponentHand = hand;
+                Debug.Log($"Found opponent hand for player {hand.Object.InputAuthority}");
                 break;
             }
         }
     }
 
-    void UpdateDisplay()
+    void UpdateDisplay(int cardCount)
     {
         // Update card count text
         if (opponentCardCountText != null)
         {
-            opponentCardCountText.text = OpponentHandCount.ToString();
-            if (opponentHandTransform != null && OpponentHandCount > 0)
+            opponentCardCountText.text = cardCount.ToString();
+            if (opponentHandTransform != null && cardCount > 0)
             {
                 Vector2 textPos = opponentHandTransform.position;
                 textPos = new Vector2(textPos.x + cardCountTextOffset.x, textPos.y + cardCountTextOffset.y);
@@ -96,44 +88,30 @@ public class NetworkOpponentHandDisplay : NetworkBehaviour
             }
         }
 
-        // Update visual cards (only on state authority)
-        if (Object.HasStateAuthority)
-        {
-            UpdateVisualCards();
-        }
+        // Update visual cards locally
+        UpdateVisualCards(cardCount);
     }
 
-    void UpdateVisualCards()
+    void UpdateVisualCards(int cardCount)
     {
-        if (opponentHandTransform == null || faceDownCardPrefab == null || runner == null)
+        if (opponentHandTransform == null || faceDownCardPrefab == null)
             return;
 
         // Remove excess cards
-        while (displayedCards.Count > OpponentHandCount)
+        while (displayedCards.Count > cardCount)
         {
             var card = displayedCards[displayedCards.Count - 1];
             if (card != null)
             {
-                runner.Despawn(card);
+                Destroy(card);
             }
             displayedCards.RemoveAt(displayedCards.Count - 1);
         }
 
-        // Add missing cards
-        while (displayedCards.Count < OpponentHandCount)
+        // Add missing cards (local instantiation, not networked)
+        while (displayedCards.Count < cardCount)
         {
-            // Spawn a face-down card representation (visible to all - no input authority)
-            var cardObj = runner.Spawn(faceDownCardPrefab, Vector3.zero, Quaternion.identity, null);
-            var nc = cardObj.GetComponent<NetworkedCard>();
-            if (nc != null)
-            {
-                nc.FaceUp = false; // Always face down
-            }
-            
-            if (opponentHandTransform != null)
-            {
-                cardObj.transform.SetParent(opponentHandTransform);
-            }
+            var cardObj = Instantiate(faceDownCardPrefab, opponentHandTransform);
             displayedCards.Add(cardObj);
         }
 
@@ -162,6 +140,19 @@ public class NetworkOpponentHandDisplay : NetworkBehaviour
                 sr.sortingOrder = i;
             }
         }
+    }
+
+    void OnDestroy()
+    {
+        // Clean up displayed cards
+        foreach (var card in displayedCards)
+        {
+            if (card != null)
+            {
+                Destroy(card);
+            }
+        }
+        displayedCards.Clear();
     }
 }
 

@@ -15,7 +15,7 @@ public class PlayerProfileNetwork : NetworkBehaviour
     [SerializeField] GameObject readyIcon;
 
     string lastDisplayName = "";
-    bool positionSet = false;
+    Vector2 lastSpawnPosition = Vector2.zero;
     bool lastReady = false;
 
     LobbyManager lobbyManager;
@@ -24,22 +24,18 @@ public class PlayerProfileNetwork : NetworkBehaviour
     {
         lobbyManager = FindFirstObjectByType<LobbyManager>();
 
-        // Parent and position
+        // Parent to profiles container
         Transform profilesParent = LobbyManager.ProfilesParent;
-        transform.SetParent(profilesParent, false);
-
-        if (!positionSet && SpawnPosition != default)
+        if (profilesParent != null)
         {
-            transform.localPosition = new Vector3(SpawnPosition.x, SpawnPosition.y, transform.localPosition.z);
-            positionSet = true;
+            transform.SetParent(profilesParent, false);
         }
 
-        // Force initial UI update
-        UpdateDisplayNameUI(NetworkDisplayName);
-        displayNameText.text = NetworkDisplayName;
-        lastDisplayName = NetworkDisplayName;
-
-        readyIcon.SetActive(IsReady);  // force UI to match actual IsReady state
+        // Initialize ready icon
+        if (readyIcon != null)
+        {
+            readyIcon.SetActive(IsReady);
+        }
 
         // Send name if local player
         if (Object.HasInputAuthority)
@@ -58,6 +54,14 @@ public class PlayerProfileNetwork : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        // Update position when SpawnPosition changes (handles initial sync)
+        if (SpawnPosition != lastSpawnPosition && SpawnPosition != default)
+        {
+            lastSpawnPosition = SpawnPosition;
+            transform.localPosition = new Vector3(SpawnPosition.x, SpawnPosition.y, transform.localPosition.z);
+        }
+
+        // Update display name when it changes
         if (NetworkDisplayName != lastDisplayName)
         {
             lastDisplayName = NetworkDisplayName;
@@ -67,7 +71,10 @@ public class PlayerProfileNetwork : NetworkBehaviour
 
     void Update()
     {
-        readyIcon.SetActive(IsReady);
+        if (readyIcon != null)
+        {
+            readyIcon.SetActive(IsReady);
+        }
     }
 
     private void UpdateDisplayNameUI(string newName)

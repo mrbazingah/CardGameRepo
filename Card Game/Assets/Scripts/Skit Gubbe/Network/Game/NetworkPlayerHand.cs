@@ -21,7 +21,7 @@ public class NetworkPlayerHand : NetworkBehaviour
     [SerializeField] float overSideOffset;
     [SerializeField] float lerpSpeed;
     
-    [Header("UI")]
+    [Header("UI - Found at runtime if not assigned")]
     [SerializeField] GameObject endTurnButton;
     [SerializeField] GameObject readyButton;
     [SerializeField] GameObject chanceNotice;
@@ -29,6 +29,11 @@ public class NetworkPlayerHand : NetworkBehaviour
     [SerializeField] Vector2 cardAmountTextOffset;
     [SerializeField] Vector2 isTurnPos;
     [SerializeField] Vector2 isNotTurnPos;
+    
+    [Header("UI Search Names - Used to find UI in scene")]
+    [SerializeField] string readyButtonName = "Ready Button";
+    [SerializeField] string endTurnButtonName = "End Turn Button";
+    [SerializeField] string chanceNoticeName = "Chance Notice";
     
     [Header("Chance")]
     [SerializeField] float playChanceDelay = 1f;
@@ -76,28 +81,107 @@ public class NetworkPlayerHand : NetworkBehaviour
         cardGenerator = FindObjectOfType<NetworkCardGenerator>();
         pile = FindObjectOfType<NetworkPile>();
         
+        // Find UI elements in scene if not assigned in prefab
+        FindUIElements();
+        
         if (cardGenerator != null)
         {
             cardsPerPlayer = cardGenerator.GetCardsPerPlayer();
         }
         
+        Debug.Log($"NetworkPlayerHand: Spawned for player {Object.InputAuthority}. HasInputAuthority: {HasInputAuthority}");
+        
         if (HasInputAuthority)
         {
-            if (endTurnButton != null)
+            SetupLocalPlayerUI();
+        }
+    }
+
+    void FindUIElements()
+    {
+        // Find UI elements by name if not already assigned
+        if (readyButton == null && !string.IsNullOrEmpty(readyButtonName))
+        {
+            var found = GameObject.Find(readyButtonName);
+            if (found != null)
             {
-                endTurnButton.SetActive(false);
+                readyButton = found;
+                Debug.Log($"NetworkPlayerHand: Found ready button '{readyButtonName}'");
             }
-            if (readyButton != null)
+        }
+        
+        if (endTurnButton == null && !string.IsNullOrEmpty(endTurnButtonName))
+        {
+            var found = GameObject.Find(endTurnButtonName);
+            if (found != null)
             {
-                readyButton.SetActive(true);
-                // Hook up ready button
-                var button = readyButton.GetComponent<Button>();
-                if (button != null)
-                {
-                    button.onClick.RemoveAllListeners();
-                    button.onClick.AddListener(OnReadyButtonClicked);
-                }
+                endTurnButton = found;
+                Debug.Log($"NetworkPlayerHand: Found end turn button '{endTurnButtonName}'");
             }
+        }
+        
+        if (chanceNotice == null && !string.IsNullOrEmpty(chanceNoticeName))
+        {
+            var found = GameObject.Find(chanceNoticeName);
+            if (found != null)
+            {
+                chanceNotice = found;
+                Debug.Log($"NetworkPlayerHand: Found chance notice '{chanceNoticeName}'");
+            }
+        }
+        
+        // Create transforms for card positioning if not assigned
+        if (handTransform == null)
+        {
+            var handGO = new GameObject("HandTransform");
+            handGO.transform.SetParent(transform);
+            handGO.transform.localPosition = Vector3.zero;
+            handTransform = handGO.transform;
+            Debug.Log("NetworkPlayerHand: Created HandTransform");
+        }
+        
+        if (underSideTransform == null)
+        {
+            var underGO = new GameObject("UnderSideTransform");
+            underGO.transform.SetParent(transform);
+            underGO.transform.localPosition = new Vector3(0, 0.5f, 0);
+            underSideTransform = underGO.transform;
+            Debug.Log("NetworkPlayerHand: Created UnderSideTransform");
+        }
+        
+        if (overSideTransform == null)
+        {
+            var overGO = new GameObject("OverSideTransform");
+            overGO.transform.SetParent(transform);
+            overGO.transform.localPosition = new Vector3(0, 0.5f, 0);
+            overSideTransform = overGO.transform;
+            Debug.Log("NetworkPlayerHand: Created OverSideTransform");
+        }
+    }
+
+    void SetupLocalPlayerUI()
+    {
+        // Hide end turn button initially
+        if (endTurnButton != null)
+        {
+            endTurnButton.SetActive(false);
+        }
+        
+        // Show and hook up ready button
+        if (readyButton != null)
+        {
+            readyButton.SetActive(true);
+            var button = readyButton.GetComponent<Button>();
+            if (button != null)
+            {
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(OnReadyButtonClicked);
+                Debug.Log("NetworkPlayerHand: Ready button hooked up");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("NetworkPlayerHand: Ready button not found! Players won't be able to ready up.");
         }
     }
 

@@ -28,16 +28,21 @@ public class GameManagerNetwork : NetworkBehaviour
     NetworkPlayerHand[] playerHands;
     NetworkCardGenerator cardGenerator;
     [Networked] TickTimer startGameDelayTimer { get; set; }
+    [Networked] TickTimer assignStartPlayerTimer { get; set; }
     bool hasStartedGameDelay;
+    bool hasStartedAssignTimer;
 
     public override void Spawned()
     {
-        if (Object.HasStateAuthority)
+        Debug.Log($"GameManagerNetwork: Spawned. IsServer: {Runner?.IsServer}");
+        
+        if (Runner != null && Runner.IsServer)
         {
             GameStarted = false;
             WinnerDeclared = false;
             PlayersReady = 0;
             hasStartedGameDelay = false;
+            hasStartedAssignTimer = false;
             var players = Runner.ActivePlayers.ToList();
             if (players.Count > 0)
             {
@@ -79,28 +84,26 @@ public class GameManagerNetwork : NetworkBehaviour
 
     public void LocalStartGame()
     {
-        if (!HasInputAuthority)
-            return;
+        // Any player can request game start (typically host)
         if (startButton)
             startButton.SetActive(false);
-        RPC_RequestStartGame();
+        RPC_RequestStartGame(Runner.LocalPlayer);
     }
 
     public void LocalPlayerReady()
     {
-        if (!HasInputAuthority)
-            return;
-        RPC_PlayerReady();
+        // Any player can call this - no InputAuthority check needed
+        RPC_PlayerReady(Runner.LocalPlayer);
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    void RPC_PlayerReady(RpcInfo info = default)
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    void RPC_PlayerReady(PlayerRef player, RpcInfo info = default)
     {
-        if (!Object.HasStateAuthority)
+        if (Runner == null || !Runner.IsServer)
             return;
 
         PlayersReady++;
-        Debug.Log($"Player ready. Total ready: {PlayersReady}");
+        Debug.Log($"Player {player} ready. Total ready: {PlayersReady}");
 
         // Check if all players are ready
         var players = Runner.ActivePlayers.ToList();
@@ -116,11 +119,13 @@ public class GameManagerNetwork : NetworkBehaviour
         }
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    void RPC_RequestStartGame(RpcInfo info = default)
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    void RPC_RequestStartGame(PlayerRef requester, RpcInfo info = default)
     {
-        if (!Object.HasStateAuthority)
+        if (Runner == null || !Runner.IsServer)
             return;
+
+        Debug.Log($"Game start requested by {requester}");
 
         // Wait a moment for cards to be dealt, then assign start player
         if (!hasStartedGameDelay)
@@ -132,18 +137,38 @@ public class GameManagerNetwork : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (Object.HasStateAuthority && hasStartedGameDelay && startGameDelayTimer.Expired(Runner))
+        // Only server handles game state
+        if (Runner == null || !Runner.IsServer)
+            return;
+
+        // First timer: Start the game (triggers card dealing in NetworkCardGenerator)
+        if (hasStartedGameDelay && startGameDelayTimer.Expired(Runner))
+        {
+            RPC_BroadcastStart();
+            hasStartedGameDelay = false;
+            
+            // Start second timer to assign start player AFTER cards are dealt
+            if (!hasStartedAssignTimer)
+            {
+                assignStartPlayerTimer = TickTimer.CreateFromSeconds(Runner, 1.5f);
+                hasStartedAssignTimer = true;
+            }
+        }
+        
+        // Second timer: Assign start player (after cards have been dealt)
+        if (hasStartedAssignTimer && assignStartPlayerTimer.Expired(Runner))
         {
             RefreshPlayerHands();
             AssignStartPlayer();
-            RPC_BroadcastStart();
-            hasStartedGameDelay = false;
+            RPC_BroadcastStartPlayer();
+            hasStartedAssignTimer = false;
         }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     void RPC_BroadcastStart(RpcInfo info = default)
     {
+        Debug.Log("RPC_BroadcastStart: Game is starting!");
         GameStarted = true;
         if (startButton)
             startButton.SetActive(false);
@@ -178,10 +203,10 @@ public class GameManagerNetwork : NetworkBehaviour
         RPC_RequestNextTurn(cardValue);
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     void RPC_RequestNextTurn(byte lastCardValue, RpcInfo info = default)
     {
-        if (!Object.HasStateAuthority)
+        if (Runner == null || !Runner.IsServer)
             return;
         
         // Special cards don't advance turn
@@ -208,9 +233,15 @@ public class GameManagerNetwork : NetworkBehaviour
         // Turn updated for all clients
     }
 
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_BroadcastStartPlayer(RpcInfo info = default)
+    {
+        Debug.Log($"Start player assigned: {CurrentTurn}");
+    }
+
     public void CheckProcessWin()
     {
-        if (!Object.HasStateAuthority || WinnerDeclared || !GameStarted)
+        if (Runner == null || !Runner.IsServer || WinnerDeclared || !GameStarted)
             return;
 
         RefreshPlayerHands();
