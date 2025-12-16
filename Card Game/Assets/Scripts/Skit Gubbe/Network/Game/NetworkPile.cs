@@ -3,49 +3,76 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// Host-authoritative pile manager.
+/// Only syncs: card values, pile count, discard state.
+/// All clients generate pile cards locally from synced values.
+/// </summary>
 public class NetworkPile : NetworkBehaviour
 {
     [SerializeField] Transform pileTransform;
-    [SerializeField] NetworkPrefabRef cardPrefab;
     [SerializeField] float cardSpacing = 0.1f;
     [SerializeField] float lerpSpeed = 5f;
     [SerializeField] float maxRotation = 15f;
     [SerializeField] float discardDelay = 1f;
     
+    // Synced state (minimal)
     [Networked] public int PileCount { get; private set; }
     [Networked] TickTimer discardTimer { get; set; }
     [Networked] public bool IsDiscarding { get; set; }
     
-    List<NetworkObject> pileCards = new List<NetworkObject>();
-    List<byte> pileValues = new List<byte>(); // Track card values for game logic
+    // Local state
+    List<GameObject> pileCards = new List<GameObject>(); // Local card GameObjects
+    List<byte> pileValues = new List<byte>(); // Synced via RPCs
+    NetworkCardGenerator cardGenerator;
+    int lastKnownPileCount = -1;
 
     public override void Spawned()
     {
+        cardGenerator = FindObjectOfType<NetworkCardGenerator>();
+        
         if (Object.HasStateAuthority)
         {
             PileCount = 0;
             IsDiscarding = false;
         }
     }
+    
+    public override void FixedUpdateNetwork()
+    {
+        // Check if pile count changed (triggers regeneration on clients)
+        if (PileCount != lastKnownPileCount)
+        {
+            lastKnownPileCount = PileCount;
+            // Pile will be updated via RPC_UpdatePileValues
+        }
+        
+        // Handle discard timer (host only)
+        if (Object.HasStateAuthority && IsDiscarding && discardTimer.Expired(Runner))
+        {
+            CompleteDiscard();
+        }
+    }
 
     void Update()
     {
-        if (HasStateAuthority)
-        {
-            LerpCardsToPile();
-            RotateCards();
-        }
+        LerpCardsToPile();
+        RotateCards();
     }
 
     void LerpCardsToPile()
     {
-        foreach (var cardObj in pileCards)
+        if (pileTransform == null) return;
+        
+        for (int i = 0; i < pileCards.Count; i++)
         {
-            if (cardObj != null && pileTransform != null)
+            if (pileCards[i] != null)
             {
-                cardObj.transform.position = Vector3.Lerp(
-                    cardObj.transform.position,
-                    pileTransform.position,
+                Vector3 targetPos = pileTransform.position;
+                targetPos.z = -i * cardSpacing;
+                pileCards[i].transform.position = Vector3.Lerp(
+                    pileCards[i].transform.position,
+                    targetPos,
                     lerpSpeed * Time.deltaTime
                 );
             }
@@ -58,21 +85,77 @@ public class NetworkPile : NetworkBehaviour
         {
             if (cardObj != null)
             {
-                var nc = cardObj.GetComponent<NetworkedCard>();
-                if (nc != null && nc.Rotation == 0)
+                var card = cardObj.GetComponent<Card>();
+                if (card != null && !card.GetHasBeenTurned())
                 {
                     float rot = Random.Range(-maxRotation, maxRotation);
-                    nc.SetRotation(rot);
+                    card.Rotate(rot, true);
                 }
             }
         }
     }
-
-    public override void FixedUpdateNetwork()
+    
+    GameObject CreateLocalCard(byte value)
     {
-        if (Object.HasStateAuthority && IsDiscarding && discardTimer.Expired(Runner))
+        if (cardGenerator == null)
         {
-            CompleteDiscard();
+            cardGenerator = FindObjectOfType<NetworkCardGenerator>();
+            if (cardGenerator == null || cardGenerator.cardPrefab == null)
+            {
+                Debug.LogError("NetworkPile: Cannot create card - NetworkCardGenerator or prefab not found!");
+                return null;
+            }
+        }
+        
+        GameObject card = Instantiate(cardGenerator.cardPrefab);
+        Card cardComponent = card.GetComponent<Card>();
+        if (cardComponent != null)
+        {
+            cardComponent.SetValue(value);
+        }
+        
+        // Set sprite
+        SpriteRenderer sr = card.GetComponent<SpriteRenderer>();
+        if (sr != null && cardGenerator.cardSprites != null && cardGenerator.cardSprites.Length > 0)
+        {
+            int spriteIndex = value - 2;
+            if (spriteIndex >= 0 && spriteIndex < cardGenerator.cardSprites.Length)
+            {
+                sr.sprite = cardGenerator.cardSprites[spriteIndex];
+            }
+            sr.gameObject.SetActive(true); // Face up
+        }
+        
+        if (pileTransform != null)
+        {
+            card.transform.SetParent(pileTransform);
+        }
+        
+        return card;
+    }
+    
+    void RegeneratePileCards()
+    {
+        // Clear existing cards
+        foreach (var card in pileCards)
+        {
+            if (card != null) Destroy(card);
+        }
+        pileCards.Clear();
+        
+        // Create new cards from synced values
+        for (int i = 0; i < pileValues.Count; i++)
+        {
+            GameObject card = CreateLocalCard(pileValues[i]);
+            if (card != null)
+            {
+                var sr = card.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.sortingOrder = i;
+                }
+                pileCards.Add(card);
+            }
         }
     }
 
@@ -85,39 +168,16 @@ public class NetworkPile : NetworkBehaviour
         PileCount++;
         pileValues.Add(value);
         
-        // Spawn a card visible to ALL players
-        Vector3 spawnPos = pileTransform != null ? pileTransform.position : Vector3.zero;
-        spawnPos.z = -PileCount * cardSpacing;
-        
-        var cardObj = Runner.Spawn(cardPrefab, spawnPos, Quaternion.identity, null);
-        
-        var nc = cardObj.GetComponent<NetworkedCard>();
-        if (nc != null)
-        {
-            nc.Value = value;
-            nc.FaceUp = true;
-        }
-
-        if (pileTransform != null)
-        {
-            cardObj.transform.SetParent(pileTransform);
-        }
-        
-        var sr = cardObj.GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            sr.sortingOrder = PileCount;
-        }
-
-        pileCards.Add(cardObj);
-        
-        RPC_UpdatePileVisual(value, PileCount);
+        // Broadcast updated pile values to all clients
+        RPC_UpdatePileValues(pileValues.ToArray());
     }
-
+    
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    void RPC_UpdatePileVisual(byte value, int count, RpcInfo info = default)
+    void RPC_UpdatePileValues(byte[] values, RpcInfo info = default)
     {
-        // Confirms pile state to all clients
+        // All clients update their local pile
+        pileValues = new List<byte>(values);
+        RegeneratePileCards();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -135,12 +195,12 @@ public class NetworkPile : NetworkBehaviour
 
     void CompleteDiscard()
     {
-        // Despawn all cards in pile
+        // Clear local cards
         foreach (var cardObj in pileCards)
         {
-            if (cardObj != null && Runner != null)
+            if (cardObj != null)
             {
-                Runner.Despawn(cardObj);
+                Destroy(cardObj);
             }
         }
 
@@ -148,6 +208,10 @@ public class NetworkPile : NetworkBehaviour
         pileValues.Clear();
         PileCount = 0;
         IsDiscarding = false;
+        lastKnownPileCount = 0;
+        
+        // Broadcast clear to all clients
+        RPC_UpdatePileValues(new byte[0]);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -156,37 +220,31 @@ public class NetworkPile : NetworkBehaviour
         if (!Object.HasStateAuthority)
             return;
 
-        // Transfer all pile card values to the player's hand
+        // Transfer all pile card values to the player's hand (send action)
         var hands = FindObjectsOfType<NetworkPlayerHand>();
         var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == target);
         
         if (targetHand != null && pileValues.Count > 0)
         {
-            // Spawn new cards for each value in the pile
-            foreach (byte value in pileValues)
-            {
-                var newCard = Runner.Spawn(cardPrefab, Vector3.zero, Quaternion.identity, target);
-                var newNc = newCard.GetComponent<NetworkedCard>();
-                if (newNc != null)
-                {
-                    newNc.Value = value;
-                    newNc.FaceUp = false; // Cards go to hand face down
-                }
-                targetHand.RPC_AddCardToHand(newCard, target);
-            }
+            // Send action to add cards to hand
+            RPC_AddPileCardsToHand(target, pileValues.ToArray());
         }
 
         // Clear pile
         CompleteDiscard();
-        
-        // Broadcast to all clients
-        RPC_BroadcastPilePickedUp(target);
     }
-
+    
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    void RPC_BroadcastPilePickedUp(PlayerRef target, RpcInfo info = default)
+    void RPC_AddPileCardsToHand(PlayerRef target, byte[] cardValues, RpcInfo info = default)
     {
-        // Notify all clients that pile was picked up
+        // All clients add cards to hand locally
+        var hands = FindObjectsOfType<NetworkPlayerHand>();
+        var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == target);
+        
+        if (targetHand != null)
+        {
+            targetHand.AddHandCardsLocally(cardValues);
+        }
     }
 
     public byte GetCurrentCard(bool isChance)

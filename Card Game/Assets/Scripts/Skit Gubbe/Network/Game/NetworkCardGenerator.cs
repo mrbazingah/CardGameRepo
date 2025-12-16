@@ -3,23 +3,33 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// Host-authoritative card generator using deterministic deck seeding.
+/// Only syncs: deck seed, deck count, and actions (deal, draw).
+/// </summary>
 public class NetworkCardGenerator : NetworkBehaviour
 {
-    [SerializeField] NetworkPrefabRef cardPrefab;
-    [SerializeField] Sprite[] cardSprites;
+    [Header("Card Prefabs - Public for NetworkPlayerHand access")]
+    public GameObject cardPrefab; // Local prefab, not NetworkPrefabRef
+    public GameObject backCardPrefab;
+    public Sprite[] cardSprites;
     [SerializeField] int cardsPerPlayer = 5;
-    [SerializeField] int numberOfCards = 52;
+    [SerializeField] bool removeSpecialCards = false;
+    [SerializeField] float chanceCardDelay = 1f;
     
-    [Networked] public bool CardsDealt { get; set; }
-    [Networked] TickTimer dealDelayTimer { get; set; }
+    // Synced state (minimal)
+    [Networked] public int DeckSeed { get; set; }
     [Networked] public int DeckCount { get; set; }
-    [Networked] TickTimer chanceCardDelayTimer { get; set; }
+    [Networked] public bool CardsDealt { get; set; }
     [Networked] public bool CanDrawChanceCard { get; set; }
+    [Networked] TickTimer chanceCardDelayTimer { get; set; }
+    [Networked] TickTimer dealDelayTimer { get; set; }
     
-    List<byte> deckValues;
+    // Local state (generated from seed)
+    List<byte> localDeck;
     GameManagerNetwork gameManager;
     bool hasStartedDealing;
-    float chanceCardDelay = 1f;
+    bool hasGeneratedLocalDeck;
 
     public override void Spawned()
     {
@@ -27,19 +37,26 @@ public class NetworkCardGenerator : NetworkBehaviour
         
         Debug.Log($"NetworkCardGenerator: Spawned. IsServer: {Runner?.IsServer}");
         
-        // Use IsServer for scene objects
         if (Runner != null && Runner.IsServer)
         {
+            // Host generates seed and initializes deck
             CardsDealt = false;
             hasStartedDealing = false;
             CanDrawChanceCard = true;
+            DeckSeed = Random.Range(int.MinValue, int.MaxValue);
             InitDeck();
-            Debug.Log($"NetworkCardGenerator: Deck initialized with {deckValues?.Count ?? 0} cards");
+            Debug.Log($"NetworkCardGenerator: Host initialized deck with seed {DeckSeed}, {localDeck?.Count ?? 0} cards");
         }
     }
-
+    
     public override void FixedUpdateNetwork()
     {
+        // Generate local deck from synced seed (once per client)
+        if (!hasGeneratedLocalDeck && DeckSeed != 0)
+        {
+            GenerateLocalDeckFromSeed();
+        }
+        
         // Only server handles card dealing
         if (Runner == null || !Runner.IsServer)
             return;
@@ -56,7 +73,7 @@ public class NetworkCardGenerator : NetworkBehaviour
                 }
             }
 
-            if (gameManager.GameStarted)
+            if (gameManager.GameStarted && localDeck != null)
             {
                 int playerCount = Runner.ActivePlayers.Count();
                 if (playerCount >= 2)
@@ -84,199 +101,140 @@ public class NetworkCardGenerator : NetworkBehaviour
             CanDrawChanceCard = true;
         }
     }
+    
+    void GenerateLocalDeckFromSeed()
+    {
+        localDeck = DeterministicDeck.GenerateDeck(DeckSeed, removeSpecialCards);
+        DeckCount = localDeck.Count;
+        hasGeneratedLocalDeck = true;
+        Debug.Log($"NetworkCardGenerator: Client generated local deck from seed {DeckSeed}, {localDeck.Count} cards");
+    }
 
     void InitDeck()
     {
-        deckValues = new List<byte>();
-        // Create a standard 52-card deck (values 2-14, 4 suits)
-        for (int suit = 0; suit < 4; suit++)
-        {
-            for (byte v = 2; v <= 14; v++)
-            {
-                deckValues.Add(v);
-            }
-        }
-        Shuffle(deckValues);
-        DeckCount = deckValues.Count;
-    }
-
-    void Shuffle<T>(List<T> list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
-            int r = Random.Range(i, list.Count);
-            (list[i], list[r]) = (list[r], list[i]);
-        }
+        // Host generates deck from seed
+        localDeck = DeterministicDeck.GenerateDeck(DeckSeed, removeSpecialCards);
+        DeckCount = localDeck.Count;
+        hasGeneratedLocalDeck = true;
     }
 
     void DealInitialHands()
     {
-        if (Runner == null || !Runner.IsServer || deckValues == null || deckValues.Count == 0)
+        if (Runner == null || !Runner.IsServer || localDeck == null || localDeck.Count == 0)
         {
-            Debug.LogWarning($"DealInitialHands: Cannot deal - IsServer: {Runner?.IsServer}, DeckCount: {deckValues?.Count ?? 0}");
+            Debug.LogWarning($"DealInitialHands: Cannot deal - IsServer: {Runner?.IsServer}, DeckCount: {localDeck?.Count ?? 0}");
             return;
         }
 
         var players = Runner.ActivePlayers.ToList();
         Debug.Log($"DealInitialHands: Dealing cards to {players.Count} players");
 
-        // First check if player hands exist
-        var allHands = FindObjectsOfType<NetworkPlayerHand>();
-        Debug.Log($"DealInitialHands: Found {allHands.Length} NetworkPlayerHand objects");
-        
-        foreach (var hand in allHands)
-        {
-            if (hand.Object != null)
-            {
-                Debug.Log($"  Hand belongs to player: {hand.Object.InputAuthority}");
-            }
-        }
-
         foreach (var player in players)
         {
-            Debug.Log($"DealInitialHands: Dealing to player {player}");
+            // Deal hand cards (send action, not cards)
+            List<byte> handCards = DeterministicDeck.DrawCards(localDeck, cardsPerPlayer);
+            RPC_DealHandCards(player, handCards.ToArray());
             
-            // Deal hand cards
-            for (int i = 0; i < cardsPerPlayer; i++)
-            {
-                SpawnCardTo(player, false);
-            }
-
-            // Deal 6 side cards (3 over, 3 under)
-            List<NetworkObject> overSideCards = new List<NetworkObject>();
-            List<NetworkObject> underSideCards = new List<NetworkObject>();
-
-            for (int i = 0; i < 6; i++)
-            {
-                var cardObj = SpawnCardTo(player, true); // true = side card
-                if (cardObj != null)
-                {
-                    if (i < 3)
-                    {
-                        underSideCards.Add(cardObj);
-                    }
-                    else
-                    {
-                        overSideCards.Add(cardObj);
-                    }
-                }
-            }
-
-            // Send side cards to player hand
-            var hands = FindObjectsOfType<NetworkPlayerHand>();
-            var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == player);
-            if (targetHand != null)
-            {
-                Debug.Log($"DealInitialHands: Sending side cards to player {player}'s hand");
-                targetHand.RPC_SetSideCards(underSideCards.ToArray(), overSideCards.ToArray(), player);
-            }
-            else
-            {
-                Debug.LogWarning($"DealInitialHands: Could not find hand for player {player}");
-            }
+            // Deal 6 side cards (3 under, 3 over)
+            List<byte> underSideCards = DeterministicDeck.DrawCards(localDeck, 3);
+            List<byte> overSideCards = DeterministicDeck.DrawCards(localDeck, 3);
+            RPC_DealSideCards(player, underSideCards.ToArray(), overSideCards.ToArray());
         }
 
-        DeckCount = deckValues.Count;
+        DeckCount = localDeck.Count;
         Debug.Log($"DealInitialHands: Complete. Remaining deck: {DeckCount}");
     }
-
-    public NetworkObject SpawnCardTo(PlayerRef target, bool isSideCard)
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_DealHandCards(PlayerRef target, byte[] cardValues, RpcInfo info = default)
     {
-        if (Runner == null || !Runner.IsServer || deckValues == null || deckValues.Count == 0)
-            return null;
-
-        byte val = deckValues[0];
-        deckValues.RemoveAt(0);
-        DeckCount = deckValues.Count;
-
-        // Spawn card with the target player as input authority
-        var netObj = Runner.Spawn(cardPrefab, Vector3.zero, Quaternion.identity, target);
-        var nc = netObj.GetComponent<NetworkedCard>();
-        if (nc != null)
+        // All clients receive this action and generate cards locally
+        var hands = FindObjectsOfType<NetworkPlayerHand>();
+        var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == target);
+        
+        if (targetHand != null)
         {
-            nc.Value = val;
-            nc.FaceUp = false;
-            nc.IsSideCard = isSideCard;
+            targetHand.AddHandCardsLocally(cardValues);
         }
-
-        // Find the appropriate hand and add the card
-        if (!isSideCard)
+        else
         {
-            var hands = FindObjectsOfType<NetworkPlayerHand>();
-            var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == target);
-            
-            if (targetHand != null)
-            {
-                targetHand.RPC_AddCardToHand(netObj, target);
-            }
-            else
-            {
-                Debug.LogWarning($"Could not find NetworkPlayerHand for player {target}");
-            }
+            Debug.LogWarning($"RPC_DealHandCards: Could not find hand for player {target}");
         }
-
-        return netObj;
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_DealSideCards(PlayerRef target, byte[] underSideValues, byte[] overSideValues, RpcInfo info = default)
+    {
+        // All clients receive this action and generate side cards locally
+        var hands = FindObjectsOfType<NetworkPlayerHand>();
+        var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == target);
+        
+        if (targetHand != null)
+        {
+            targetHand.SetSideCardsLocally(underSideValues, overSideValues);
+        }
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_DrawNewCard(PlayerRef target, int amount, RpcInfo info = default)
     {
-        if (Runner == null || !Runner.IsServer || deckValues == null || deckValues.Count <= 0)
+        if (Runner == null || !Runner.IsServer || localDeck == null || localDeck.Count <= 0)
             return;
 
-        for (int i = 0; i < amount; i++)
+        // Draw cards from deterministic deck
+        List<byte> drawnCards = DeterministicDeck.DrawCards(localDeck, amount);
+        DeckCount = localDeck.Count;
+        
+        // Send action to all clients
+        RPC_ReceiveDrawnCards(target, drawnCards.ToArray());
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_ReceiveDrawnCards(PlayerRef target, byte[] cardValues, RpcInfo info = default)
+    {
+        // All clients generate cards locally from the action
+        var hands = FindObjectsOfType<NetworkPlayerHand>();
+        var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == target);
+        
+        if (targetHand != null)
         {
-            if (deckValues.Count == 0)
-                break;
-
-            SpawnCardTo(target, false);
+            targetHand.AddHandCardsLocally(cardValues);
         }
-
-        DeckCount = deckValues.Count;
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_GetChanceCard(PlayerRef target, RpcInfo info = default)
     {
-        if (Runner == null || !Runner.IsServer || deckValues == null || deckValues.Count == 0 || !CanDrawChanceCard)
+        if (Runner == null || !Runner.IsServer || localDeck == null || localDeck.Count == 0 || !CanDrawChanceCard)
         {
-            RPC_ChanceCardResult(target, 0, info.Source);
+            RPC_ChanceCardResult(target, 0);
             return;
         }
 
-        int randomNumber = Random.Range(0, deckValues.Count);
-        byte chanceValue = deckValues[randomNumber];
-        deckValues.RemoveAt(randomNumber);
-        DeckCount = deckValues.Count;
+        // Draw from deterministic deck (using current deck state)
+        byte chanceValue = DeterministicDeck.DrawCard(localDeck);
+        DeckCount = localDeck.Count;
 
         // Start delay timer
         CanDrawChanceCard = false;
         chanceCardDelayTimer = TickTimer.CreateFromSeconds(Runner, chanceCardDelay);
 
-        // Spawn chance card
-        var netObj = Runner.Spawn(cardPrefab, Vector3.zero, Quaternion.identity, target);
-        var nc = netObj.GetComponent<NetworkedCard>();
-        if (nc != null)
-        {
-            nc.Value = chanceValue;
-            nc.FaceUp = true; // Chance cards are face up
-            nc.IsChanceCard = true;
-        }
-
-        RPC_ChanceCardResult(target, chanceValue, info.Source, netObj);
+        // Send action to all clients
+        RPC_ChanceCardResult(target, chanceValue);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    void RPC_ChanceCardResult(PlayerRef target, byte value, PlayerRef requester, NetworkObject cardObj = null, RpcInfo info = default)
+    void RPC_ChanceCardResult(PlayerRef target, byte value, RpcInfo info = default)
     {
-        if (cardObj != null && requester == Runner.LocalPlayer)
+        // All clients generate chance card locally
+        if (value == 0)
+            return;
+            
+        var hands = FindObjectsOfType<NetworkPlayerHand>();
+        var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == target);
+        if (targetHand != null)
         {
-            var hands = FindObjectsOfType<NetworkPlayerHand>();
-            var targetHand = hands.FirstOrDefault(h => h.Object != null && h.Object.InputAuthority == target);
-            if (targetHand != null)
-            {
-                targetHand.RPC_AddChanceCard(cardObj, target);
-            }
+            targetHand.AddChanceCardLocally(value);
         }
     }
 
@@ -290,3 +248,4 @@ public class NetworkCardGenerator : NetworkBehaviour
         return DeckCount;
     }
 }
+

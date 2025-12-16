@@ -582,7 +582,7 @@ MonoBehaviour:
   chanceToPlayChance: 100
   lerpSpeed: 15
   cardAmountText: {fileID: 2500706921955742232}
-  cardAmountTextOffset: {x: 1, y: 1.2}
+  cardAmountTextOffset: {x: 1, y: -1.2}
 --- !u!1 &8183546333639245761
 GameObject:
   m_ObjectHideFlags: 0

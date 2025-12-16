@@ -45,9 +45,10 @@ public class NetworkPlayerHand : NetworkBehaviour
     NetworkCardGenerator cardGenerator;
     NetworkPile pile;
     
-    List<NetworkedCard> handCards = new List<NetworkedCard>();
-    List<NetworkedCard> underSideCards = new List<NetworkedCard>();
-    List<NetworkedCard> overSideCards = new List<NetworkedCard>();
+    // Local card GameObjects (not NetworkObjects)
+    List<GameObject> handCards = new List<GameObject>();
+    List<GameObject> underSideCards = new List<GameObject>();
+    List<GameObject> overSideCards = new List<GameObject>();
     
     [Networked] byte savedCardValue { get; set; }
     [Networked] bool hasDiscarded { get; set; }
@@ -56,7 +57,7 @@ public class NetworkPlayerHand : NetworkBehaviour
     
     bool usingOverSideCards;
     bool usingUnderSideCards;
-    NetworkedCard hoveredCard;
+    GameObject hoveredCard;
     int cardsPerPlayer;
     
     public int HandCount => GetCurrentCards().Count;
@@ -235,68 +236,160 @@ public class NetworkPlayerHand : NetworkBehaviour
         }
     }
 
-    #region Card Management
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_AddCardToHand(NetworkObject card, PlayerRef who, RpcInfo info = default)
+    #region Card Management - Local Card Creation
+    /// <summary>
+    /// Creates a local Card GameObject from a byte value.
+    /// Called by RPCs to generate cards locally on all clients.
+    /// </summary>
+    GameObject CreateLocalCard(byte value, bool faceUp = false)
     {
-        if (who == Object.InputAuthority)
+        if (cardGenerator == null)
         {
-            LocalAdd(card);
-        }
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_SetSideCards(NetworkObject[] underCards, NetworkObject[] overCards, PlayerRef who, RpcInfo info = default)
-    {
-        if (who == Object.InputAuthority)
-        {
-            underSideCards.Clear();
-            overSideCards.Clear();
-            
-            foreach (var cardObj in underCards)
+            cardGenerator = FindObjectOfType<NetworkCardGenerator>();
+            if (cardGenerator == null)
             {
-                if (cardObj != null)
+                Debug.LogError("NetworkPlayerHand: Cannot create card - NetworkCardGenerator not found!");
+                return null;
+            }
+        }
+        
+        // Get prefab and sprites from cardGenerator (now public)
+        GameObject prefab = cardGenerator.cardPrefab;
+        Sprite[] sprites = cardGenerator.cardSprites;
+        
+        if (prefab == null)
+        {
+            Debug.LogError("NetworkPlayerHand: Card prefab not found in NetworkCardGenerator!");
+            return null;
+        }
+        
+        GameObject card = Instantiate(prefab);
+        Card cardComponent = card.GetComponent<Card>();
+        if (cardComponent != null)
+        {
+            cardComponent.SetValue(value);
+        }
+        
+        // Set sprite (value 2-14 maps to sprite indices)
+        SpriteRenderer sr = card.GetComponent<SpriteRenderer>();
+        if (sr != null && sprites != null && sprites.Length > 0)
+        {
+            int spriteIndex = value - 2; // Value 2 maps to index 0
+            if (spriteIndex >= 0 && spriteIndex < sprites.Length)
+            {
+                sr.sprite = sprites[spriteIndex];
+            }
+            sr.gameObject.SetActive(faceUp);
+        }
+        
+        // Apply back cover if face down
+        if (!faceUp)
+        {
+            GameObject backPrefab = cardGenerator.backCardPrefab;
+            
+            if (backPrefab != null)
+            {
+                GameObject back = Instantiate(backPrefab);
+                back.transform.SetParent(card.transform);
+                back.transform.localPosition = Vector3.zero;
+                if (cardComponent != null)
                 {
-                    var nc = cardObj.GetComponent<NetworkedCard>();
-                    if (nc != null)
+                    cardComponent.ApplyChild(back);
+                }
+                if (sr != null)
+                {
+                    var backSr = back.GetComponent<SpriteRenderer>();
+                    if (backSr != null)
                     {
-                        underSideCards.Add(nc);
+                        backSr.sortingOrder = sr.sortingOrder + 1;
                     }
                 }
             }
-            
-            foreach (var cardObj in overCards)
-            {
-                if (cardObj != null)
-                {
-                    var nc = cardObj.GetComponent<NetworkedCard>();
-                    if (nc != null)
-                    {
-                        overSideCards.Add(nc);
-                    }
-                }
-            }
         }
+        
+        return card;
     }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_AddChanceCard(NetworkObject card, PlayerRef who, RpcInfo info = default)
+    
+    /// <summary>
+    /// Adds hand cards locally from byte values (called by RPC).
+    /// </summary>
+    public void AddHandCardsLocally(byte[] cardValues)
     {
-        if (who == Object.InputAuthority)
-        {
-            LocalAdd(card);
-        }
-    }
-
-    public void LocalAdd(NetworkObject netObj)
-    {
-        if (netObj == null)
+        if (cardValues == null || cardValues.Length == 0)
             return;
-
-        var nc = netObj.GetComponent<NetworkedCard>();
-        if (nc != null && !handCards.Contains(nc))
+            
+        foreach (byte value in cardValues)
         {
-            handCards.Add(nc);
+            GameObject card = CreateLocalCard(value, false);
+            if (card != null)
+            {
+                handCards.Add(card);
+            }
+        }
+        
+        SortHandCards();
+        SortCards();
+    }
+    
+    /// <summary>
+    /// Sets side cards locally from byte values (called by RPC).
+    /// </summary>
+    public void SetSideCardsLocally(byte[] underSideValues, byte[] overSideValues)
+    {
+        // Clear existing
+        foreach (var card in underSideCards) { if (card != null) Destroy(card); }
+        foreach (var card in overSideCards) { if (card != null) Destroy(card); }
+        underSideCards.Clear();
+        overSideCards.Clear();
+        
+        // Create under side cards
+        if (underSideValues != null)
+        {
+            for (int i = 0; i < underSideValues.Length; i++)
+            {
+                GameObject card = CreateLocalCard(underSideValues[i], false);
+                if (card != null)
+                {
+                    underSideCards.Add(card);
+                    var sr = card.GetComponent<SpriteRenderer>();
+                    if (sr != null)
+                    {
+                        sr.sortingOrder = i;
+                    }
+                }
+            }
+        }
+        
+        // Create over side cards
+        if (overSideValues != null)
+        {
+            for (int i = 0; i < overSideValues.Length; i++)
+            {
+                GameObject card = CreateLocalCard(overSideValues[i], false);
+                if (card != null)
+                {
+                    overSideCards.Add(card);
+                    var sr = card.GetComponent<SpriteRenderer>();
+                    if (sr != null)
+                    {
+                        sr.sortingOrder = i + 3;
+                    }
+                }
+            }
+        }
+        
+        SortCards();
+    }
+    
+    /// <summary>
+    /// Adds a chance card locally (called by RPC).
+    /// </summary>
+    public void AddChanceCardLocally(byte value)
+    {
+        GameObject card = CreateLocalCard(value, true); // Chance cards are face up
+        if (card != null)
+        {
+            handCards.Add(card);
             SortHandCards();
             SortCards();
         }
@@ -304,7 +397,11 @@ public class NetworkPlayerHand : NetworkBehaviour
 
     void SortHandCards()
     {
-        handCards = handCards.OrderBy(c => c.Value).ToList();
+        handCards = handCards.OrderBy(c => 
+        {
+            var card = c.GetComponent<Card>();
+            return card != null ? card.GetValue() : 0;
+        }).ToList();
     }
 
     void UpdateSideUsage()
@@ -313,11 +410,32 @@ public class NetworkPlayerHand : NetworkBehaviour
         usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
     }
 
-    List<NetworkedCard> GetCurrentCards()
+    List<GameObject> GetCurrentCards()
     {
         if (usingOverSideCards) return overSideCards;
         if (usingUnderSideCards) return underSideCards;
         return handCards;
+    }
+    
+    public int GetLowestValueExcluding(int exclude1, int exclude2)
+    {
+        var currentCards = GetCurrentCards();
+        int lowest = int.MaxValue;
+        
+        foreach (var cardObj in currentCards)
+        {
+            if (cardObj == null) continue;
+            var card = cardObj.GetComponent<Card>();
+            if (card == null) continue;
+            
+            int value = card.GetValue();
+            if (value != exclude1 && value != exclude2 && value < lowest)
+            {
+                lowest = value;
+            }
+        }
+        
+        return lowest == int.MaxValue ? 0 : lowest;
     }
     #endregion
 
@@ -370,7 +488,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         }
     }
 
-    void ArrangeCards(List<NetworkedCard> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
+    void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
     {
         if (cards.Count == 0 || parent == null)
             return;
@@ -379,10 +497,10 @@ public class NetworkPlayerHand : NetworkBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
-            if (cards[i] == null || cards[i].gameObject == null)
+            if (cards[i] == null)
                 continue;
 
-            var go = cards[i].gameObject;
+            var go = cards[i];
             go.transform.SetParent(parent);
 
             bool isHovered = (cards[i] == hoveredCard);
@@ -476,7 +594,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         mousePos.z = 0f;
         
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, Mathf.Infinity, cardLayerMask);
-        hoveredCard = hit.collider ? hit.collider.GetComponentInParent<NetworkedCard>() : null;
+        hoveredCard = hit.collider ? hit.collider.GetComponentInParent<Card>()?.gameObject : null;
 
         bool myTurn = gm.CurrentTurn == Object.InputAuthority;
         
@@ -485,61 +603,86 @@ public class NetworkPlayerHand : NetworkBehaviour
             var currentCards = GetCurrentCards();
             if (currentCards.Contains(hoveredCard))
             {
-                if (pile.GetCurrentCard(false) != 10 && !ShouldDiscard(0))
+                var card = hoveredCard.GetComponent<Card>();
+                if (card != null && pile.GetCurrentCard(false) != 10 && !ShouldDiscard(0))
                 {
-                    RPC_PlayCard(hoveredCard.Object);
+                    RPC_PlayCard((byte)card.GetValue());
                 }
             }
         }
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    void RPC_PlayCard(NetworkObject cardObj, RpcInfo info = default)
+    void RPC_PlayCard(byte cardValue, RpcInfo info = default)
     {
         if (!Object.HasStateAuthority || !gm.GameStarted)
-            return;
-
-        var nc = cardObj.GetComponent<NetworkedCard>();
-        if (nc == null)
             return;
 
         bool myTurn = gm.CurrentTurn == info.Source;
         if (!myTurn || gm.WinnerDeclared)
             return;
 
-        byte cardValue = nc.Value;
-        bool isChanceCard = nc.IsChanceCard;
-
         // Check if can play (must match saved value if set)
         if (savedCardValue != 0 && savedCardValue != cardValue)
             return;
 
-        if (CanPlayCard(cardValue, isChanceCard, nc))
+        // Find the card GameObject in hand
+        GameObject cardObj = FindCardInHand(cardValue);
+        if (cardObj == null)
+            return;
+
+        bool isChanceCard = false; // TODO: Track chance cards if needed
+
+        if (CanPlayCard(cardValue, isChanceCard, cardObj))
         {
-            PlayCardSuccess(nc, cardValue, isChanceCard);
+            PlayCardSuccess(cardObj, cardValue, isChanceCard, info.Source);
         }
         else
         {
-            PlayCardFailed(nc, isChanceCard);
+            PlayCardFailed(cardObj, isChanceCard, info.Source);
         }
+
+        // Broadcast to all clients to remove card locally
+        RPC_RemoveCardFromHand(info.Source, cardValue);
 
         // Check win condition
         gm.CheckProcessWin();
     }
-
-    void PlayCardSuccess(NetworkedCard nc, byte cardValue, bool isChanceCard)
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_RemoveCardFromHand(PlayerRef player, byte cardValue, RpcInfo info = default)
     {
-        // Remove from hand
-        RemoveCardFromList(nc);
-        
-        // Add to pile
-        pile.RPC_AddCardToPile(cardValue, Object.InputAuthority);
-
-        // Despawn original card
-        if (runner != null)
+        // All clients remove the card locally
+        if (Object.InputAuthority == player)
         {
-            runner.Despawn(nc.Object);
+            GameObject cardObj = FindCardInHand(cardValue);
+            if (cardObj != null)
+            {
+                RemoveCardFromList(cardObj);
+                Destroy(cardObj);
+            }
         }
+    }
+    
+    GameObject FindCardInHand(byte value)
+    {
+        var currentCards = GetCurrentCards();
+        foreach (var cardObj in currentCards)
+        {
+            if (cardObj == null) continue;
+            var card = cardObj.GetComponent<Card>();
+            if (card != null && card.GetValue() == value)
+            {
+                return cardObj;
+            }
+        }
+        return null;
+    }
+
+    void PlayCardSuccess(GameObject cardObj, byte cardValue, bool isChanceCard, PlayerRef player)
+    {
+        // Add to pile (host only)
+        pile.RPC_AddCardToPile(cardValue, player);
 
         // Handle discard
         if (ShouldDiscard(cardValue))
@@ -563,7 +706,7 @@ public class NetworkPlayerHand : NetworkBehaviour
             // Draw cards to maintain hand size
             if (handCards.Count > 0 && cardGenerator != null && cardGenerator.GetDeckCount() > 0 && !isChanceCard)
             {
-                cardGenerator.RPC_DrawNewCard(Object.InputAuthority, cardsPerPlayer - handCards.Count);
+                cardGenerator.RPC_DrawNewCard(player, cardsPerPlayer - handCards.Count);
             }
         }
         else
@@ -580,18 +723,22 @@ public class NetworkPlayerHand : NetworkBehaviour
             // Draw cards
             if (!isChanceCard && cardGenerator != null && cardGenerator.GetDeckCount() > 0)
             {
-                cardGenerator.RPC_DrawNewCard(Object.InputAuthority, cardsPerPlayer - handCards.Count);
+                cardGenerator.RPC_DrawNewCard(player, cardsPerPlayer - handCards.Count);
             }
         }
 
         SortHandCards();
     }
 
-    void PlayCardFailed(NetworkedCard nc, bool isChanceCard)
+    void PlayCardFailed(GameObject cardObj, bool isChanceCard, PlayerRef player)
     {
+        var card = cardObj.GetComponent<Card>();
+        if (card == null) return;
+        
+        byte cardValue = (byte)card.GetValue();
+        
         if (isChanceCard)
         {
-            RemoveCardFromList(nc);
             PickUpPile();
         }
         else
@@ -601,30 +748,25 @@ public class NetworkPlayerHand : NetworkBehaviour
 
             if (!hasCardToPlay)
             {
-                RemoveCardFromList(nc);
-                pile.RPC_AddCardToPile(nc.Value, Object.InputAuthority);
-                if (runner != null)
-                {
-                    runner.Despawn(nc.Object);
-                }
+                pile.RPC_AddCardToPile(cardValue, player);
                 PickUpPile();
             }
         }
     }
 
-    void RemoveCardFromList(NetworkedCard nc)
+    void RemoveCardFromList(GameObject cardObj)
     {
         if (usingOverSideCards)
         {
-            overSideCards.Remove(nc);
+            overSideCards.Remove(cardObj);
         }
         else if (usingUnderSideCards)
         {
-            underSideCards.Remove(nc);
+            underSideCards.Remove(cardObj);
         }
         else
         {
-            handCards.Remove(nc);
+            handCards.Remove(cardObj);
         }
     }
 
@@ -711,7 +853,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         return false;
     }
 
-    public bool CanPlayCard(byte cardValue, bool isChance, NetworkedCard cardInHand)
+    public bool CanPlayCard(byte cardValue, bool isChance, GameObject cardInHand)
     {
         byte currentPileCard = pile.GetCurrentCard(isChance);
         
@@ -737,9 +879,11 @@ public class NetworkPlayerHand : NetworkBehaviour
 
     bool HasSameValueCard(byte cardValue)
     {
-        foreach (var card in handCards)
+        foreach (var cardObj in handCards)
         {
-            if (card.Value == cardValue)
+            if (cardObj == null) continue;
+            var card = cardObj.GetComponent<Card>();
+            if (card != null && card.GetValue() == cardValue)
             {
                 return true;
             }
@@ -747,11 +891,13 @@ public class NetworkPlayerHand : NetworkBehaviour
         return false;
     }
 
-    bool HasCardToPlay(List<NetworkedCard> currentList)
+    bool HasCardToPlay(List<GameObject> currentList)
     {
-        foreach (var card in currentList)
+        foreach (var cardObj in currentList)
         {
-            if (CanPlayCard(card.Value, false, null))
+            if (cardObj == null) continue;
+            var card = cardObj.GetComponent<Card>();
+            if (card != null && CanPlayCard((byte)card.GetValue(), false, cardObj))
             {
                 return true;
             }
@@ -790,8 +936,10 @@ public class NetworkPlayerHand : NetworkBehaviour
     #region Utility
     public int GetLowestValueExcluding(params byte[] excludes)
     {
-        return handCards.Where(c => !excludes.Contains(c.Value))
-                       .Select(c => (int)c.Value)
+        return handCards.Where(c => c != null)
+                       .Select(c => c.GetComponent<Card>())
+                       .Where(card => card != null && !excludes.Contains((byte)card.GetValue()))
+                       .Select(card => card.GetValue())
                        .DefaultIfEmpty(int.MaxValue)
                        .Min();
     }
