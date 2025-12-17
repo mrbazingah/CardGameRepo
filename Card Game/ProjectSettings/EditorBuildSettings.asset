@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu/Start Scene.unity
     guid: fcf4ca79aaf72314f8cf6bc1f726381d
   - enabled: 1
-    path: Assets/Scenes/Game/Lobby Scene.unity
+    path: Assets/Scenes/Game/Multiplayer Lobby Scene.unity
     guid: a1958ba786ab9544793da600f6cb50d1
   - enabled: 1
     path: Assets/Scenes/Game/Singleplayer Lobby Scene.unity

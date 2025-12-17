@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: Close
         m_Mode: 1
@@ -214,7 +214,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: OpenHostPanel
         m_Mode: 1
@@ -946,7 +946,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: OnDisplayNameChanged
         m_Mode: 1
@@ -1908,7 +1908,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: OpenCodePanel
         m_Mode: 1
@@ -2953,7 +2953,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: Close
         m_Mode: 1
@@ -3224,7 +3224,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: OnJoinClicked
         m_Mode: 1
@@ -3434,7 +3434,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: Close
         m_Mode: 1
@@ -3446,7 +3446,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: OpenProfilePanel
         m_Mode: 1
@@ -3717,7 +3717,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1253472743}
-  - component: {fileID: 1253472744}
   m_Layer: 0
   m_Name: MultiplayerManager
   m_TagString: Untagged
@@ -3740,30 +3739,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1253472744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253472742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8576a572df07a73408a3de3379eef7e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hostPanel: {fileID: 1202394716}
-  codePanel: {fileID: 94093183}
-  loadingPanel: {fileID: 1341430321}
-  errorPanel: {fileID: 1238042883}
-  loadingSwitchDelay: 0.5
-  joinInputField: {fileID: 1920635979}
-  roomFullError: Room player count is full. Unable to join.
-  roomNotFoundError: Couldn't find a room with that code.
-  roomShutdownError: Server shutdown or host left the room.
-  profilePanel: {fileID: 309160215}
-  displayNameInputField: {fileID: 287947125}
-  defaultDisplayName: Player
 --- !u!1 &1254640523
 GameObject:
   m_ObjectHideFlags: 0
@@ -4116,7 +4091,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: OnHostClicked
         m_Mode: 1
@@ -4774,7 +4749,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: Close
         m_Mode: 1
@@ -4906,7 +4881,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: Close
         m_Mode: 1
@@ -5114,7 +5089,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1253472744}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
         m_MethodName: OpenCodePanel
         m_Mode: 1
