@@ -2,8 +2,8 @@
 // Drop-in replacement for AIBehaviourHard.cs that uses the trained Q-table.
 // Attach this to the same GameObject as AIHand and disable AIBehaviourHard.
 //
-// The script translates the live Unity game state into the same state encoding
-// used during training (SimGame.GetStateKey) then asks the Q-table for the best action.
+// State encoding exactly matches SimGame.GetStateKey() so the trained Q-table
+// produces consistent decisions in the live game.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -28,11 +28,13 @@ public class AIBehaviourML : MonoBehaviour
     GameManager   gameManager;
     AudioManager  audioManager;
     AIHand        aiHand;
+    PlayerHand    playerHand;
 
     QLearningAgent agent = new QLearningAgent();
 
     bool isPlaying;
     int  cardsPerPlayer;
+    bool chanceGaveExtraTurn;
 
     // ---------------------------------------------------------------
     //  Unity lifecycle
@@ -44,6 +46,7 @@ public class AIBehaviourML : MonoBehaviour
         gameManager   = FindFirstObjectByType<GameManager>();
         audioManager  = FindFirstObjectByType<AudioManager>();
         aiHand        = GetComponent<AIHand>();
+        playerHand    = FindFirstObjectByType<PlayerHand>();
     }
 
     void Start()
@@ -71,18 +74,53 @@ public class AIBehaviourML : MonoBehaviour
         isPlaying = true;
         yield return new WaitForSeconds(playDelay);
 
-        bool playAgain;
-        do
+        while (aiHand.GetTurn() && !gameManager.GetWinner())
         {
-            playAgain = false;
-            if (!aiHand.GetTurn() || gameManager.GetWinner()) break;
+            // --- Underside phase: blind flip, no agent choice ---
+            if (aiHand.GetHandCount() == 0 && aiHand.GetOverSideCount() == 0 && aiHand.GetUnderSideCount() > 0)
+            {
+                var underCards = aiHand.GetCards();
+                if (underCards.Count > 0)
+                {
+                    int  idx          = Random.Range(0, underCards.Count);
+                    var  cardObj      = underCards[idx];
+                    int  val          = cardObj.GetComponent<Card>().GetValue();
+                    bool canPlay      = CanPlay(val);
 
-            // Build the state key the same way SimGame does
+                    // Card goes to pile regardless of whether it's playable
+                    aiHand.RemoveCard(cardObj);
+                    pile.AddCardsToPile(cardObj);
+                    audioManager.PlayCardSFX();
+
+                    if (canPlay)
+                    {
+                        bool shouldDiscard = ShouldDiscard(val);
+                        if (shouldDiscard) StartCoroutine(pile.DiscardCardsInPile());
+                        StartCoroutine(gameManager.ProcessWin("AI"));
+                        if (!gameManager.GetWinner())
+                        {
+                            bool extraTurn = (val == 2 || shouldDiscard);
+                            if (extraTurn)
+                            {
+                                yield return new WaitForSeconds(playDelay);
+                                continue;
+                            }
+                            gameManager.NextTurn(cardObj);
+                        }
+                    }
+                    else
+                    {
+                        // Can't beat pile top — pick up the whole pile including this card
+                        PickUpPile();
+                    }
+                }
+                break;
+            }
+
+            // --- Normal turn: consult the Q-table ---
             string state  = BuildStateKey();
             bool[] mask   = BuildActionMask();
-
-            // Ask the trained agent what to do
-            int action = agent.GreedyAction(state, mask);
+            int    action = agent.GreedyAction(state, mask);
 
             if (action == SimGame.ACTION_PICKUP)
             {
@@ -93,96 +131,122 @@ public class AIBehaviourML : MonoBehaviour
             if (action == SimGame.ACTION_CHANCE)
             {
                 yield return StartCoroutine(DoChanceCard());
+                if (chanceGaveExtraTurn && !gameManager.GetWinner())
+                {
+                    yield return new WaitForSeconds(playDelay);
+                    continue;
+                }
                 break;
             }
 
-            // Play the card with that value
-            int   targetValue = action;
-            var   cards       = aiHand.GetCards();
-            var   cardObj     = cards.FirstOrDefault(c => c.GetComponent<Card>().GetValue() == targetValue);
+            // --- Play a card of the chosen value ---
+            int targetValue = action;
+            var cards       = aiHand.GetCards();
+            var cardObj2    = cards.FirstOrDefault(c => c.GetComponent<Card>().GetValue() == targetValue);
 
-            if (cardObj == null)
+            if (cardObj2 == null)
             {
                 // Fallback: play any legal card (should not happen if mask is correct)
-                cardObj = cards.FirstOrDefault(c => CanPlay(c.GetComponent<Card>().GetValue()));
+                cardObj2 = cards.FirstOrDefault(c => CanPlay(c.GetComponent<Card>().GetValue()));
             }
 
-            if (cardObj != null)
-            {
-                PlayCard(cardObj);
-                int val = cardObj.GetComponent<Card>().GetValue();
-
-                if (val == 2 || ShouldDiscard(val))
-                {
-                    yield return new WaitForSeconds(playDelay);
-                    playAgain = !gameManager.GetWinner();
-                }
-                else
-                {
-                    StartCoroutine(gameManager.ProcessWin("AI"));
-                    gameManager.NextTurn(cardObj);
-                }
-            }
-            else
+            if (cardObj2 == null)
             {
                 PickUpPile();
                 break;
             }
-        }
-        while (playAgain);
 
-        // Refill hand
-        if (aiHand.GetCards().Count < cardsPerPlayer && cardGenerator.GetDeck().Count > 0)
-            cardGenerator.DrawNewCard(cardsPerPlayer - aiHand.GetCards().Count, false);
+            int playedVal = cardObj2.GetComponent<Card>().GetValue();
+            PlayCard(cardObj2);
+            StartCoroutine(gameManager.ProcessWin("AI"));
+
+            if (gameManager.GetWinner()) break;
+
+            bool giveExtraTurn = (playedVal == 2 || ShouldDiscard(playedVal));
+            if (giveExtraTurn)
+            {
+                yield return new WaitForSeconds(playDelay);
+                continue;
+            }
+
+            gameManager.NextTurn(cardObj2);
+            break;
+        }
+
+        // Safety refill in case mid-turn draws were missed
+        if (aiHand.GetHandCount() < cardsPerPlayer && cardGenerator.GetDeck().Count > 0)
+            cardGenerator.DrawNewCard(cardsPerPlayer - aiHand.GetHandCount(), false);
 
         isPlaying = false;
     }
 
     // ---------------------------------------------------------------
-    //  State / mask helpers — mirrors SimGame's encoding
+    //  State encoding — exactly mirrors SimGame.GetStateKey()
     // ---------------------------------------------------------------
     string BuildStateKey()
     {
-        var   myCards    = aiHand.GetCards();
-        int   pileTop    = pile.GetCurrentCard(false);
-        int   phase      = aiHand.GetCards() == null ? 0 :
-                           (myCards.Count > 0 ? 0 : 1); // simplified; full phase from AIHand would be better
+        var  active   = aiHand.GetCards();
+        int  pileTop  = pile.GetCurrentCard(false);
+        int  handCnt  = aiHand.GetHandCount();
+        int  overCnt  = aiHand.GetOverSideCount();
+        int  underCnt = aiHand.GetUnderSideCount();
+        int  phase    = handCnt > 0 ? 0 : (overCnt > 0 ? 1 : 2);
 
-        int canPlayCount    = myCards.Count(c => CanPlay(c.GetComponent<Card>().GetValue()));
-        int highestPlayable = myCards.Where(c => CanPlay(c.GetComponent<Card>().GetValue()))
-                                     .Select(c => c.GetComponent<Card>().GetValue())
-                                     .DefaultIfEmpty(0).Max();
-        int lowestPlayable  = myCards.Where(c => CanPlay(c.GetComponent<Card>().GetValue()))
-                                     .Select(c => c.GetComponent<Card>().GetValue())
-                                     .DefaultIfEmpty(0).Min();
+        var  cardValues = active.Select(c => c.GetComponent<Card>().GetValue()).ToList();
+        bool has2    = cardValues.Contains(2);
+        bool has10   = cardValues.Contains(10);
+        bool hasAce  = cardValues.Contains(14);
 
-        // Use PlayerHand card count as opponent total (approximate)
-        var playerHand = FindFirstObjectByType<PlayerHand>();
-        int oppTotal   = playerHand != null ?
-            System.Math.Min(playerHand.GetCurrentCards().Count, 15) : 5;
+        // Lowest playable regular card (not 2 or 10) — mirrors SimGame exactly
+        var regularPlayable = cardValues.Where(v => v != 2 && v != 10 && v >= pileTop).ToList();
+        int lowestRegular   = regularPlayable.Count > 0 ? regularPlayable.Min() : 0;
+        int regularCount    = System.Math.Min(regularPlayable.Count, 5);
 
-        int myTotal = System.Math.Min(myCards.Count, 15);
+        int myTotal  = System.Math.Min(handCnt + overCnt + underCnt, 12);
+        int oppTotal = playerHand != null
+            ? System.Math.Min(
+                playerHand.GetHandCards().Count +
+                playerHand.GetOverSideCards().Count +
+                playerHand.GetUnderSideCards().Count, 12)
+            : 5;
 
-        int pt = pileTop / 2;
-        int hp = highestPlayable / 2;
-        int lp = lowestPlayable / 2;
+        // Bucket pile top: 0=empty, 1=low(2-6), 2=mid(7-9), 3=high(11-13), 4=ace
+        int pileBucket = pileTop == 0  ? 0
+                       : pileTop <= 6  ? 1
+                       : pileTop <= 9  ? 2
+                       : pileTop < 14  ? 3 : 4;
 
-        return $"{pt},{hp},{lp},{myTotal},{oppTotal},{phase},{canPlayCount > 0}";
+        // Bucket lowest regular: 0=none, 1=low(3-6), 2=mid(7-9), 3=high(11-13), 4=ace
+        int lrBucket = lowestRegular == 0  ? 0
+                     : lowestRegular <= 6  ? 1
+                     : lowestRegular <= 9  ? 2
+                     : lowestRegular < 14  ? 3 : 4;
+
+        return $"{pileBucket},{lrBucket},{has10},{has2},{hasAce},{regularCount},{myTotal},{oppTotal},{phase}";
     }
 
     bool[] BuildActionMask()
     {
-        bool[] mask  = new bool[SimGame.NUM_ACTIONS];
-        var    cards = aiHand.GetCards();
+        bool[] mask = new bool[SimGame.NUM_ACTIONS];
 
+        // Underside phase: forced flip — no real choice (mirrors SimGame)
+        if (aiHand.GetHandCount() == 0 && aiHand.GetOverSideCount() == 0 && aiHand.GetUnderSideCount() > 0)
+        {
+            mask[SimGame.ACTION_PICKUP] = true;
+            return mask;
+        }
+
+        var  cards      = aiHand.GetCards();
+        int  pileTop    = pile.GetCurrentCard(false);
         bool hasPlayable = false;
+
         foreach (var c in cards)
         {
             int v = c.GetComponent<Card>().GetValue();
-            if (CanPlay(v) && v < SimGame.NUM_ACTIONS)
+            if ((v == 2 || v == 10 || v >= pileTop) && v < SimGame.NUM_ACTIONS)
             {
-                mask[v]     = true;
-                hasPlayable = true;
+                mask[v]      = true;
+                hasPlayable  = true;
             }
         }
 
@@ -197,16 +261,14 @@ public class AIBehaviourML : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
-    //  Card play helpers (mirrors AIHand logic)
+    //  Card play helpers
     // ---------------------------------------------------------------
     void PlayCard(GameObject cardObj)
     {
         int value = cardObj.GetComponent<Card>().GetValue();
         if (!CanPlay(value)) return;
 
-        // Remove from AIHand lists via AIHand's own method isn't exposed,
-        // so we call the pile directly and let AIHand's internal list drift.
-        // For a cleaner integration, expose a RemoveCard method on AIHand.
+        aiHand.RemoveCard(cardObj);        // keep AIHand's internal list in sync
         pile.AddCardsToPile(cardObj);
         audioManager.PlayCardSFX();
 
@@ -219,6 +281,7 @@ public class AIBehaviourML : MonoBehaviour
         if (gameManager.GetWinner()) return;
         var pileCards = pile.GetCardsInPile();
         pile.ClearPile();
+        aiHand.AddCardsToHand(pileCards);  // keep AIHand's internal list in sync
         foreach (var c in pileCards)
         {
             c.GetComponent<Card>().RemoveChild();
@@ -230,16 +293,34 @@ public class AIBehaviourML : MonoBehaviour
 
     IEnumerator DoChanceCard()
     {
+        chanceGaveExtraTurn = false;
         GameObject chanceCard = cardGenerator.GetChanceCard();
         if (chanceCard == null) yield break;
+
         yield return new WaitForSeconds(chanceDelay);
-        // Card is already added to pile by GetChanceCard(); handle pickup if needed
-        int val = chanceCard.GetComponent<Card>().GetValue();
-        if (!CanPlay(val))
+
+        int  val     = chanceCard.GetComponent<Card>().GetValue();
+        bool canPlay = CanPlay(val);
+
+        if (!canPlay)
         {
+            // Chance card can't beat pile — pick up everything
             PickUpPile();
+            yield break;
         }
-        else if (val != 2 && val != 10 && !ShouldDiscard(val))
+
+        audioManager.PlayCardSFX();
+        bool discard = ShouldDiscard(val);
+        if (discard) StartCoroutine(pile.DiscardCardsInPile());
+
+        StartCoroutine(gameManager.ProcessWin("AI"));
+
+        // val==2 or pile cleared both give an extra turn (mirrors SimGame)
+        if (val == 2 || discard)
+        {
+            chanceGaveExtraTurn = true;
+        }
+        else
         {
             gameManager.NextTurn(chanceCard);
         }

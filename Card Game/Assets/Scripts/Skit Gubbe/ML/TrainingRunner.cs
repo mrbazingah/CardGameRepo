@@ -26,8 +26,10 @@ public class TrainingRunner : MonoBehaviour
     [SerializeField] int maxStepsPerGame  = 600;
     [Tooltip("Print progress to console every N games")]
     [SerializeField] int logInterval      = 50_000;
-    [Tooltip("Train against the simple rule-based AI instead of self-play.\nRecommended: start with this ON, then do a second run with it OFF.")]
-    [SerializeField] bool trainAgainstSimple = true;
+    [Tooltip("Train against the simple rule-based AI instead of self-play.\nRecommended: start with this ON, then switch to Medium, then Self-play.")]
+    [SerializeField] bool trainAgainstSimple  = true;
+    [Tooltip("Train against the medium rule-based AI (harder than Simple — plays 10 tactically).\nOnly used when trainAgainstSimple is false.")]
+    [SerializeField] bool trainAgainstMedium  = false;
 
     [Header("Save")]
     [SerializeField] string saveFileName  = "qtable.json";
@@ -37,9 +39,10 @@ public class TrainingRunner : MonoBehaviour
     // ---------------------------------------------------------------
     //  Runtime state
     // ---------------------------------------------------------------
-    QLearningAgent agent       = new QLearningAgent();
-    SimSimpleAgent simpleAgent = new SimSimpleAgent();
-    SimGame        game        = new SimGame();
+    QLearningAgent agent        = new QLearningAgent();
+    SimSimpleAgent simpleAgent  = new SimSimpleAgent();
+    SimMediumAgent mediumAgent  = new SimMediumAgent();
+    SimGame        game         = new SimGame();
 
     int   gamesPlayed;
     int   mlWins, simpleWins;
@@ -90,10 +93,9 @@ public class TrainingRunner : MonoBehaviour
     {
         game.Reset();
 
-        if (trainAgainstSimple)
-            RunGameVsSimple();
-        else
-            RunGameSelfPlay();
+        if (trainAgainstSimple)       RunGameVsSimple();
+        else if (trainAgainstMedium)  RunGameVsMedium();
+        else                          RunGameSelfPlay();
 
         // Decay once per game so exploration lasts through most of training
         agent.DecayEpsilon();
@@ -153,6 +155,61 @@ public class TrainingRunner : MonoBehaviour
                 if (game.gameOver)
                 {
                     // Simple agent won — give ML agent a loss on its last action
+                    if (prevMLState != null)
+                        agent.Learn(prevMLState, prevMLAction, -1f, string.Empty, new bool[SimGame.NUM_ACTIONS], done: true);
+
+                    if (game.winner == 0) mlWins++;
+                    else                  simpleWins++;
+                    return;
+                }
+            }
+        }
+    }
+
+    // ML agent (player 0) vs Medium agent (player 1) — same deferred-update pattern as VsSimple
+    void RunGameVsMedium()
+    {
+        string prevMLState       = null;
+        int    prevMLAction      = -1;
+        float  accumulatedReward = 0f;
+
+        for (int step = 0; step < maxStepsPerGame; step++)
+        {
+            int turn = game.currentTurn;
+
+            if (turn == 0)
+            {
+                string state = game.GetStateKey();
+                bool[] mask  = game.GetLegalActionMask();
+                int action   = agent.ChooseAction(state, mask);
+
+                if (prevMLState != null)
+                {
+                    agent.Learn(prevMLState, prevMLAction, accumulatedReward, state, mask, done: false);
+                    accumulatedReward = 0f;
+                }
+
+                float reward = game.Step(action);
+
+                if (game.gameOver)
+                {
+                    agent.Learn(state, action, reward, string.Empty, new bool[SimGame.NUM_ACTIONS], done: true);
+                    if (game.winner == 0) mlWins++;
+                    else                  simpleWins++;
+                    return;
+                }
+
+                accumulatedReward += reward;
+                prevMLState  = state;
+                prevMLAction = action;
+            }
+            else
+            {
+                int   action = mediumAgent.ChooseAction(game);
+                float reward = game.Step(action);
+
+                if (game.gameOver)
+                {
                     if (prevMLState != null)
                         agent.Learn(prevMLState, prevMLAction, -1f, string.Empty, new bool[SimGame.NUM_ACTIONS], done: true);
 
@@ -225,7 +282,7 @@ public class TrainingRunner : MonoBehaviour
     void PrintProgress()
     {
         float mlWR = gamesPlayed > 0 ? (float)mlWins / gamesPlayed * 100f : 0f;
-        string mode = trainAgainstSimple ? "vs Simple" : "Self-play";
+        string mode = trainAgainstSimple ? "vs Simple" : (trainAgainstMedium ? "vs Medium" : "Self-play");
         Debug.Log($"[Training | {mode}] {gamesPlayed:N0}/{totalGames:N0} games | " +
                   $"ML win rate: {mlWR:F1}% | " +
                   $"States learned: {agent.StateCount:N0} | " +

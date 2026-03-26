@@ -10,8 +10,17 @@ using UnityEngine;
 [Serializable]
 public class QTableData
 {
-    public List<string> keys   = new List<string>();
-    public List<string> values = new List<string>(); // comma-separated floats per state
+    // Bump this whenever SimGame.GetStateKey() changes so stale Q-tables are rejected.
+    public string       version = "v2";
+    public List<string> keys    = new List<string>();
+    public List<string> values  = new List<string>(); // comma-separated floats per state
+}
+
+// Current state-encoding version — must match QTableData.version for a Q-table to load.
+// Change both together whenever GetStateKey() changes.
+public static class QTableVersion
+{
+    public const string Current = "v2";
 }
 
 public class QLearningAgent
@@ -93,6 +102,7 @@ public class QLearningAgent
     public void Save(string filePath)
     {
         var data = new QTableData();
+        data.version = QTableVersion.Current;
         foreach (var kv in qTable)
         {
             data.keys.Add(kv.Key);
@@ -112,6 +122,15 @@ public class QLearningAgent
         }
 
         var data = JsonUtility.FromJson<QTableData>(File.ReadAllText(filePath));
+
+        // Reject Q-tables trained with a different state encoding
+        if (data.version != QTableVersion.Current)
+        {
+            Debug.LogWarning($"[QL] Q-table version '{data.version}' does not match current '{QTableVersion.Current}'. " +
+                             "Starting fresh — retrain required.");
+            return;
+        }
+
         qTable.Clear();
 
         for (int i = 0; i < data.keys.Count; i++)
