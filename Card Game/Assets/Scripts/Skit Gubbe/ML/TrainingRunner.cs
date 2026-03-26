@@ -17,19 +17,24 @@ using UnityEditor;
 
 public class TrainingRunner : MonoBehaviour
 {
+    public enum TrainingMode
+    {
+        VsSimple,   // ML vs rule-based simple opponent (recommended first)
+        VsMedium,   // ML vs rule-based medium opponent (plays 10 tactically)
+        SelfPlay,   // ML vs itself
+    }
+
     [Header("Training")]
     [Tooltip("Number of full games to simulate")]
-    [SerializeField] int totalGames       = 500_000;
+    [SerializeField] int totalGames      = 500_000;
     [Tooltip("Games simulated per frame (higher = faster, but Unity may feel unresponsive)")]
-    [SerializeField] int gamesPerFrame    = 2_000;
+    [SerializeField] int gamesPerFrame   = 2_000;
     [Tooltip("Safety limit: max steps per game to prevent infinite loops")]
-    [SerializeField] int maxStepsPerGame  = 600;
+    [SerializeField] int maxStepsPerGame = 600;
     [Tooltip("Print progress to console every N games")]
-    [SerializeField] int logInterval      = 50_000;
-    [Tooltip("Train against the simple rule-based AI instead of self-play.\nRecommended: start with this ON, then switch to Medium, then Self-play.")]
-    [SerializeField] bool trainAgainstSimple  = true;
-    [Tooltip("Train against the medium rule-based AI (harder than Simple — plays 10 tactically).\nOnly used when trainAgainstSimple is false.")]
-    [SerializeField] bool trainAgainstMedium  = false;
+    [SerializeField] int logInterval     = 50_000;
+    [Tooltip("VsSimple: learn basics.\nVsMedium: learn against a tactically stronger opponent.\nSelfPlay: refine strategy against itself.\nRecommended order: Simple → Medium → SelfPlay.")]
+    [SerializeField] TrainingMode trainingMode = TrainingMode.VsSimple;
 
     [Header("Save")]
     [SerializeField] string saveFileName  = "qtable.json";
@@ -52,7 +57,7 @@ public class TrainingRunner : MonoBehaviour
     void Start()
     {
         savePath = Path.Combine(Application.persistentDataPath, saveFileName);
-        Debug.Log($"[Training] Starting {totalGames:N0} self-play games.");
+        Debug.Log($"[Training] Starting {totalGames:N0} games | Mode: {trainingMode}");
         Debug.Log($"[Training] Save path: {savePath}");
 
         // Uncomment ONLY to resume from a previous run WITH THE SAME state encoding:
@@ -93,9 +98,12 @@ public class TrainingRunner : MonoBehaviour
     {
         game.Reset();
 
-        if (trainAgainstSimple)       RunGameVsSimple();
-        else if (trainAgainstMedium)  RunGameVsMedium();
-        else                          RunGameSelfPlay();
+        switch (trainingMode)
+        {
+            case TrainingMode.VsSimple:  RunGameVsSimple();  break;
+            case TrainingMode.VsMedium:  RunGameVsMedium();  break;
+            case TrainingMode.SelfPlay:  RunGameSelfPlay();  break;
+        }
 
         // Decay once per game so exploration lasts through most of training
         agent.DecayEpsilon();
@@ -282,7 +290,7 @@ public class TrainingRunner : MonoBehaviour
     void PrintProgress()
     {
         float mlWR = gamesPlayed > 0 ? (float)mlWins / gamesPlayed * 100f : 0f;
-        string mode = trainAgainstSimple ? "vs Simple" : (trainAgainstMedium ? "vs Medium" : "Self-play");
+        string mode = trainingMode.ToString();
         Debug.Log($"[Training | {mode}] {gamesPlayed:N0}/{totalGames:N0} games | " +
                   $"ML win rate: {mlWR:F1}% | " +
                   $"States learned: {agent.StateCount:N0} | " +
