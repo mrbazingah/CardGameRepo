@@ -12,15 +12,13 @@ public class AIBehaviourML : MonoBehaviour
     [Header("Q-Table")]
     [SerializeField] string saveFileName = "qtable.json";
 
-    // ---------------------------------------------------------------
     //  References — set via Inspector or found automatically
-    // ---------------------------------------------------------------
-    Pile          pile;
+    Pile pile;
     CardGenerator cardGenerator;
-    GameManager   gameManager;
-    AudioManager  audioManager;
-    AIHand        aiHand;
-    PlayerHand    playerHand;
+    GameManager gameManager;
+    AudioManager audioManager;
+    AIHand aiHand;
+    PlayerHand playerHand;
 
     QLearningAgent agent = new QLearningAgent();
 
