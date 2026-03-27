@@ -152,9 +152,9 @@ MonoBehaviour:
   gamesPerFrame: 5000
   maxStepsPerGame: 600
   logInterval: 100000
-  trainingMode: 0
+  trainingMode: 2
   startEpsilon: 1
-  epsilonDecay: 0.99999
+  epsilonDecay: 0.999995
   winRateWindow: 100000
   saveFileName: qtable.json
   autoSaveInterval: 500000

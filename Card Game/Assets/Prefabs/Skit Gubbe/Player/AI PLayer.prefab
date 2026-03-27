@@ -524,6 +524,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8244304681938664073}
   - component: {fileID: 6672254915189555265}
+  - component: {fileID: 7967218921147052399}
   m_Layer: 0
   m_Name: AI PLayer
   m_TagString: Untagged
@@ -576,6 +577,7 @@ MonoBehaviour:
   isTurnPos: {x: 0, y: 4}
   isNotTurnPos: {x: 0, y: 4.7}
   isTurn: 0
+  useMLBehaviour: 1
   turnNumber: 0
   playDelay: 1.2
   chanceDelay: 0.5
@@ -583,6 +585,21 @@ MonoBehaviour:
   lerpSpeed: 15
   cardAmountText: {fileID: 2500706921955742232}
   cardAmountTextOffset: {x: 1, y: -1.2}
+--- !u!114 &7967218921147052399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8148943176141036670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abbca4d518a22ac4a985eeb7a19ac45d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playDelay: 1.2
+  chanceDelay: 0.5
+  saveFileName: qtable.json
 --- !u!1 &8183546333639245761
 GameObject:
   m_ObjectHideFlags: 0

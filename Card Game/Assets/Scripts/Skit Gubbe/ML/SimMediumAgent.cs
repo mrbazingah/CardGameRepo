@@ -18,34 +18,19 @@ public class SimMediumAgent
             return SimGame.ACTION_PICKUP;
 
         bool[] mask    = game.GetLegalActionMask();
-        var    active  = me.ActiveCards();
         int    pileTop = game.PileTop;
 
-        var regular = new List<int>();
-        var special  = new List<int>();
-
-        foreach (int v in active)
-        {
-            if (!game.CanPlay(v)) continue;
-            if (v == 2 || v == 10) special.Add(v);
-            else                   regular.Add(v);
-        }
-
-        // Tactically play 10 to clear a mid-to-high pile (>= 9), even if regular cards exist.
-        // This mirrors AIBehaviourHard's safety-score logic that rates 10 as always 1.0.
-        if (pileTop >= 9 && special.Contains(10))
-            return 10;
+        // Tactically play 10 to clear a mid-to-high pile (>= 9), even if regular cards exist
+        if (pileTop >= 9 && mask[SimGame.ACTION_10])
+            return SimGame.ACTION_10;
 
         // Play the lowest regular card
-        if (regular.Count > 0)
-        {
-            regular.Sort();
-            return regular[0];
-        }
+        if (mask[SimGame.ACTION_REGULAR]) return SimGame.ACTION_REGULAR;
 
-        // Use 2 before 10 — extra turn is more valuable than a guaranteed clear on an empty/low pile
-        if (special.Contains(2))  return 2;
-        if (special.Contains(10)) return 10;
+        // Use 2 before 10 — extra turn is more valuable than a clear on a low pile
+        if (mask[SimGame.ACTION_2])   return SimGame.ACTION_2;
+        if (mask[SimGame.ACTION_10])  return SimGame.ACTION_10;
+        if (mask[SimGame.ACTION_ACE]) return SimGame.ACTION_ACE;
 
         // Stuck: prefer chance when pile is large (risky but avoids picking up many cards)
         if (mask[SimGame.ACTION_CHANCE] && game.pile.Count >= 4)

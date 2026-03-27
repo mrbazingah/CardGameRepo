@@ -32,14 +32,17 @@ public class SimGame
     }
 
     // ---------------------------------------------------------------
-    //  Action encoding
-    //  0  = pick up pile
-    //  1  = play chance card from deck
-    //  2-14 = play a card of that value
+    //  Action encoding — 6 strategic decisions only.
+    //  Regular card play is always "lowest playable" (hard-coded),
+    //  so the Q-table only learns the meaningful choices.
     // ---------------------------------------------------------------
-    public const int ACTION_PICKUP = 0;
-    public const int ACTION_CHANCE = 1;
-    public const int NUM_ACTIONS   = 15;  // indices 0-14
+    public const int ACTION_REGULAR = 0;  // play lowest playable regular card (3-9, 11-13)
+    public const int ACTION_2       = 1;  // play a 2
+    public const int ACTION_10      = 2;  // play a 10
+    public const int ACTION_ACE     = 3;  // play an ace (14)
+    public const int ACTION_PICKUP  = 4;  // pick up pile
+    public const int ACTION_CHANCE  = 5;  // play chance card from deck
+    public const int NUM_ACTIONS    = 6;
 
     // ---------------------------------------------------------------
     //  Game state
@@ -133,7 +136,7 @@ public class SimGame
         bool[] mask = new bool[NUM_ACTIONS];
         SimPlayer me = players[currentTurn];
 
-        // Underside cards: forced random flip — no real choice, mark any one action
+        // Underside cards: forced random flip — no real choice
         if (me.IsUsingUnderSide)
         {
             mask[ACTION_PICKUP] = true; // signals "flip" — Step() handles the actual logic
@@ -143,11 +146,12 @@ public class SimGame
         bool hasPlayable = false;
         foreach (int v in me.ActiveCards())
         {
-            if (CanPlay(v) && v < NUM_ACTIONS)
-            {
-                mask[v] = true;
-                hasPlayable = true;
-            }
+            if (!CanPlay(v)) continue;
+            hasPlayable = true;
+            if      (v == 2)  mask[ACTION_2]       = true;
+            else if (v == 10) mask[ACTION_10]      = true;
+            else if (v == 14) mask[ACTION_ACE]     = true;
+            else              mask[ACTION_REGULAR] = true;
         }
 
         // If nothing playable: either pick up pile or play a chance card
@@ -197,10 +201,12 @@ public class SimGame
         // --- Pick up pile ---
         if (action == ACTION_PICKUP)
         {
+            int pickedUp = pile.Count;
             me.hand.AddRange(pile);
             pile.Clear();
             currentTurn = 1 - currentTurn;
-            return -0.05f; // small penalty: picking up pile sets you back
+            // Scale penalty with pile size: picking up 10 cards is far worse than 2
+            return -0.02f * Math.Max(1, pickedUp);
         }
 
         // --- Chance card (draw from deck and play blind) ---
@@ -208,27 +214,46 @@ public class SimGame
         {
             if (deck.Count == 0) { currentTurn = 1 - currentTurn; return 0f; }
 
-            int chanceVal = PopDeck();
-            pile.Add(chanceVal);
+            int chanceVal    = PopDeck();
+            bool canPlayChance = CanPlay(chanceVal); // check BEFORE adding to pile
+            pile.Add(chanceVal);                     // add so ShouldDiscard sees it
 
-            if (CanPlay(chanceVal))
+            if (canPlayChance)
             {
                 if (ShouldDiscard(chanceVal))   pile.Clear();
                 else if (chanceVal != 2 && chanceVal != 10) currentTurn = 1 - currentTurn;
             }
             else
             {
+                // Failed chance card — pick up pile including the chance card
+                int pickedUp = pile.Count;
                 me.hand.AddRange(pile);
                 pile.Clear();
                 currentTurn = 1 - currentTurn;
+                RefillHand(me);
+                return -0.02f * pickedUp;
             }
 
             RefillHand(me);
             return CheckWin();
         }
 
-        // --- Play a card of the chosen value ---
-        int cardValue = action; // action == card value (2-14)
+        // --- Play a card ---
+        int cardValue;
+        if (action == ACTION_REGULAR)
+        {
+            // Always play the lowest playable regular card (not 2, 10, or Ace)
+            var regulars = me.ActiveCards()
+                .Where(v => v != 2 && v != 10 && v != 14 && CanPlay(v))
+                .OrderBy(v => v).ToList();
+            if (regulars.Count == 0) { currentTurn = 1 - currentTurn; return 0f; }
+            cardValue = regulars[0];
+        }
+        else if (action == ACTION_2)   cardValue = 2;
+        else if (action == ACTION_10)  cardValue = 10;
+        else if (action == ACTION_ACE) cardValue = 14;
+        else { currentTurn = 1 - currentTurn; return 0f; }
+
         RemoveOne(me.ActiveCards(), cardValue);
         pile.Add(cardValue);
 
@@ -241,6 +266,10 @@ public class SimGame
 
         // Small bonus for clearing the pile — good tactical move
         if (discard) reward += 0.1f;
+
+        // Small progress reward for successfully playing a card — densifies the reward signal
+        // so Q-values converge faster in long games (most turns otherwise return 0)
+        reward += 0.01f;
 
         // 2 and discarding the pile both give an extra turn
         bool extraTurn = (cardValue == 2 || discard);
@@ -268,8 +297,8 @@ public class SimGame
         bool has10  = active.Contains(10);
         bool hasAce = active.Contains(14);
 
-        // Lowest playable regular card (not 2 or 10)
-        var regularPlayable = active.Where(v => v != 2 && v != 10 && CanPlay(v)).ToList();
+        // Lowest playable regular card (not 2, 10, or Ace — those have their own actions)
+        var regularPlayable = active.Where(v => v != 2 && v != 10 && v != 14 && CanPlay(v)).ToList();
         int lowestRegular   = regularPlayable.Count > 0 ? regularPlayable.Min() : 0;
         int regularCount    = Math.Min(regularPlayable.Count, 5);
 
@@ -288,11 +317,11 @@ public class SimGame
                            : pile.Count <= 3 ? 1
                            : pile.Count <= 7 ? 2 : 3;
 
-        // Bucket lowest regular: 0=none, 1=low(3-6), 2=mid(7-9), 3=high(11-13), 4=ace
+        // Bucket lowest regular: 0=none, 1=low(3-6), 2=mid(7-9), 3=high(11-13)
+        // Ace is excluded from regular (has its own action), so no bucket 4 needed
         int lrBucket = lowestRegular == 0  ? 0
                      : lowestRegular <= 6  ? 1
-                     : lowestRegular <= 9  ? 2
-                     : lowestRegular < 14  ? 3 : 4;
+                     : lowestRegular <= 9  ? 2 : 3;
 
         // Opponent's current phase — tells us how close they are to winning
         int oppPhase = opp.hand.Count > 0 ? 0 : (opp.overSide.Count > 0 ? 1 : 2);

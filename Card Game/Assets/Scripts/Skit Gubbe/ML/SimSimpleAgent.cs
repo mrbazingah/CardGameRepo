@@ -4,8 +4,6 @@
 //   - Only plays 2 or 10 when no other card is playable
 //   - Picks up the pile when it can't play anything
 
-using System.Collections.Generic;
-
 public class SimSimpleAgent
 {
     public int ChooseAction(SimGame game)
@@ -16,32 +14,15 @@ public class SimSimpleAgent
         if (me.IsUsingUnderSide)
             return SimGame.ACTION_PICKUP;
 
-        bool[] mask    = game.GetLegalActionMask();
-        var    active  = me.ActiveCards();
-
-        var regular = new List<int>(); // non-special playable cards
-        var special  = new List<int>(); // 2 and 10
-
-        foreach (int v in active)
-        {
-            if (!game.CanPlay(v)) continue;
-            if (v == 2 || v == 10) special.Add(v);
-            else                   regular.Add(v);
-        }
+        bool[] mask = game.GetLegalActionMask();
 
         // 1. Play the lowest regular card
-        if (regular.Count > 0)
-        {
-            regular.Sort();
-            return regular[0];
-        }
+        if (mask[SimGame.ACTION_REGULAR]) return SimGame.ACTION_REGULAR;
 
-        // 2. Only use special cards (2 or 10) as a last resort
-        if (special.Count > 0)
-        {
-            special.Sort();    // play 2 before 10
-            return special[0];
-        }
+        // 2. Use special cards as a last resort — 2 before 10 before Ace
+        if (mask[SimGame.ACTION_2])   return SimGame.ACTION_2;
+        if (mask[SimGame.ACTION_10])  return SimGame.ACTION_10;
+        if (mask[SimGame.ACTION_ACE]) return SimGame.ACTION_ACE;
 
         // 3. Nothing playable — pick up the pile
         if (mask[SimGame.ACTION_PICKUP]) return SimGame.ACTION_PICKUP;

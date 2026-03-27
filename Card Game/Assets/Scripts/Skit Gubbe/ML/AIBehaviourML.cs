@@ -1,12 +1,4 @@
-// AIBehaviourML.cs
-// Drop-in replacement for AIBehaviourHard.cs that uses the trained Q-table.
-// Attach this to the same GameObject as AIHand and disable AIBehaviourHard.
-//
-// State encoding exactly matches SimGame.GetStateKey() so the trained Q-table
-// produces consistent decisions in the live game.
-
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -41,12 +33,12 @@ public class AIBehaviourML : MonoBehaviour
     // ---------------------------------------------------------------
     void Awake()
     {
-        pile          = FindFirstObjectByType<Pile>();
+        pile = FindFirstObjectByType<Pile>();
         cardGenerator = FindFirstObjectByType<CardGenerator>();
-        gameManager   = FindFirstObjectByType<GameManager>();
-        audioManager  = FindFirstObjectByType<AudioManager>();
-        aiHand        = GetComponent<AIHand>();
-        playerHand    = FindFirstObjectByType<PlayerHand>();
+        gameManager = FindFirstObjectByType<GameManager>();
+        audioManager = FindFirstObjectByType<AudioManager>();
+        aiHand = GetComponent<AIHand>();
+        playerHand = FindFirstObjectByType<PlayerHand>();
     }
 
     void Start()
@@ -59,16 +51,15 @@ public class AIBehaviourML : MonoBehaviour
 
     void Update()
     {
-        if (Time.timeScale == 0f) return;
-        if (!gameManager.GetGameHasStarted()) return;
+        if (Time.timeScale == 0f || !gameManager.GetGameHasStarted()) return;
 
         if (aiHand.GetTurn() && !isPlaying)
+        {
             StartCoroutine(PlayTurn());
+        }
     }
 
-    // ---------------------------------------------------------------
     //  Main turn coroutine
-    // ---------------------------------------------------------------
     IEnumerator PlayTurn()
     {
         isPlaying = true;
@@ -114,6 +105,7 @@ public class AIBehaviourML : MonoBehaviour
                         PickUpPile();
                     }
                 }
+
                 break;
             }
 
@@ -131,18 +123,37 @@ public class AIBehaviourML : MonoBehaviour
             if (action == SimGame.ACTION_CHANCE)
             {
                 yield return StartCoroutine(DoChanceCard());
+
                 if (chanceGaveExtraTurn && !gameManager.GetWinner())
                 {
                     yield return new WaitForSeconds(playDelay);
                     continue;
                 }
+
                 break;
             }
 
-            // --- Play a card of the chosen value ---
-            int targetValue = action;
+            // --- Play a card ---
+            // Map action to the card value we want to play
+            int pileTop2   = pile.GetCurrentCard(false);
+            int targetValue;
             var cards       = aiHand.GetCards();
-            var cardObj2    = cards.FirstOrDefault(c => c.GetComponent<Card>().GetValue() == targetValue);
+
+            if (action == SimGame.ACTION_REGULAR)
+            {
+                // Play lowest playable regular card (not 2, 10, or Ace) — mirrors SimGame
+                var reg = cards
+                    .Select(c => c.GetComponent<Card>().GetValue())
+                    .Where(v => v != 2 && v != 10 && v != 14 && v >= pileTop2)
+                    .OrderBy(v => v).ToList();
+                targetValue = reg.Count > 0 ? reg[0] : -1;
+            }
+            else if (action == SimGame.ACTION_2) targetValue = 2;
+            else if (action == SimGame.ACTION_10) targetValue = 10;
+            else if (action == SimGame.ACTION_ACE) targetValue = 14;
+            else targetValue = -1;
+
+            var cardObj2 = targetValue >= 0 ? cards.FirstOrDefault(c => c.GetComponent<Card>().GetValue() == targetValue) : null;
 
             if (cardObj2 == null)
             {
@@ -180,9 +191,7 @@ public class AIBehaviourML : MonoBehaviour
         isPlaying = false;
     }
 
-    // ---------------------------------------------------------------
-    //  State encoding — exactly mirrors SimGame.GetStateKey()
-    // ---------------------------------------------------------------
+    // State encoding — exactly mirrors SimGame.GetStateKey()
     string BuildStateKey()
     {
         var  active   = aiHand.GetCards();
@@ -197,8 +206,8 @@ public class AIBehaviourML : MonoBehaviour
         bool has10   = cardValues.Contains(10);
         bool hasAce  = cardValues.Contains(14);
 
-        // Lowest playable regular card (not 2 or 10) — mirrors SimGame exactly
-        var regularPlayable = cardValues.Where(v => v != 2 && v != 10 && v >= pileTop).ToList();
+        // Lowest playable regular card (not 2, 10, or Ace — those have their own actions)
+        var regularPlayable = cardValues.Where(v => v != 2 && v != 10 && v != 14 && v >= pileTop).ToList();
         int lowestRegular   = regularPlayable.Count > 0 ? regularPlayable.Min() : 0;
         int regularCount    = System.Math.Min(regularPlayable.Count, 5);
 
@@ -225,11 +234,9 @@ public class AIBehaviourML : MonoBehaviour
                            : pileCount <= 3 ? 1
                            : pileCount <= 7 ? 2 : 3;
 
-        // Bucket lowest regular: 0=none, 1=low(3-6), 2=mid(7-9), 3=high(11-13), 4=ace
-        int lrBucket = lowestRegular == 0  ? 0
-                     : lowestRegular <= 6  ? 1
-                     : lowestRegular <= 9  ? 2
-                     : lowestRegular < 14  ? 3 : 4;
+        // Bucket lowest regular: 0=none, 1=low(3-6), 2=mid(7-9), 3=high(11-13)
+        // Ace excluded from regular (has its own action), so no bucket 4
+        int lrBucket = lowestRegular == 0  ? 0 : lowestRegular <= 6  ? 1 : lowestRegular <= 9  ? 2 : 3;
 
         // Opponent's current phase — tells us how close they are to winning
         int oppPhase = oppHandCnt > 0 ? 0 : (oppOverCnt > 0 ? 1 : 2);
@@ -251,57 +258,63 @@ public class AIBehaviourML : MonoBehaviour
             return mask;
         }
 
-        var  cards      = aiHand.GetCards();
-        int  pileTop    = pile.GetCurrentCard(false);
+        var  cards = aiHand.GetCards();
+        int  pileTop = pile.GetCurrentCard(false);
         bool hasPlayable = false;
 
         foreach (var c in cards)
         {
             int v = c.GetComponent<Card>().GetValue();
-            if ((v == 2 || v == 10 || v >= pileTop) && v < SimGame.NUM_ACTIONS)
+            if (v != 2 && v != 10 && v != 14 && v < pileTop) continue; // not playable regular
+            if (v == 2 || v == 10 || v == 14 || v >= pileTop)
             {
-                mask[v]      = true;
-                hasPlayable  = true;
+                hasPlayable = true;
+                if (v == 2)  mask[SimGame.ACTION_2] = true;
+                else if (v == 10) mask[SimGame.ACTION_10] = true;
+                else if (v == 14) mask[SimGame.ACTION_ACE] = true;
+                else mask[SimGame.ACTION_REGULAR] = true;
             }
         }
 
         if (!hasPlayable && pile.GetCardsInPile().Count > 0)
         {
             mask[SimGame.ACTION_PICKUP] = true;
-            if (cardGenerator.GetDeck().Count > 0)
-                mask[SimGame.ACTION_CHANCE] = true;
+            if (cardGenerator.GetDeck().Count > 0) mask[SimGame.ACTION_CHANCE] = true;
         }
 
         return mask;
     }
 
-    // ---------------------------------------------------------------
-    //  Card play helpers
-    // ---------------------------------------------------------------
+    // Card play helpers
     void PlayCard(GameObject cardObj)
     {
         int value = cardObj.GetComponent<Card>().GetValue();
         if (!CanPlay(value)) return;
 
-        aiHand.RemoveCard(cardObj);        // keep AIHand's internal list in sync
+        aiHand.RemoveCard(cardObj); // keep AIHand's internal list in sync
         pile.AddCardsToPile(cardObj);
         audioManager.PlayCardSFX();
 
-        if (ShouldDiscard(value))
-            StartCoroutine(pile.DiscardCardsInPile());
+        if (ShouldDiscard(value)) StartCoroutine(pile.DiscardCardsInPile());
+
+        // Refill hand immediately after each play so extra turns don't drain the hand
+        if (aiHand.GetHandCount() < cardsPerPlayer && cardGenerator.GetDeck().Count > 0) cardGenerator.DrawNewCard(cardsPerPlayer - aiHand.GetHandCount(), false);
     }
 
     void PickUpPile()
     {
         if (gameManager.GetWinner()) return;
+
         var pileCards = pile.GetCardsInPile();
         pile.ClearPile();
-        aiHand.AddCardsToHand(pileCards);  // keep AIHand's internal list in sync
+        aiHand.AddCardsToHand(pileCards); // keep AIHand's internal list in sync
+
         foreach (var c in pileCards)
         {
             c.GetComponent<Card>().RemoveChild();
             cardGenerator.ApplyCoverOnCards(c);
         }
+
         gameManager.NextTurn(null);
         audioManager.PlayShufflingSFX();
     }
@@ -314,8 +327,11 @@ public class AIBehaviourML : MonoBehaviour
 
         yield return new WaitForSeconds(chanceDelay);
 
-        int  val     = chanceCard.GetComponent<Card>().GetValue();
-        bool canPlay = CanPlay(val);
+        int  val = chanceCard.GetComponent<Card>().GetValue();
+        // GetChanceCard() already added the card to the pile, so GetCurrentCard(false)
+        // would return the chance card itself. Use isChance=true to get the card
+        // that was on top BEFORE the chance card was drawn.
+        bool canPlay = val == 2 || val == 10 || val >= pile.GetCurrentCard(true);
 
         if (!canPlay)
         {
@@ -341,8 +357,7 @@ public class AIBehaviourML : MonoBehaviour
         }
     }
 
-    bool CanPlay(float value) =>
-        value == 2 || value == 10 || value >= pile.GetCurrentCard(false);
+    bool CanPlay(float value) => value == 2 || value == 10 || value >= pile.GetCurrentCard(false);
 
     bool ShouldDiscard(int value)
     {

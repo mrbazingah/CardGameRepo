@@ -19,6 +19,7 @@ public class AIHand : MonoBehaviour
     [SerializeField] Vector2 isTurnPos, isNotTurnPos;
     [Header("Turn and Play")]
     [SerializeField] bool isTurn;
+    [SerializeField] bool useMLBehaviour;
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
     [SerializeField] float chanceDelay;
@@ -167,7 +168,7 @@ public class AIHand : MonoBehaviour
         RemoveDublicateCards();
         CheckTurn();
 
-        if (isTurn && !isPlaying)
+        if (isTurn && !isPlaying && !useMLBehaviour)
         {
             StartCoroutine(PlayAITurnWithDelay());
         }
