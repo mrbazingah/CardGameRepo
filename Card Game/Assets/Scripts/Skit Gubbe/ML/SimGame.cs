@@ -282,13 +282,25 @@ public class SimGame
                        : pileTop <= 9  ? 2
                        : pileTop < 14  ? 3 : 4;
 
+        // Bucket pile size: 0=empty, 1=small(1-3), 2=medium(4-7), 3=large(8+)
+        // Critical: picking up 2 cards vs 11 cards is completely different risk
+        int pileSizeBucket = pile.Count == 0 ? 0
+                           : pile.Count <= 3 ? 1
+                           : pile.Count <= 7 ? 2 : 3;
+
         // Bucket lowest regular: 0=none, 1=low(3-6), 2=mid(7-9), 3=high(11-13), 4=ace
         int lrBucket = lowestRegular == 0  ? 0
                      : lowestRegular <= 6  ? 1
                      : lowestRegular <= 9  ? 2
                      : lowestRegular < 14  ? 3 : 4;
 
-        return $"{pileBucket},{lrBucket},{has10},{has2},{hasAce},{regularCount},{myTotal},{oppTotal},{phase}";
+        // Opponent's current phase — tells us how close they are to winning
+        int oppPhase = opp.hand.Count > 0 ? 0 : (opp.overSide.Count > 0 ? 1 : 2);
+
+        // Whether the deck is empty — changes the value of the chance card action
+        bool deckEmpty = deck.Count == 0;
+
+        return $"{pileBucket},{pileSizeBucket},{lrBucket},{has10},{has2},{hasAce},{regularCount},{myTotal},{oppTotal},{oppPhase},{deckEmpty},{phase}";
     }
 
     // ---------------------------------------------------------------

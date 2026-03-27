@@ -11,7 +11,7 @@ using UnityEngine;
 public class QTableData
 {
     // Bump this whenever SimGame.GetStateKey() changes so stale Q-tables are rejected.
-    public string       version = "v2";
+    public string       version = "v3";
     public List<string> keys    = new List<string>();
     public List<string> values  = new List<string>(); // comma-separated floats per state
 }
@@ -20,7 +20,7 @@ public class QTableData
 // Change both together whenever GetStateKey() changes.
 public static class QTableVersion
 {
-    public const string Current = "v2";
+    public const string Current = "v3";
 }
 
 public class QLearningAgent

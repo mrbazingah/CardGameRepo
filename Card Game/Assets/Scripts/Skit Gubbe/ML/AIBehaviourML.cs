@@ -203,12 +203,15 @@ public class AIBehaviourML : MonoBehaviour
         int regularCount    = System.Math.Min(regularPlayable.Count, 5);
 
         int myTotal  = System.Math.Min(handCnt + overCnt + underCnt, 12);
-        int oppTotal = playerHand != null
-            ? System.Math.Min(
-                playerHand.GetHandCards().Count +
-                playerHand.GetOverSideCards().Count +
-                playerHand.GetUnderSideCards().Count, 12)
-            : 5;
+
+        int oppHandCnt = 0, oppOverCnt = 0, oppUnderCnt = 0;
+        if (playerHand != null)
+        {
+            oppHandCnt  = playerHand.GetHandCards().Count;
+            oppOverCnt  = playerHand.GetOverSideCards().Count;
+            oppUnderCnt = playerHand.GetUnderSideCards().Count;
+        }
+        int oppTotal = System.Math.Min(oppHandCnt + oppOverCnt + oppUnderCnt, 12);
 
         // Bucket pile top: 0=empty, 1=low(2-6), 2=mid(7-9), 3=high(11-13), 4=ace
         int pileBucket = pileTop == 0  ? 0
@@ -216,13 +219,25 @@ public class AIBehaviourML : MonoBehaviour
                        : pileTop <= 9  ? 2
                        : pileTop < 14  ? 3 : 4;
 
+        // Bucket pile size: 0=empty, 1=small(1-3), 2=medium(4-7), 3=large(8+)
+        int pileCount      = pile.GetCardsInPile().Count;
+        int pileSizeBucket = pileCount == 0 ? 0
+                           : pileCount <= 3 ? 1
+                           : pileCount <= 7 ? 2 : 3;
+
         // Bucket lowest regular: 0=none, 1=low(3-6), 2=mid(7-9), 3=high(11-13), 4=ace
         int lrBucket = lowestRegular == 0  ? 0
                      : lowestRegular <= 6  ? 1
                      : lowestRegular <= 9  ? 2
                      : lowestRegular < 14  ? 3 : 4;
 
-        return $"{pileBucket},{lrBucket},{has10},{has2},{hasAce},{regularCount},{myTotal},{oppTotal},{phase}";
+        // Opponent's current phase — tells us how close they are to winning
+        int oppPhase = oppHandCnt > 0 ? 0 : (oppOverCnt > 0 ? 1 : 2);
+
+        // Whether the deck is empty — changes the value of the chance card action
+        bool deckEmpty = cardGenerator.GetDeck().Count == 0;
+
+        return $"{pileBucket},{pileSizeBucket},{lrBucket},{has10},{has2},{hasAce},{regularCount},{myTotal},{oppTotal},{oppPhase},{deckEmpty},{phase}";
     }
 
     bool[] BuildActionMask()
