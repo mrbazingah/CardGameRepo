@@ -148,13 +148,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff494a4c1088a3f4db3f180cfba3d31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalGames: 5000000
-  gamesPerFrame: 2000
+  totalGames: 1000000000
+  gamesPerFrame: 5000
   maxStepsPerGame: 600
-  logInterval: 50000
-  trainAgainstSimple: 0
+  logInterval: 100000
+  trainingMode: 0
   saveFileName: qtable.json
-  autoSaveInterval: 100000
+  autoSaveInterval: 500000
 --- !u!4 &950669900
 Transform:
   m_ObjectHideFlags: 0
