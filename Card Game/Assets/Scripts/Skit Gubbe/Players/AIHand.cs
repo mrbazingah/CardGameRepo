@@ -67,6 +67,8 @@ public class AIHand : MonoBehaviour
         turnNumber = i;
     }
 
+    public int GetTurnNumber() => turnNumber;
+
     public void AddHandCards(GameObject newCard)
     {
         handCards.Add(newCard);

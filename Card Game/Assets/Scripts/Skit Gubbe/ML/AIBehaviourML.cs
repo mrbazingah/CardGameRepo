@@ -51,7 +51,7 @@ public class AIBehaviourML : MonoBehaviour
     {
         if (Time.timeScale == 0f || !gameManager.GetGameHasStarted()) return;
 
-        if (aiHand.GetTurn() && !isPlaying)
+        if (gameManager.GetTurn() == aiHand.GetTurnNumber() && !isPlaying)
         {
             StartCoroutine(PlayTurn());
         }
@@ -63,7 +63,7 @@ public class AIBehaviourML : MonoBehaviour
         isPlaying = true;
         yield return new WaitForSeconds(playDelay);
 
-        while (aiHand.GetTurn() && !gameManager.GetWinner())
+        while (gameManager.GetTurn() == aiHand.GetTurnNumber() && !gameManager.GetWinner())
         {
             // --- Underside phase: blind flip, no agent choice ---
             if (aiHand.GetHandCount() == 0 && aiHand.GetOverSideCount() == 0 && aiHand.GetUnderSideCount() > 0)
