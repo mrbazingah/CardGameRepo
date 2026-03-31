@@ -419,8 +419,6 @@ public class PlayerHand : MonoBehaviour
 
                 if (!hasCardToPlay)
                 {
-                    pile.AddCardsToPile(cardInHand);
-                    RemoveCardFromList(cardInHand);
                     PickUpPile(cardInHand);
                 }
             }
@@ -545,12 +543,7 @@ public class PlayerHand : MonoBehaviour
                 UpdateSideUsage();
             }
 
-            if ((cardValue == 10 || cardValue == 2 || cardValue == 14) && GetCurrentCards().Count == 0)
-            {
-                return false;
-            }
-
-            return true;
+                return true;
         }
 
         return false;

@@ -594,6 +594,9 @@ public class AIHand : MonoBehaviour
     public int GetHandCount() => handCards.Count;
     public int GetOverSideCount() => overSideCards.Count;
     public int GetUnderSideCount() => underSideCards.Count;
+    public List<GameObject> GetHandCards()      => handCards;
+    public List<GameObject> GetOverSideCards()  => overSideCards;
+    public List<GameObject> GetUnderSideCards() => underSideCards;
     public void RemoveCard(GameObject card) => RemoveCardFromList(card);
     public void AddCardsToHand(List<GameObject> cards) => handCards.AddRange(cards);
     #endregion

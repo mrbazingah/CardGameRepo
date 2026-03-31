@@ -2863,6 +2863,14 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 6672254915189555265, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
+      propertyPath: useMLBehaviour
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967218921147052399, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8148943176141036670, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
       propertyPath: m_Name
       value: AI PLayer
@@ -2910,8 +2918,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8148943176141036670, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3805919418228594875}
   m_SourcePrefab: {fileID: 100100000, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
+--- !u!1 &3805919418228594874 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8148943176141036670, guid: 3720e3cca8853dc46aec4a6e9ffeec8c, type: 3}
+  m_PrefabInstance: {fileID: 3805919418228594873}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3805919418228594875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3805919418228594874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed29fed466ebec841b03e72343b43c3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playDelay: 1
+  chanceDelay: 0.5
+  iterationsPerMove: 2000
+  determinizations: 20
+  explorationConstant: 1.414
 --- !u!222 &3931393945055221710
 CanvasRenderer:
   m_ObjectHideFlags: 0
