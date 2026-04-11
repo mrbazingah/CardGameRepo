@@ -981,8 +981,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: You must always have at least 3 cards in your hand until the deck runs
-    out. Every time you play a card a new card will be drawn from the deck and added
-    to your hand.
+    out. Every time you play a card and you have less than 3 cards a new card will
+    be drawn from the deck and added to your hand.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a40d25adf0a91cc4dbd5f57e6b4f5c18, type: 2}
   m_sharedMaterial: {fileID: -191329156657266487, guid: a40d25adf0a91cc4dbd5f57e6b4f5c18, type: 2}

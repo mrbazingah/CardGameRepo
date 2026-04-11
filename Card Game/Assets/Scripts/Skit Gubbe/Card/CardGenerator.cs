@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class CardGenerator : MonoBehaviour
 {
@@ -74,7 +75,9 @@ public class CardGenerator : MonoBehaviour
 
             GameObject card = Instantiate(cardPrefab);
 
-            card.GetComponent<Card>().GetComponent<SpriteRenderer>().sprite = cardSprites[i];
+            SpriteRenderer cardSR = card.GetComponent<Card>().GetComponent<SpriteRenderer>();
+            cardSR.sprite = cardSprites[i];
+            cardSR.color = new Color(1, 1, 1, 0);
 
             if (currentCardValue == 1)
             {
@@ -133,6 +136,8 @@ public class CardGenerator : MonoBehaviour
 
     void DealPlayerCards()
     {
+        SpriteRenderer cardSR = null;
+
         for (int i = 0; i < cardsPerPlayer; i++)
         {
             int randomNumber = Random.Range(0, deck.Count);
@@ -140,6 +145,9 @@ public class CardGenerator : MonoBehaviour
 
             player.AddHandCards(obj);
             deck.Remove(obj);
+
+            cardSR = obj.GetComponent<SpriteRenderer>();
+            cardSR.color = new Color(1, 1, 1, 1);
         }
 
         audioManager.PlayShufflingSFX();
@@ -152,7 +160,9 @@ public class CardGenerator : MonoBehaviour
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
 
-            obj.GetComponent<SpriteRenderer>().sortingOrder = i;
+            cardSR = obj.GetComponent<SpriteRenderer>();
+            cardSR.sortingOrder = i;
+            cardSR.color = new Color(1, 1, 1, 1);
 
             if (i <= 2)
             {
@@ -165,6 +175,7 @@ public class CardGenerator : MonoBehaviour
             }
 
             deck.Remove(obj);
+
         }
 
         player.SetUnderSideCards(underSideCards);
@@ -174,6 +185,8 @@ public class CardGenerator : MonoBehaviour
 
     void DealAiCards()
     {
+        SpriteRenderer cardSR = null;
+
         for (int i = 0; i < cardsPerPlayer; i++)
         {
             int randomNumber = Random.Range(0, deck.Count);
@@ -182,6 +195,9 @@ public class CardGenerator : MonoBehaviour
             ApplyCoverOnCards(obj);
             ai.AddHandCards(obj);
             deck.Remove(obj);
+
+            cardSR = obj.GetComponent<SpriteRenderer>();
+            cardSR.color = new Color(1, 1, 1, 1);
         }
 
         List<GameObject> underSideCards = new List<GameObject>(3);
@@ -192,7 +208,9 @@ public class CardGenerator : MonoBehaviour
             int randomNumber = Random.Range(0, deck.Count);
             GameObject obj = deck[randomNumber];
 
-            obj.GetComponent<SpriteRenderer>().sortingOrder = i;
+            cardSR = obj.GetComponent<SpriteRenderer>();
+            cardSR.sortingOrder = i;
+            cardSR.color = new Color(1, 1, 1, 1);
 
             if (i <= 2)
             {
@@ -241,6 +259,8 @@ public class CardGenerator : MonoBehaviour
             }
 
             deck.Remove(obj);
+
+            obj.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         }
     }
     
@@ -286,7 +306,10 @@ public class CardGenerator : MonoBehaviour
 
         deck.Remove(chanceCard);
         pile.AddCardsToPile(chanceCard);
-        chanceCard.GetComponent<SpriteRenderer>().sortingOrder = 100;
+
+        SpriteRenderer chanceCardSR = chanceCard.GetComponent<SpriteRenderer>();
+        chanceCardSR.color = new Color(1, 1, 1, 1);
+        chanceCardSR.sortingOrder = 100;
 
         audioManager.PlayCardSFX();
 
