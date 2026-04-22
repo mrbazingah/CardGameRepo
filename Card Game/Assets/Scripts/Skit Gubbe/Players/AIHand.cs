@@ -396,7 +396,7 @@ public class AIHand : MonoBehaviour
                     else
                     {
                         playAgain = false;
-                        yield return StartCoroutine(ProcessChanceCard());
+                        PlayChanceCard();
                     }
                 }
 
