@@ -220,20 +220,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 270313539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ec10f003dd77494b82d3d0af14131f2, type: 3}
+  m_Script: {fileID: 11500000, guid: f09df17e7071bf94587d969e904356ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runnerPrefab: {fileID: 1295048657}
-  roomCodeText: {fileID: 376890072}
-  playerProfilesParent: {fileID: 1087714149}
-  playerProfilePrefab: {fileID: 2195007438049834435, guid: 5a0d65b7ef627c643b2cf73960316c40, type: 3}
-  spawnPos: {x: -160, y: 50}
-  spawnOffset: {x: 0, y: -70}
-  startGameButton: {fileID: 882064436}
-  loadingPanel: {fileID: 1184622903}
-  loadingSwitchDelay: 0.5
-  playerCountText: {fileID: 1071198152}
-  readyButton: {fileID: 1126192953}
+  heartbeatTimer: 15
 --- !u!4 &270313541
 Transform:
   m_ObjectHideFlags: 0
@@ -803,9 +793,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7b4cdd6706983e4ab7530b2e22287da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardsPerPlayerField: {fileID: 913026447}
-  canChanceToggle: {fileID: 1524290050}
-  defaultCardsPerPlayer: 3
 --- !u!1 &658576138
 GameObject:
   m_ObjectHideFlags: 0
