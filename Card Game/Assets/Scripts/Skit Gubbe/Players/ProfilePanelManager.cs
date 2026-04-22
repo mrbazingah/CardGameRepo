@@ -17,6 +17,7 @@ public class ProfilePanelManager : MonoBehaviour
         else
         {
             displayName = defaultDisplayName;
+            PlayerPrefs.SetString("DisplayName", displayName);
         }
 
         displayNameInputField.text = displayName;
@@ -26,7 +27,8 @@ public class ProfilePanelManager : MonoBehaviour
 
     public void OnChange()
     {
-        displayName = displayNameInputField.text;
+        displayName = displayNameInputField.text == "" ? defaultDisplayName : displayNameInputField.text;
+        displayNameInputField.text = displayName;
         PlayerPrefs.SetString("DisplayName", displayName);
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -324,8 +325,10 @@ public class PlayerHand : MonoBehaviour
     #region Play
     void DetectHover()
     {
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-        hoveredCard = hit.collider ? hit.collider.gameObject : null;
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+
+        hoveredCard = hits.OrderByDescending(h => h.collider.GetComponent<SpriteRenderer>().sortingOrder).Select(h => h.collider.gameObject).FirstOrDefault();
 
         if (hoveredCard != null && Input.GetKeyDown(KeyCode.Mouse0))
         {
