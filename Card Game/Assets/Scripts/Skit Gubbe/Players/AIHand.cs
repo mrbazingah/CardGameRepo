@@ -396,7 +396,7 @@ public class AIHand : MonoBehaviour
                     else
                     {
                         playAgain = false;
-                        PlayChanceCard();
+                        yield return StartCoroutine(ProcessChanceCard());
                     }
                 }
 
@@ -424,7 +424,11 @@ public class AIHand : MonoBehaviour
         {
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
-            audioManager.PlayCardSFX();
+
+            if (!isChance)
+            {
+                audioManager.PlayCardSFX();
+            }
 
             if (ShouldDiscard(cardValue))
             {
