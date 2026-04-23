@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Services.Core;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
@@ -9,12 +10,26 @@ using System.Collections.Generic;
 
 public class MultiplayerLobby : MonoBehaviour
 {
+    public static MultiplayerLobby Instance { get; private set; }
+
     [SerializeField] float heartbeatTimer = 15;
+
+    public string RoomCode { get; private set; }
+    public int PlayerCount { get; private set; }
 
     Lobby hostLobby;
 
-    async void Start()
+    async void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            gameObject.SetActive(false);
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         await UnityServices.InitializeAsync();
 
         AuthenticationService.Instance.SignedIn += () =>
@@ -23,6 +38,14 @@ public class MultiplayerLobby : MonoBehaviour
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     protected async Task CreateLobby()
@@ -45,14 +68,59 @@ public class MultiplayerLobby : MonoBehaviour
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
 
             hostLobby = lobby;
+            RoomCode = roomCode;
+            PlayerCount = lobby.Players.Count;
 
             StartCoroutine(HandleLobbyHeartbeat());
+            StartCoroutine(HandleLobbyPollUpdate());
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " Room Code: " + roomCode);
+
+            SceneManager.LoadScene("Multiplayer Lobby Scene");
         }
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+        }
+    }
+
+    protected async Task<bool> JoinLobby(string roomCode)
+    {
+        try
+        {
+            QueryLobbiesOptions queryOptions = new QueryLobbiesOptions
+            {
+                Filters = new List<QueryFilter>
+                {
+                    new QueryFilter(QueryFilter.FieldOptions.S1, roomCode, QueryFilter.OpOptions.EQ)
+                }
+            };
+
+            QueryResponse response = await LobbyService.Instance.QueryLobbiesAsync(queryOptions);
+
+            if (response.Results.Count == 0)
+            {
+                Debug.Log("No lobby found with code: " + roomCode);
+                return false;
+            }
+
+            Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
+
+            hostLobby = lobby;
+            RoomCode = roomCode;
+            PlayerCount = lobby.Players.Count;
+
+            StartCoroutine(HandleLobbyPollUpdate());
+
+            Debug.Log("Joined lobby: " + lobby.Name + " Code: " + roomCode);
+
+            SceneManager.LoadScene("Multiplayer Lobby Scene");
+            return true;
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+            return false;
         }
     }
 
@@ -93,6 +161,24 @@ public class MultiplayerLobby : MonoBehaviour
         }
     }
 
+    IEnumerator HandleLobbyPollUpdate()
+    {
+        while (hostLobby != null)
+        {
+            yield return new WaitForSeconds(1.5f);
+
+            var pollTask = LobbyService.Instance.GetLobbyAsync(hostLobby.Id);
+            yield return new WaitUntil(() => pollTask.IsCompleted);
+
+            if (!pollTask.IsFaulted)
+            {
+                hostLobby = pollTask.Result;
+                PlayerCount = hostLobby.Players.Count;
+            }
+        }
+    }
+
+    /*
     async Task ListLobbies()
     {
         try
@@ -110,4 +196,5 @@ public class MultiplayerLobby : MonoBehaviour
             Debug.Log(e);
         }
     }
+    */
 }

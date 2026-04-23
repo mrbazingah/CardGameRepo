@@ -2712,53 +2712,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945376772}
   m_CullTransparentMesh: 1
---- !u!1 &1035473227
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1035473229}
-  - component: {fileID: 1035473228}
-  m_Layer: 0
-  m_Name: MultiplayerLobby
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1035473228
+--- !u!114 &1035473228 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+  m_PrefabInstance: {fileID: 4901731057903538557}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1035473227}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c58317eb2f4fe9a4b8e159b23abe017a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heartbeatTimer: 15
-  hostPanel: {fileID: 1202394716}
-  codePanel: {fileID: 94093183}
---- !u!4 &1035473229
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1035473227}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1101042934
 GameObject:
   m_ObjectHideFlags: 0
@@ -2977,9 +2941,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
-        m_MethodName: Close
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUI, Assembly-CSharp
+        m_MethodName: CloseAll
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3248,9 +3212,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
-        m_MethodName: OnJoinClicked
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUIHandler, Assembly-CSharp
+        m_MethodName: JoinLobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4072,21 +4036,33 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 475400009}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 5
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUI, Assembly-CSharp
+        m_MethodName: HostLobby
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Multiplayer Lobby Scene
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1035473228}
-        m_TargetAssemblyTypeName: MultiplayerLobbyUI, Assembly-CSharp
-        m_MethodName: HostLobby
+        m_TargetAssemblyTypeName: MultiplayerLobbyUIHandler, Assembly-CSharp
+        m_MethodName: CloseHostPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUIHandler, Assembly-CSharp
+        m_MethodName: OpenLoadingPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4874,9 +4850,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
-        m_MethodName: Close
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUI, Assembly-CSharp
+        m_MethodName: CloseCodePanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUI, Assembly-CSharp
+        m_MethodName: OpenHostPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5082,9 +5070,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUI, Assembly-CSharp
         m_MethodName: OpenCodePanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUI, Assembly-CSharp
+        m_MethodName: CloseHostPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5143,7 +5143,7 @@ GameObject:
   - component: {fileID: 1648986368}
   - component: {fileID: 1648986369}
   m_Layer: 0
-  m_Name: ProfilePanelManager
+  m_Name: PlayerProfileManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5735,6 +5735,87 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!1001 &4901731057903538557
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: codePanel
+      value: 
+      objectReference: {fileID: 94093183}
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: hostPanel
+      value: 
+      objectReference: {fileID: 1202394716}
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: loadingText
+      value: 
+      objectReference: {fileID: 1843139131}
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: loadingPanel
+      value: 
+      objectReference: {fileID: 1341430321}
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: joinCodeInput
+      value: 
+      objectReference: {fileID: 1920635979}
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: codeInputField
+      value: 
+      objectReference: {fileID: 1920635979}
+    - target: {fileID: 3882650640817435150, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_Name
+      value: MultiplayerLobby
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
 --- !u!1001 &5695544619802422432
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5798,7 +5879,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 5695544619802422432}
-  - {fileID: 1035473229}
+  - {fileID: 4901731057903538557}
   - {fileID: 1648986368}
   - {fileID: 440938224}
   - {fileID: 1404512576}

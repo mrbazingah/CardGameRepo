@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class ProfilePanelManager : MonoBehaviour
+public class PlayerProfileManager : MonoBehaviour
 {
     [SerializeField] GameObject profilePanel;
     [SerializeField] TMP_InputField displayNameInputField;

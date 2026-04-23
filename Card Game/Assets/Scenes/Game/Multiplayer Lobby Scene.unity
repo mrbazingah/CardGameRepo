@@ -203,6 +203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 270313541}
+  - component: {fileID: 270313542}
   m_Layer: 0
   m_Name: LobbyManager
   m_TagString: Untagged
@@ -225,6 +226,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &270313542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270313539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 260211918c2c29c4aaf07a5d05dfe06e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  codeDisplayText: {fileID: 376890072}
+  playerCountText: {fileID: 1071198152}
 --- !u!1 &297311903
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,7 +714,6 @@ GameObject:
   - component: {fileID: 562274276}
   - component: {fileID: 562274278}
   - component: {fileID: 562274277}
-  - component: {fileID: 562274279}
   m_Layer: 5
   m_Name: Settings Panel
   m_TagString: Untagged
@@ -766,18 +780,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 562274275}
   m_CullTransparentMesh: 1
---- !u!114 &562274279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562274275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7b4cdd6706983e4ab7530b2e22287da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &658576138
 GameObject:
   m_ObjectHideFlags: 0
@@ -1312,7 +1314,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 562274279}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
         m_MethodName: CheckCardsPerPlayer
         m_Mode: 1
@@ -2481,7 +2483,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 562274279}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
         m_MethodName: CheckCanChance
         m_Mode: 1
