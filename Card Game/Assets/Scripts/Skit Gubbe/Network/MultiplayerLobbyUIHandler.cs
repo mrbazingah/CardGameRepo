@@ -19,6 +19,7 @@ public class MultiplayerLobbyUIHandler : MultiplayerLobby
 
     void Start()
     {
+        base.Start();
         CloseAll();
     }
 

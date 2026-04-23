@@ -17,8 +17,12 @@ public class MultiplayerLobby : MonoBehaviour
     public string RoomCode { get; private set; }
     public int PlayerCount { get; private set; }
 
-    Lobby hostLobby;
+    bool isHost;
+    bool readyToQuit;
 
+    SceneLoader SceneLoader;
+    Lobby hostLobby;
+    
     async void Awake()
     {
         if (Instance != null && Instance != this)
@@ -29,6 +33,8 @@ public class MultiplayerLobby : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        Application.wantsToQuit += OnWantsToQuit;
 
         await UnityServices.InitializeAsync();
 
@@ -42,9 +48,69 @@ public class MultiplayerLobby : MonoBehaviour
 
     void OnDestroy()
     {
+        Application.wantsToQuit -= OnWantsToQuit;
+
         if (Instance == this)
         {
             Instance = null;
+        }
+    }
+
+    bool OnWantsToQuit()
+    {
+        if (readyToQuit || hostLobby == null) { return true; }
+
+        _ = QuitCleanup();
+
+        return false;
+    }
+
+    async Task QuitCleanup()
+    {
+        await LeaveLobby();
+        readyToQuit = true;
+        Application.Quit();
+    }
+
+    protected void Start()
+    {
+        SceneLoader = FindAnyObjectByType<SceneLoader>();
+    }
+
+    public async Task LeaveLobby()
+    {
+        if (hostLobby == null) return;
+
+        StopAllCoroutines();
+
+        try
+        {
+            if (isHost)
+            {
+                await LobbyService.Instance.DeleteLobbyAsync(hostLobby.Id);
+            }
+            else
+            {
+                await LobbyService.Instance.RemovePlayerAsync(hostLobby.Id, AuthenticationService.Instance.PlayerId);
+            }
+                
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+        finally
+        {
+            hostLobby = null;
+            RoomCode = null;
+            PlayerCount = 0;
+
+            gameObject.SetActive(false);
+            Destroy(gameObject);
+
+            Instance = null;
+
+            SceneLoader.LoadScene("Start Scene");
         }
     }
 
@@ -68,6 +134,7 @@ public class MultiplayerLobby : MonoBehaviour
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
 
             hostLobby = lobby;
+            isHost = true;
             RoomCode = roomCode;
             PlayerCount = lobby.Players.Count;
 
@@ -76,7 +143,7 @@ public class MultiplayerLobby : MonoBehaviour
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " Room Code: " + roomCode);
 
-            SceneManager.LoadScene("Multiplayer Lobby Scene");
+            SceneLoader.LoadScene("Multiplayer Lobby Scene");
         }
         catch (LobbyServiceException e)
         {
@@ -113,6 +180,7 @@ public class MultiplayerLobby : MonoBehaviour
             Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
 
             hostLobby = lobby;
+            isHost = false;
             RoomCode = roomCode;
             PlayerCount = lobby.Players.Count;
 

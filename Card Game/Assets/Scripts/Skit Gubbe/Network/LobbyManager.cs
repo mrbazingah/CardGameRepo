@@ -5,6 +5,7 @@ public class LobbyManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI codeDisplayText;
     [SerializeField] TextMeshProUGUI playerCountText;
+    [SerializeField] GameObject startGameButton;
 
     int playerCount = 0;
 
@@ -16,6 +17,8 @@ public class LobbyManager : MonoBehaviour
             playerCount = MultiplayerLobby.Instance.PlayerCount;
             UpdatePlayerCountText();
         }
+
+        startGameButton.SetActive(false);
     }
 
     void Update()
@@ -32,5 +35,28 @@ public class LobbyManager : MonoBehaviour
     void UpdatePlayerCountText()
     {
         playerCountText.text = playerCount + "/2";
+    }
+
+    public void ActivateStartButton() 
+    { 
+        startGameButton.SetActive(true);
+    }
+
+    public void StartGame()
+    {
+        if (MultiplayerLobby.Instance != null)
+        {
+            //MultiplayerLobby.Instance.StartGame();
+            Debug.Log("Start Game");
+        }
+    }
+
+    public async void LeaveLobby()
+    {
+        if (MultiplayerLobby.Instance != null)
+        {
+            await MultiplayerLobby.Instance.LeaveLobby();
+
+        }
     }
 }
