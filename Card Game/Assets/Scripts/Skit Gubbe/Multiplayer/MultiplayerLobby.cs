@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 
-public class MuliplayerLobby : MonoBehaviour
+public class MultiplayerLobby : MonoBehaviour
 {
     [SerializeField] float heartbeatTimer = 15;
 
@@ -23,12 +23,9 @@ public class MuliplayerLobby : MonoBehaviour
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
-        CreateLobby();
-        ListLobbies();
     }
 
-    async void CreateLobby()
+    protected async Task CreateLobby()
     {
         try
         {
