@@ -5,12 +5,17 @@ using UnityEngine;
 
 public class MultiplayerLobbyUIHandler : MultiplayerLobby
 {
+    [Header("Panels")]
     [SerializeField] GameObject hostPanel;
     [SerializeField] GameObject codePanel;
     [SerializeField] GameObject loadingPanel;
+    [SerializeField] GameObject errorPanel;
+    [Header("Loading Logic")]
     [SerializeField] TextMeshProUGUI loadingText;
     [SerializeField] float loadTextDelay;
     [SerializeField] TMP_InputField codeInputField;
+
+    Coroutine loadingCoroutine;
 
     void Start()
     {
@@ -33,13 +38,18 @@ public class MultiplayerLobbyUIHandler : MultiplayerLobby
     public void JoinLobby()
     {
         OpenLoadingPanel();
+        CloseCodePanel();
         _ = HandleJoinLobby();
     }
 
     async Task HandleJoinLobby()
     {
         bool success = await JoinLobby(codeInputField.text.Trim());
-        if (!success) CloseLoadingPanel();
+        if (!success)
+        {
+            CloseLoadingPanel();
+            OpenErrorPanel();
+        }
     }
 
     public void OpenHostPanel()
@@ -54,7 +64,12 @@ public class MultiplayerLobbyUIHandler : MultiplayerLobby
 
     public void OpenLoadingPanel()
     {
-        StartCoroutine(HandleLoading());
+        loadingCoroutine = StartCoroutine(HandleLoading());
+    }
+
+    void OpenErrorPanel()
+    {
+        errorPanel.SetActive(true);
     }
 
     public void CloseHostPanel()
@@ -69,7 +84,13 @@ public class MultiplayerLobbyUIHandler : MultiplayerLobby
 
     public void CloseLoadingPanel()
     {
+        if (loadingCoroutine != null) StopCoroutine(loadingCoroutine);
         loadingPanel.SetActive(false);
+    }
+
+    public void CloseErrorPanel()
+    {
+        errorPanel.SetActive(false);
     }
 
     IEnumerator HandleLoading()
@@ -97,5 +118,6 @@ public class MultiplayerLobbyUIHandler : MultiplayerLobby
         hostPanel.SetActive(false);
         codePanel.SetActive(false);
         loadingPanel.SetActive(false);
+        errorPanel.SetActive(false);
     }
 }

@@ -735,7 +735,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Room player count is full. Unable to join.
+  m_text: Room doesn't exist or is already filled. Unable to join.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a40d25adf0a91cc4dbd5f57e6b4f5c18, type: 2}
   m_sharedMaterial: {fileID: -191329156657266487, guid: a40d25adf0a91cc4dbd5f57e6b4f5c18, type: 2}
@@ -762,8 +762,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1964,8 +1964,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MultiplayerManager, Assembly-CSharp
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUIHandler, Assembly-CSharp
+        m_MethodName: CloseErrorPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1035473228}
+        m_TargetAssemblyTypeName: MultiplayerLobbyUIHandler, Assembly-CSharp
         m_MethodName: OpenCodePanel
         m_Mode: 1
         m_Arguments:
@@ -5751,6 +5763,10 @@ PrefabInstance:
       propertyPath: hostPanel
       value: 
       objectReference: {fileID: 1202394716}
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: errorPanel
+      value: 
+      objectReference: {fileID: 1238042883}
     - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: loadingText
       value: 

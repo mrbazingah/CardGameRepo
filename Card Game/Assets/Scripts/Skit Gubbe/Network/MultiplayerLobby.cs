@@ -104,6 +104,12 @@ public class MultiplayerLobby : MonoBehaviour
                 return false;
             }
 
+            if (response.Results[0].AvailableSlots == 0)
+            {
+                Debug.Log("Lobby is full: " + roomCode);
+                return false;
+            }
+
             Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
 
             hostLobby = lobby;
