@@ -1260,7 +1260,19 @@ MonoBehaviour:
   m_CharacterLimit: 2
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 270313542}
+        m_TargetAssemblyTypeName: NetworkLobbyManager, Assembly-CSharp
+        m_MethodName: CheckCardsPerPlayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -1278,19 +1290,7 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
-        m_MethodName: CheckCardsPerPlayer
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2373,7 +2373,7 @@ GameObject:
   - component: {fileID: 1524290049}
   - component: {fileID: 1524290050}
   m_Layer: 5
-  m_Name: Toggle
+  m_Name: Can Chance Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2448,8 +2448,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LobbySettings, Assembly-CSharp
+      - m_Target: {fileID: 270313542}
+        m_TargetAssemblyTypeName: NetworkLobbyManager, Assembly-CSharp
         m_MethodName: CheckCanChance
         m_Mode: 1
         m_Arguments:
@@ -3554,6 +3554,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5074354483573183677, guid: 4d5c95f48f5b32444bfe197a628260a8, type: 3}
+      propertyPath: canChanceToggle
+      value: 
+      objectReference: {fileID: 1524290050}
+    - target: {fileID: 5074354483573183677, guid: 4d5c95f48f5b32444bfe197a628260a8, type: 3}
       propertyPath: codeDisplayText
       value: 
       objectReference: {fileID: 376890072}
@@ -3565,6 +3569,10 @@ PrefabInstance:
       propertyPath: startGameButton
       value: 
       objectReference: {fileID: 882064436}
+    - target: {fileID: 5074354483573183677, guid: 4d5c95f48f5b32444bfe197a628260a8, type: 3}
+      propertyPath: cardsPerPlayerField
+      value: 
+      objectReference: {fileID: 913026447}
     - target: {fileID: 5695249057437740577, guid: 4d5c95f48f5b32444bfe197a628260a8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

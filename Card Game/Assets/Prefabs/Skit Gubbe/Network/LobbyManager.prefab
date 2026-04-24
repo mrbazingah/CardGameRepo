@@ -46,3 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   codeDisplayText: {fileID: 0}
   playerCountText: {fileID: 0}
+  startGameButton: {fileID: 0}
+  cardsPerPlayerField: {fileID: 0}
+  canChanceToggle: {fileID: 0}
+  defaultCardsPerPlayer: 3

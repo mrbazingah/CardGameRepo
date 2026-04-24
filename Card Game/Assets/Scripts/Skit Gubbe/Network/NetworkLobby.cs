@@ -16,6 +16,10 @@ public class NetworkLobby : MonoBehaviour
 
     public string RoomCode { get; private set; }
     public int PlayerCount { get; private set; }
+    public bool IsHost => isHost;
+
+    public int LobbyCardsPerPlayer => GetLobbyInt("CardsPerPlayer", 3);
+    public bool LobbyCanChance => GetLobbyInt("CanChance", 1) == 1;
 
     bool isHost;
     bool readyToQuit;
@@ -130,7 +134,9 @@ public class NetworkLobby : MonoBehaviour
             {
                 Data = new Dictionary<string, DataObject>
                 {
-                    { "RoomCode", new DataObject(DataObject.VisibilityOptions.Public, roomCode, DataObject.IndexOptions.S1) }
+                    { "RoomCode", new DataObject(DataObject.VisibilityOptions.Public, roomCode, DataObject.IndexOptions.S1) },
+                    { "CardsPerPlayer", new DataObject(DataObject.VisibilityOptions.Member, "3") },
+                    { "CanChance", new DataObject(DataObject.VisibilityOptions.Member, "1") }
                 }
             };
 
@@ -242,17 +248,56 @@ public class NetworkLobby : MonoBehaviour
     {
         while (hostLobby != null)
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1f);
 
             var pollTask = LobbyService.Instance.GetLobbyAsync(hostLobby.Id);
             yield return new WaitUntil(() => pollTask.IsCompleted);
 
-            if (!pollTask.IsFaulted)
+            if (pollTask.IsFaulted)
+            {
+                if (!isHost)
+                {
+                    _ = LeaveLobby();
+                    yield break;
+                }
+                // Host: transient error, skip this poll and retry next interval
+            }
+            else
             {
                 hostLobby = pollTask.Result;
                 PlayerCount = hostLobby.Players.Count;
             }
         }
+    }
+
+    public async Task UpdateLobbySettings(int cardsPerPlayer, bool canChance)
+    {
+        if (!isHost || hostLobby == null) return;
+
+        try
+        {
+            UpdateLobbyOptions options = new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                    { "RoomCode", new DataObject(DataObject.VisibilityOptions.Public, RoomCode, DataObject.IndexOptions.S1) },
+                    { "CardsPerPlayer", new DataObject(DataObject.VisibilityOptions.Member, cardsPerPlayer.ToString()) },
+                    { "CanChance", new DataObject(DataObject.VisibilityOptions.Member, canChance ? "1" : "0") }
+                }
+            };
+
+            hostLobby = await LobbyService.Instance.UpdateLobbyAsync(hostLobby.Id, options);
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    int GetLobbyInt(string key, int fallback)
+    {
+        if (hostLobby?.Data == null || !hostLobby.Data.ContainsKey(key)) return fallback;
+        return int.TryParse(hostLobby.Data[key].Value, out int v) ? v : fallback;
     }
 
     /*
