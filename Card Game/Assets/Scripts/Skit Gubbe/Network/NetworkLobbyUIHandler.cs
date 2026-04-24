@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-public class MultiplayerLobbyUIHandler : MultiplayerLobby
+public class NetworkLobbyUIHandler : NetworkLobby
 {
     [Header("Panels")]
     [SerializeField] GameObject hostPanel;

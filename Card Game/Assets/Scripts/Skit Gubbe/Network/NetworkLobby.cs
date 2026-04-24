@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 
-public class MultiplayerLobby : MonoBehaviour
+public class NetworkLobby : MonoBehaviour
 {
-    public static MultiplayerLobby Instance { get; private set; }
+    public static NetworkLobby Instance { get; private set; }
 
     [SerializeField] float heartbeatTimer = 15;
 
@@ -43,7 +43,10 @@ public class MultiplayerLobby : MonoBehaviour
             Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
         };
 
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        if (!AuthenticationService.Instance.IsSignedIn)
+        {
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
     }
 
     void OnDestroy()

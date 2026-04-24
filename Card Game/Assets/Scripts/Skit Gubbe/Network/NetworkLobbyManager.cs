@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class LobbyManager : MonoBehaviour
+public class NetworkLobbyManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI codeDisplayText;
     [SerializeField] TextMeshProUGUI playerCountText;
@@ -11,10 +11,10 @@ public class LobbyManager : MonoBehaviour
 
     void Start()
     {
-        if (MultiplayerLobby.Instance != null)
+        if (NetworkLobby.Instance != null)
         {
-            codeDisplayText.text = "Room Code: " + MultiplayerLobby.Instance.RoomCode;
-            playerCount = MultiplayerLobby.Instance.PlayerCount;
+            codeDisplayText.text = "Room Code: " + NetworkLobby.Instance.RoomCode;
+            playerCount = NetworkLobby.Instance.PlayerCount;
             UpdatePlayerCountText();
         }
 
@@ -23,11 +23,11 @@ public class LobbyManager : MonoBehaviour
 
     void Update()
     {
-        if (MultiplayerLobby.Instance == null) return;
+        if (NetworkLobby.Instance == null) return;
 
-        if (playerCount != MultiplayerLobby.Instance.PlayerCount)
+        if (playerCount != NetworkLobby.Instance.PlayerCount)
         {
-            playerCount = MultiplayerLobby.Instance.PlayerCount;
+            playerCount = NetworkLobby.Instance.PlayerCount;
             UpdatePlayerCountText();
         }
     }
@@ -44,7 +44,7 @@ public class LobbyManager : MonoBehaviour
 
     public void StartGame()
     {
-        if (MultiplayerLobby.Instance != null)
+        if (NetworkLobby.Instance != null)
         {
             //MultiplayerLobby.Instance.StartGame();
             Debug.Log("Start Game");
@@ -53,10 +53,9 @@ public class LobbyManager : MonoBehaviour
 
     public async void LeaveLobby()
     {
-        if (MultiplayerLobby.Instance != null)
+        if (NetworkLobby.Instance != null)
         {
-            await MultiplayerLobby.Instance.LeaveLobby();
-
+            await NetworkLobby.Instance.LeaveLobby();
         }
     }
 }
