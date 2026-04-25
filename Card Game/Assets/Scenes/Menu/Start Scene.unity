@@ -2026,6 +2026,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533431354}
   m_CullTransparentMesh: 1
+--- !u!1 &692141422 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7893917462687705333, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+  m_PrefabInstance: {fileID: 4901731057903538557}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &766481760
 GameObject:
   m_ObjectHideFlags: 0
@@ -5772,17 +5777,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1843139131}
     - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: errorMessage
+      value: 
+      objectReference: {fileID: 692141422}
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: loadingPanel
       value: 
       objectReference: {fileID: 1341430321}
     - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
-      propertyPath: joinCodeInput
-      value: 
-      objectReference: {fileID: 1920635979}
-    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: codeInputField
       value: 
       objectReference: {fileID: 1920635979}
+    - target: {fileID: 1189111832477283502, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 1189111832477283502, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3882650640817435150, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: m_Name
       value: MultiplayerLobby
@@ -5826,6 +5839,10 @@ PrefabInstance:
     - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7893917462687705333, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

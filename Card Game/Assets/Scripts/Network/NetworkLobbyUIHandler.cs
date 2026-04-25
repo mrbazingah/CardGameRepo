@@ -21,6 +21,12 @@ public class NetworkLobbyUIHandler : NetworkLobby
     {
         base.Start();
         CloseAll();
+
+        if (NetworkLobby.PendingError)
+        {
+            NetworkLobby.PendingError = false;
+            errorMessage.SetActive(true);
+        }
     }
 
     void Update()
@@ -120,5 +126,6 @@ public class NetworkLobbyUIHandler : NetworkLobby
         codePanel.SetActive(false);
         loadingPanel.SetActive(false);
         errorPanel.SetActive(false);
+        errorMessage.SetActive(false);
     }
 }

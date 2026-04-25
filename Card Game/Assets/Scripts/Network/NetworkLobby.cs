@@ -11,8 +11,10 @@ using System.Collections.Generic;
 public class NetworkLobby : MonoBehaviour
 {
     public static NetworkLobby Instance { get; private set; }
+    public static bool PendingError { get; protected set; }
 
     [SerializeField] float heartbeatTimer = 15;
+    [SerializeField] protected GameObject errorMessage;
 
     public string RoomCode { get; private set; }
     public int PlayerCount { get; private set; }
@@ -105,6 +107,7 @@ public class NetworkLobby : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            PendingError = true;
         }
         finally
         {
@@ -246,24 +249,28 @@ public class NetworkLobby : MonoBehaviour
 
     IEnumerator HandleLobbyPollUpdate()
     {
+        int consecutiveFailures = 0;
+
         while (hostLobby != null)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
 
             var pollTask = LobbyService.Instance.GetLobbyAsync(hostLobby.Id);
             yield return new WaitUntil(() => pollTask.IsCompleted);
 
             if (pollTask.IsFaulted)
             {
-                if (!isHost)
+                consecutiveFailures++;
+                if (!isHost && consecutiveFailures >= 3)
                 {
                     _ = LeaveLobby();
                     yield break;
                 }
-                // Host: transient error, skip this poll and retry next interval
+                // Transient error — skip this poll and retry next interval
             }
             else
             {
+                consecutiveFailures = 0;
                 hostLobby = pollTask.Result;
                 PlayerCount = hostLobby.Players.Count;
             }
