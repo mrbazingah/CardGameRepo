@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Services.Core;
@@ -7,18 +8,25 @@ using Unity.Services.Lobbies.Models;
 using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
+
+public enum LobbyDisconnectReason { None, HostLeft, ConnectionLost, ServiceError }
 
 public class NetworkLobby : MonoBehaviour
 {
     public static NetworkLobby Instance { get; private set; }
-    public static bool PendingError { get; protected set; }
+    public static LobbyDisconnectReason PendingDisconnectReason { get; protected set; }
+
+    public event Action OnLobbyUpdated;
 
     [SerializeField] float heartbeatTimer = 15;
-    [SerializeField] protected GameObject errorMessage;
 
     public string RoomCode { get; private set; }
     public int PlayerCount { get; private set; }
     public bool IsHost => isHost;
+    public string LocalPlayerId => AuthenticationService.Instance?.PlayerId;
+    public string HostId => hostLobby?.HostId;
+    public IReadOnlyList<Player> Players => hostLobby?.Players;
 
     public int LobbyCardsPerPlayer => GetLobbyInt("CardsPerPlayer", 3);
     public bool LobbyCanChance => GetLobbyInt("CanChance", 1) == 1;
@@ -28,7 +36,7 @@ public class NetworkLobby : MonoBehaviour
 
     SceneLoader SceneLoader;
     Lobby hostLobby;
-    
+
     async void Awake()
     {
         if (Instance != null && Instance != this)
@@ -102,12 +110,15 @@ public class NetworkLobby : MonoBehaviour
             {
                 await LobbyService.Instance.RemovePlayerAsync(hostLobby.Id, AuthenticationService.Instance.PlayerId);
             }
-                
         }
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
-            PendingError = true;
+
+            if (PendingDisconnectReason == LobbyDisconnectReason.None)
+            {
+                PendingDisconnectReason = LobbyDisconnectReason.ServiceError;
+            }
         }
         finally
         {
@@ -133,8 +144,18 @@ public class NetworkLobby : MonoBehaviour
 
             string roomCode = await GenerateUniqueRoomCode();
 
+            string displayName = PlayerPrefs.GetString("DisplayName", "Player");
+
             CreateLobbyOptions options = new CreateLobbyOptions
             {
+                Player = new Player
+                {
+                    Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        { "DisplayName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, displayName) },
+                        { "Ready", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "0") }
+                    }
+                },
                 Data = new Dictionary<string, DataObject>
                 {
                     { "RoomCode", new DataObject(DataObject.VisibilityOptions.Public, roomCode, DataObject.IndexOptions.S1) },
@@ -189,7 +210,21 @@ public class NetworkLobby : MonoBehaviour
                 return false;
             }
 
-            Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(response.Results[0].Id);
+            string displayName = PlayerPrefs.GetString("DisplayName", "Player");
+
+            JoinLobbyByIdOptions joinOptions = new JoinLobbyByIdOptions
+            {
+                Player = new Player
+                {
+                    Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        { "DisplayName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, displayName) },
+                        { "Ready", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "0") }
+                    }
+                }
+            };
+
+            Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(response.Results[0].Id, joinOptions);
 
             hostLobby = lobby;
             isHost = false;
@@ -207,6 +242,29 @@ public class NetworkLobby : MonoBehaviour
         {
             Debug.Log(e);
             return false;
+        }
+    }
+
+    public async Task SetPlayerReady(bool ready)
+    {
+        if (hostLobby == null) return;
+
+        try
+        {
+            hostLobby = await LobbyService.Instance.UpdatePlayerAsync(hostLobby.Id, AuthenticationService.Instance.PlayerId,
+                new UpdatePlayerOptions
+                {
+                    Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        { "Ready", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, ready ? "1" : "0") }
+                    }
+                });
+
+            OnLobbyUpdated?.Invoke();
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
         }
     }
 
@@ -260,19 +318,33 @@ public class NetworkLobby : MonoBehaviour
 
             if (pollTask.IsFaulted)
             {
+                var ex = pollTask.Exception?.InnerException as LobbyServiceException;
+
+                if (ex != null && ex.Reason == LobbyExceptionReason.LobbyNotFound)
+                {
+                    if (!isHost)
+                    {
+                        PendingDisconnectReason = LobbyDisconnectReason.HostLeft;
+                        _ = LeaveLobby();
+                        yield break;
+                    }
+                }
+
                 consecutiveFailures++;
                 if (!isHost && consecutiveFailures >= 3)
                 {
+                    PendingDisconnectReason = LobbyDisconnectReason.ConnectionLost;
                     _ = LeaveLobby();
                     yield break;
                 }
-                // Transient error — skip this poll and retry next interval
+                // Transient error - skip and retry next interval
             }
             else
             {
                 consecutiveFailures = 0;
                 hostLobby = pollTask.Result;
                 PlayerCount = hostLobby.Players.Count;
+                OnLobbyUpdated?.Invoke();
             }
         }
     }
@@ -294,6 +366,7 @@ public class NetworkLobby : MonoBehaviour
             };
 
             hostLobby = await LobbyService.Instance.UpdateLobbyAsync(hostLobby.Id, options);
+            OnLobbyUpdated?.Invoke();
         }
         catch (LobbyServiceException e)
         {

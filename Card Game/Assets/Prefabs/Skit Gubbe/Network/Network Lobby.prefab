@@ -521,7 +521,7 @@ GameObject:
   - component: {fileID: 4593430151443875345}
   - component: {fileID: 552653130689668129}
   m_Layer: 0
-  m_Name: MultiplayerLobby
+  m_Name: Network Lobby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

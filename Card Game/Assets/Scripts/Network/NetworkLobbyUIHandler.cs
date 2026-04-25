@@ -14,6 +14,8 @@ public class NetworkLobbyUIHandler : NetworkLobby
     [SerializeField] TextMeshProUGUI loadingText;
     [SerializeField] float loadTextDelay;
     [SerializeField] TMP_InputField codeInputField;
+    [Header("Error Message")]
+    [SerializeField] TextMeshProUGUI errorMessageText;
 
     Coroutine loadingCoroutine;
 
@@ -22,16 +24,24 @@ public class NetworkLobbyUIHandler : NetworkLobby
         base.Start();
         CloseAll();
 
-        if (NetworkLobby.PendingError)
+        if (PendingDisconnectReason != LobbyDisconnectReason.None)
         {
-            NetworkLobby.PendingError = false;
-            errorMessage.SetActive(true);
+            errorMessageText.text = PendingDisconnectReason switch
+            {
+                LobbyDisconnectReason.HostLeft => "The host has left the lobby.",
+                LobbyDisconnectReason.ConnectionLost => "Connection to the lobby was lost.",
+                LobbyDisconnectReason.ServiceError => "A service error occurred.",
+                _ => "Disconnected from lobby."
+            };
+
+            PendingDisconnectReason = LobbyDisconnectReason.None;
+            errorPanel.SetActive(true);
         }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return) && codePanel.activeInHierarchy) 
+        if (Input.GetKeyDown(KeyCode.Return) && codePanel.activeInHierarchy)
         {
             JoinLobby();
         }
@@ -126,6 +136,5 @@ public class NetworkLobbyUIHandler : NetworkLobby
         codePanel.SetActive(false);
         loadingPanel.SetActive(false);
         errorPanel.SetActive(false);
-        errorMessage.SetActive(false);
     }
 }

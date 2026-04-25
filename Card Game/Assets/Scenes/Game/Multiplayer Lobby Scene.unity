@@ -1730,7 +1730,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.01125, y: 0.020000001}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -153.19992, y: 52.95999}
+  m_AnchoredPosition: {x: -153.19989, y: 52.95999}
   m_SizeDelta: {x: -371.15, y: -257.49}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1087714150
@@ -3538,7 +3538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5603682862182298929, guid: b1f8ae20c9705d44c9f05d1d7878aa9f, type: 3}
       propertyPath: m_Name
-      value: SceneLoader
+      value: Scene Loader
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3615,7 +3615,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6902570724455442556, guid: 4d5c95f48f5b32444bfe197a628260a8, type: 3}
       propertyPath: m_Name
-      value: LobbyManager
+      value: Network Lobby Manager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

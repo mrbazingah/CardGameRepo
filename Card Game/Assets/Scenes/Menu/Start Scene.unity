@@ -706,8 +706,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 533431355}
+  m_Children: []
   m_Father: {fileID: 1238042884}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1913,11 +1912,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 945376773}
-  m_Father: {fileID: 235212261}
+  m_Father: {fileID: 1238042884}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -49.29}
+  m_AnchoredPosition: {x: 0, y: -30.290003}
   m_SizeDelta: {x: 96.02, y: 29.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &533431356
@@ -2026,11 +2025,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533431354}
   m_CullTransparentMesh: 1
---- !u!1 &692141422 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7893917462687705333, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
-  m_PrefabInstance: {fileID: 4901731057903538557}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &766481760
 GameObject:
   m_ObjectHideFlags: 0
@@ -3656,6 +3650,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 235212261}
+  - {fileID: 533431355}
   m_Father: {fileID: 902786054}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -5160,7 +5155,7 @@ GameObject:
   - component: {fileID: 1648986368}
   - component: {fileID: 1648986369}
   m_Layer: 0
-  m_Name: PlayerProfileManager
+  m_Name: Player Profile Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5779,7 +5774,7 @@ PrefabInstance:
     - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: errorMessage
       value: 
-      objectReference: {fileID: 692141422}
+      objectReference: {fileID: 0}
     - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: loadingPanel
       value: 
@@ -5788,6 +5783,10 @@ PrefabInstance:
       propertyPath: codeInputField
       value: 
       objectReference: {fileID: 1920635979}
+    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+      propertyPath: errorMessageText
+      value: 
+      objectReference: {fileID: 235212262}
     - target: {fileID: 1189111832477283502, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: m_Camera
       value: 
@@ -5798,7 +5797,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3882650640817435150, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: m_Name
-      value: MultiplayerLobby
+      value: Network Lobby
       objectReference: {fileID: 0}
     - target: {fileID: 4593430151443875345, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5845,7 +5844,8 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3491997048459590835, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
