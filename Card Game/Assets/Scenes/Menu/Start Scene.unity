@@ -5772,10 +5772,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1843139131}
     - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
-      propertyPath: errorMessage
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 552653130689668129, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: loadingPanel
       value: 
       objectReference: {fileID: 1341430321}
@@ -5787,14 +5783,6 @@ PrefabInstance:
       propertyPath: errorMessageText
       value: 
       objectReference: {fileID: 235212262}
-    - target: {fileID: 1189111832477283502, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 519420031}
-    - target: {fileID: 1189111832477283502, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3882650640817435150, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
       propertyPath: m_Name
       value: Network Lobby
@@ -5839,13 +5827,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7893917462687705333, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 3491997048459590835, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7ab1ef1cec9dca14c9383b69a5f4a245, type: 3}

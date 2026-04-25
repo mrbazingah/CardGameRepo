@@ -47,6 +47,11 @@ MonoBehaviour:
   codeDisplayText: {fileID: 0}
   playerCountText: {fileID: 0}
   startGameButton: {fileID: 0}
+  playerProfilePrefab: {fileID: 8442417762103686864, guid: 054e607c76758bf4e86bbb9df083bd70, type: 3}
+  profileContainer: {fileID: 0}
+  profileSpawnPos: {x: -165, y: 50}
+  profileYOffset: -50
+  readyButtonText: {fileID: 0}
   cardsPerPlayerField: {fileID: 0}
   canChanceToggle: {fileID: 0}
   defaultCardsPerPlayer: 3

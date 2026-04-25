@@ -204,12 +204,6 @@ public class NetworkLobby : MonoBehaviour
                 return false;
             }
 
-            if (response.Results[0].AvailableSlots == 0)
-            {
-                Debug.Log("Lobby is full: " + roomCode);
-                return false;
-            }
-
             string displayName = PlayerPrefs.GetString("DisplayName", "Player");
 
             JoinLobbyByIdOptions joinOptions = new JoinLobbyByIdOptions

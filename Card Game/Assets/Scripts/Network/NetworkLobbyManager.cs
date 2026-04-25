@@ -11,8 +11,10 @@ public class NetworkLobbyManager : MonoBehaviour
     [SerializeField] GameObject startGameButton;
 
     [Header("Player Profiles")]
-    [SerializeField] NetworkPlayerProfile playerProfilePrefab;
+    [SerializeField] GameObject playerProfilePrefab;
     [SerializeField] Transform profileContainer;
+    [SerializeField] Vector2 profileSpawnPos;
+    [SerializeField] float profileYOffset;
 
     [Header("Ready")]
     [SerializeField] TextMeshProUGUI readyButtonText;
@@ -23,9 +25,9 @@ public class NetworkLobbyManager : MonoBehaviour
     [SerializeField] int defaultCardsPerPlayer = 5;
 
     readonly List<NetworkPlayerProfile> spawnedProfiles = new();
-    bool localReady;
     int trackedCardsPerPlayer;
     bool trackedCanChance;
+    bool localReady;
 
     void Start()
     {
@@ -36,7 +38,6 @@ public class NetworkLobbyManager : MonoBehaviour
         }
 
         startGameButton.SetActive(false);
-
         SetupSettings();
         RefreshProfiles();
     }
@@ -106,7 +107,6 @@ public class NetworkLobbyManager : MonoBehaviour
         IReadOnlyList<Player> players = NetworkLobby.Instance?.Players;
         if (players == null) return;
 
-        // Remove profiles for players who left
         for (int i = spawnedProfiles.Count - 1; i >= 0; i--)
         {
             bool stillPresent = false;
@@ -122,28 +122,29 @@ public class NetworkLobbyManager : MonoBehaviour
             }
         }
 
-        // Add or update a profile for each player
         bool allReady = players.Count > 1;
         foreach (var player in players)
         {
             string name = GetPlayerData(player, "DisplayName", "Player");
             bool isReady = GetPlayerData(player, "Ready", "0") == "1";
+            bool isHostPlayer = player.Id == NetworkLobby.Instance.HostId;
 
             if (!isReady) allReady = false;
 
             var profile = spawnedProfiles.Find(p => p.PlayerId == player.Id);
             if (profile == null)
             {
-                profile = Instantiate(playerProfilePrefab, profileContainer);
+                profile = Instantiate(playerProfilePrefab, profileContainer).GetComponent<NetworkPlayerProfile>();
+                Vector2 pos = isHostPlayer ? profileSpawnPos : new Vector2(profileSpawnPos.x, profileSpawnPos.y + profileYOffset);
+                profile.transform.localPosition = pos;
                 spawnedProfiles.Add(profile);
             }
 
-            profile.Setup(player.Id, name, isReady);
+            string displayName = isHostPlayer ? name + " (Host)" : name;
+            profile.Setup(player.Id, displayName, isReady);
         }
 
-        // Host sees Start button only once everyone is ready
         startGameButton.SetActive(allReady && NetworkLobby.Instance.IsHost);
-
         playerCountText.text = players.Count + "/2";
     }
 
@@ -154,39 +155,24 @@ public class NetworkLobbyManager : MonoBehaviour
         return fallback;
     }
 
-    #region UI
-    public void ToggleReady()
+    public void OnReadyPressed()
     {
         if (NetworkLobby.Instance == null) return;
 
         localReady = !localReady;
+
         if (readyButtonText != null)
             readyButtonText.text = localReady ? "Cancel" : "Ready";
 
         _ = NetworkLobby.Instance.SetPlayerReady(localReady);
     }
-    #endregion
-
-    #region Actions
-    public void StartGame()
-    {
-        if (NetworkLobby.Instance != null)
-        {
-            //MultiplayerLobby.Instance.StartGame();
-            Debug.Log("Start Game");
-        }
-    }
 
     public async void LeaveLobby()
     {
         if (NetworkLobby.Instance != null)
-        {
             await NetworkLobby.Instance.LeaveLobby();
-        }
     }
-    #endregion
 
-    #region Settings
     public void CheckCardsPerPlayer()
     {
         if (NetworkLobby.Instance == null || !NetworkLobby.Instance.IsHost) return;
@@ -196,9 +182,7 @@ public class NetworkLobbyManager : MonoBehaviour
         if (number == 0) number = 3;
         else if (number > 20) number = 20;
 
-        TextMeshProUGUI cardText = cardsPerPlayerField.GetComponentInChildren<TextMeshProUGUI>();
-        cardText.alignment = TextAlignmentOptions.Center;
-
+        cardsPerPlayerField.GetComponentInChildren<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
         cardsPerPlayerField.text = number.ToString();
         PlayerPrefs.SetInt("CardsPerPlayer", number);
         trackedCardsPerPlayer = number;
@@ -222,5 +206,4 @@ public class NetworkLobbyManager : MonoBehaviour
 
         _ = NetworkLobby.Instance.UpdateLobbySettings(cards, canChanceToggle.isOn);
     }
-    #endregion
 }
