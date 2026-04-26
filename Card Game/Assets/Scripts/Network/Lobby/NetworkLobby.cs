@@ -22,6 +22,7 @@ public class NetworkLobby : MonoBehaviour
     [SerializeField] float heartbeatTimer = 15;
 
     public string RoomCode { get; private set; }
+    public string LobbyId => hostLobby?.Id;
     public int PlayerCount { get; private set; }
     public bool IsHost => isHost;
     public string LocalPlayerId => AuthenticationService.Instance?.PlayerId;
@@ -368,6 +369,32 @@ public class NetworkLobby : MonoBehaviour
 
             hostLobby = await LobbyService.Instance.UpdateLobbyAsync(hostLobby.Id, options);
             SceneLoader.LoadScene("Multiplayer Scene");
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    public async Task SetRelayCode(string relayCode)
+    {
+        if (!isHost || hostLobby == null) return;
+
+        try
+        {
+            UpdateLobbyOptions options = new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                    { "RoomCode", new DataObject(DataObject.VisibilityOptions.Public, RoomCode, DataObject.IndexOptions.S1) },
+                    { "CardsPerPlayer", new DataObject(DataObject.VisibilityOptions.Member, LobbyCardsPerPlayer.ToString()) },
+                    { "CanChance", new DataObject(DataObject.VisibilityOptions.Member, LobbyCanChance ? "1" : "0") },
+                    { "GameStarted", new DataObject(DataObject.VisibilityOptions.Member, "1") },
+                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, relayCode) }
+                }
+            };
+
+            hostLobby = await LobbyService.Instance.UpdateLobbyAsync(hostLobby.Id, options);
         }
         catch (LobbyServiceException e)
         {
