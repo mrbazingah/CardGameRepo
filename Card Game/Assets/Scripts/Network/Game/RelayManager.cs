@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Services.Lobbies;
@@ -35,12 +36,25 @@ public class RelayManager : MonoBehaviour
                 await StartAsClient();
 
             IsConnected = true;
+            RegisterNetworkCallbacks();
         }
         catch (Exception e)
         {
             Debug.LogError("RelayManager failed to connect: " + e.Message);
         }
     }
+
+    void OnDestroy()
+    {
+        UnregisterNetworkCallbacks();
+
+        if (Instance == this)
+            Instance = null;
+    }
+
+    // -------------------------------------------------------------------------
+    // Connect
+    // -------------------------------------------------------------------------
 
     async Task StartAsHost()
     {
@@ -110,5 +124,56 @@ public class RelayManager : MonoBehaviour
         }
 
         throw new TimeoutException("RelayManager: Timed out waiting for relay code from host.");
+    }
+
+    // -------------------------------------------------------------------------
+    // Disconnect handling — mirrors NetworkLobby's poll failure logic
+    // -------------------------------------------------------------------------
+
+    void RegisterNetworkCallbacks()
+    {
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+        NetworkManager.Singleton.OnTransportFailure += OnTransportFailure;
+    }
+
+    void UnregisterNetworkCallbacks()
+    {
+        if (NetworkManager.Singleton == null) return;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        NetworkManager.Singleton.OnTransportFailure -= OnTransportFailure;
+    }
+
+    // Fires on the client when it loses connection to the host
+    void OnClientDisconnected(ulong clientId)
+    {
+        if (NetworkManager.Singleton.IsServer) return;
+
+        ShutdownAndReturnToStart(LobbyDisconnectReason.HostLeft);
+    }
+
+    // Fires on either side when the underlying transport fails
+    void OnTransportFailure()
+    {
+        ShutdownAndReturnToStart(LobbyDisconnectReason.ConnectionLost);
+    }
+
+    void ShutdownAndReturnToStart(LobbyDisconnectReason reason)
+    {
+        UnregisterNetworkCallbacks();
+
+        NetworkLobby.PendingDisconnectReason = reason;
+
+        if (NetworkManager.Singleton != null)
+            NetworkManager.Singleton.Shutdown();
+
+        // Destroy the lobby object without going through LeaveLobby —
+        // the lobby is already gone once the game session has started
+        if (NetworkLobby.Instance != null)
+        {
+            NetworkLobby.Instance.StopAllCoroutines();
+            Destroy(NetworkLobby.Instance.gameObject);
+        }
+
+        SceneManager.LoadScene("Start Scene");
     }
 }

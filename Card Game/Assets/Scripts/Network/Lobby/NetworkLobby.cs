@@ -15,7 +15,7 @@ public enum LobbyDisconnectReason { None, HostLeft, ConnectionLost, ServiceError
 public class NetworkLobby : MonoBehaviour
 {
     public static NetworkLobby Instance { get; private set; }
-    public static LobbyDisconnectReason PendingDisconnectReason { get; protected set; }
+    public static LobbyDisconnectReason PendingDisconnectReason { get; set; }
 
     public event Action OnLobbyUpdated;
 
