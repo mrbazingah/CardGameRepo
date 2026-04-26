@@ -173,6 +173,14 @@ public class NetworkLobbyManager : MonoBehaviour
             await NetworkLobby.Instance.LeaveLobby();
     }
 
+    public void StartGame()
+    {
+        if (NetworkLobby.Instance != null && NetworkLobby.Instance.IsHost)
+        {
+            NetworkLobby.Instance.StartGame();
+        }
+    }
+
     public void CheckCardsPerPlayer()
     {
         if (NetworkLobby.Instance == null || !NetworkLobby.Instance.IsHost) return;

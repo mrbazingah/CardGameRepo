@@ -339,7 +339,39 @@ public class NetworkLobby : MonoBehaviour
                 hostLobby = pollTask.Result;
                 PlayerCount = hostLobby.Players.Count;
                 OnLobbyUpdated?.Invoke();
+
+                if (!isHost && GetLobbyInt("GameStarted", 0) == 1)
+                {
+                    SceneLoader.LoadScene("Multiplayer Scene");
+                    yield break;
+                }
             }
+        }
+    }
+
+    public async void StartGame()
+    {
+        if (!isHost || hostLobby == null) return;
+
+        try
+        {
+            UpdateLobbyOptions options = new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                    { "RoomCode", new DataObject(DataObject.VisibilityOptions.Public, RoomCode, DataObject.IndexOptions.S1) },
+                    { "CardsPerPlayer", new DataObject(DataObject.VisibilityOptions.Member, LobbyCardsPerPlayer.ToString()) },
+                    { "CanChance", new DataObject(DataObject.VisibilityOptions.Member, LobbyCanChance ? "1" : "0") },
+                    { "GameStarted", new DataObject(DataObject.VisibilityOptions.Member, "1") }
+                }
+            };
+
+            hostLobby = await LobbyService.Instance.UpdateLobbyAsync(hostLobby.Id, options);
+            SceneLoader.LoadScene("Multiplayer Scene");
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
         }
     }
 
