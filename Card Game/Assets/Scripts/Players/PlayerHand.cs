@@ -422,6 +422,8 @@ public class PlayerHand : MonoBehaviour
 
                 if (!hasCardToPlay)
                 {
+                    pile.AddCardsToPile(cardInHand);
+                    RemoveCardFromList(cardInHand);
                     PickUpPile(cardInHand);
                 }
             }
