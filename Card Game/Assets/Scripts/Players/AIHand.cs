@@ -360,7 +360,7 @@ public class AIHand : MonoBehaviour
                         PickUpPile(selectedCard);
                     }
 
-                    StartCoroutine(gameManager.ProcessWin("AI"));
+                    StartCoroutine(gameManager.ProcessWin("AI", cardValue));
 
                     yield return new WaitForSeconds(playDelay);
                 }
@@ -372,7 +372,7 @@ public class AIHand : MonoBehaviour
                     }
                     else
                     {
-                        StartCoroutine(gameManager.ProcessWin("AI"));
+                        StartCoroutine(gameManager.ProcessWin("AI", cardValue));
                         gameManager.NextTurn(selectedCard);
                     }
 

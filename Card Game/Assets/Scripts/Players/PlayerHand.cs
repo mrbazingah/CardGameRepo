@@ -440,7 +440,7 @@ public class PlayerHand : MonoBehaviour
             }
         }
 
-        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName")));
+        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName"), cardValue));
     }
 
     public void PlayChanceCard()

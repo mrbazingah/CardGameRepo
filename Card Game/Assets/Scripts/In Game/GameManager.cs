@@ -141,22 +141,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public IEnumerator ProcessWin(string playerName)
+    public IEnumerator ProcessWin(string playerName, int lastCardValue = -1)
     {
         yield return new WaitForSeconds(0.001f);
 
         if (!winner && playerHand != null)
         {
-            if (playerHand.GetCurrentCards().Count == 0)
+            if (playerHand.GetCurrentCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10)
             {
                 winMenu.gameObject.SetActive(true);
 
-                int amount = Random.Range(minScore, maxScore + 1); 
+                int amount = Random.Range(minScore, maxScore + 1);
                 AddScore(amount);
 
                 winner = true;
             }
-            else if (aiHand.GetCards().Count == 0)
+            else if (aiHand.GetCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10)
             {
                 winMenu.gameObject.SetActive(true);
 
@@ -166,7 +166,10 @@ public class GameManager : MonoBehaviour
                 winner = true;
             }
 
-            winText.text = playerName + " Wins!";
+            if (winner)
+            {
+                winText.text = playerName + " Wins!";
+            }
         }
     }
 
