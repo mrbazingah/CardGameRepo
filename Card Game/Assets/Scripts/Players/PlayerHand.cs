@@ -356,6 +356,8 @@ public class PlayerHand : MonoBehaviour
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
+        bool canWin = handCards.Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
+
         if (CanPlayCard(cardValue, isChanceCard, cardInHand))
         {
             if (!isChanceCard)
@@ -382,7 +384,7 @@ public class PlayerHand : MonoBehaviour
                 }
 
                 hasDiscarded = false;
-                
+
                 if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0 && !isChanceCard)
                 {
                     cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
@@ -405,7 +407,7 @@ public class PlayerHand : MonoBehaviour
         }
         else if (isChanceCard)
         {
-            RemoveCardFromList(cardInHand); 
+            RemoveCardFromList(cardInHand);
             PickUpPile(cardInHand);
         }
         else if (!isChanceCard)
@@ -427,7 +429,7 @@ public class PlayerHand : MonoBehaviour
                     PickUpPile(cardInHand);
                 }
             }
-            else 
+            else
             {
                 bool hasCardToPlay = HasCardToPlay(handCards);
 
@@ -440,7 +442,7 @@ public class PlayerHand : MonoBehaviour
             }
         }
 
-        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName"), cardValue));
+        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName"), canWin));
     }
 
     public void PlayChanceCard()

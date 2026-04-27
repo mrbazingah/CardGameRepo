@@ -348,6 +348,8 @@ public class AIHand : MonoBehaviour
                 PlayCard(selectedCard, false);
 
                 int cardValue = selectedCard.GetComponent<Card>().GetValue();
+                bool canWIn = GetCards().Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
+
                 if (cardValue == 2 || ShouldDiscard(cardValue) || HasSameValueCard(cardValue))
                 {
                     yield return new WaitForSeconds(0.1f);
@@ -360,7 +362,7 @@ public class AIHand : MonoBehaviour
                         PickUpPile(selectedCard);
                     }
 
-                    StartCoroutine(gameManager.ProcessWin("AI", cardValue));
+                    StartCoroutine(gameManager.ProcessWin("AI", canWIn));
 
                     yield return new WaitForSeconds(playDelay);
                 }
@@ -372,7 +374,7 @@ public class AIHand : MonoBehaviour
                     }
                     else
                     {
-                        StartCoroutine(gameManager.ProcessWin("AI", cardValue));
+                        StartCoroutine(gameManager.ProcessWin("AI", canWIn));
                         gameManager.NextTurn(selectedCard);
                     }
 
@@ -598,8 +600,8 @@ public class AIHand : MonoBehaviour
     public int GetHandCount() => handCards.Count;
     public int GetOverSideCount() => overSideCards.Count;
     public int GetUnderSideCount() => underSideCards.Count;
-    public List<GameObject> GetHandCards()      => handCards;
-    public List<GameObject> GetOverSideCards()  => overSideCards;
+    public List<GameObject> GetHandCards() => handCards;
+    public List<GameObject> GetOverSideCards() => overSideCards;
     public List<GameObject> GetUnderSideCards() => underSideCards;
     public void RemoveCard(GameObject card) => RemoveCardFromList(card);
     public void AddCardsToHand(List<GameObject> cards) => handCards.AddRange(cards);
