@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour
 
         if (!winner && playerHand != null)
         {
-            if (playerHand.GetCurrentCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10)
+            if (playerHand.GetCurrentCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10 && lastCardValue != 14)
             {
                 winMenu.gameObject.SetActive(true);
 
@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviour
 
                 winner = true;
             }
-            else if (aiHand.GetCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10)
+            else if (aiHand.GetCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10 && lastCardValue != 14)
             {
                 winMenu.gameObject.SetActive(true);
 
