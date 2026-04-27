@@ -2,6 +2,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class NetworkLobbyUIHandler : NetworkLobby
 {
@@ -18,6 +19,9 @@ public class NetworkLobbyUIHandler : NetworkLobby
     [SerializeField] TextMeshProUGUI errorMessageText;
 
     Coroutine loadingCoroutine;
+
+    PlayerInput playerInput;
+    InputAction joinAction;
 
     void Start()
     {
@@ -41,7 +45,13 @@ public class NetworkLobbyUIHandler : NetworkLobby
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return) && codePanel.activeInHierarchy)
+        if (playerInput == null || joinAction == null)
+        {
+            playerInput = InputManager.Instance.GetPlayerInput();
+            joinAction = playerInput.actions.FindAction("Join");
+        }
+
+        if (joinAction.IsPressed() && codePanel.activeInHierarchy)
         {
             JoinLobby();
         }

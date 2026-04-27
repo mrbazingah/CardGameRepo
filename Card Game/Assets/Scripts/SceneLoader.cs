@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
 {
     [SerializeField] Button returnButton;
+
+    PlayerInput playerInput;
+    InputAction returnAction;
 
     public void LoadScene(string sceneName)
     {
@@ -14,12 +18,18 @@ public class SceneLoader : MonoBehaviour
 
     void Update()
     {
+        if (playerInput == null || returnAction == null)
+        {
+            playerInput = InputManager.Instance.GetPlayerInput();
+            returnAction = playerInput.actions.FindAction("Return");
+        }
+
         ReturnWithESC();
     }
 
     void ReturnWithESC()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && returnButton != null)
+        if (returnAction.IsPressed() && returnButton != null)
         {
             returnButton.onClick.Invoke();
         }

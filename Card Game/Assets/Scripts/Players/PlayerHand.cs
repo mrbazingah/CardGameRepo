@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerHand : MonoBehaviour
 {
@@ -47,6 +48,8 @@ public class PlayerHand : MonoBehaviour
     CardGenerator cardGenerator;
     GameManager gameManager;
     AudioManager audioManager;
+    PlayerInput playerInput;
+    InputAction interactAction;
     #endregion
 
     void Awake()
@@ -91,6 +94,12 @@ public class PlayerHand : MonoBehaviour
 
     void Update()
     {
+        if (playerInput == null || interactAction == null)
+        {
+            playerInput = InputManager.Instance.GetPlayerInput();
+            interactAction = playerInput.actions.FindAction("Interact");
+        }
+
         isPaused = Time.timeScale == 0f;
         if (isPaused) { return; }    
 
@@ -323,15 +332,17 @@ public class PlayerHand : MonoBehaviour
     #endregion
 
     #region Play
-    void DetectHover()
+    void DetectHover(bool pressed = false)
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
 
         hoveredCard = hits.OrderByDescending(h => h.collider.GetComponent<SpriteRenderer>().sortingOrder).Select(h => h.collider.gameObject).FirstOrDefault();
 
-        if (hoveredCard != null && Input.GetKeyDown(KeyCode.Mouse0))
+        if (hoveredCard != null && interactAction.WasPressedThisFrame())
         {
+            Debug.Log("Card Clicked: " + hoveredCard.name);
+
             if (handCards.Contains(hoveredCard) && !usingOverSideCards && !usingUnderSideCards ||
                 overSideCards.Contains(hoveredCard) && usingOverSideCards ||
                 underSideCards.Contains(hoveredCard) && usingUnderSideCards)
