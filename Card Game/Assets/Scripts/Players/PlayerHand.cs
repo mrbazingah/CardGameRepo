@@ -356,10 +356,11 @@ public class PlayerHand : MonoBehaviour
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
-        bool canWin = handCards.Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
+        bool canWin = false;
 
         if (CanPlayCard(cardValue, isChanceCard, cardInHand))
         {
+            canWin = GetCurrentCards().Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
             if (!isChanceCard)
             {
                 audioManager.PlayCardSFX();
