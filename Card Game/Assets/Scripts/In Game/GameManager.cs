@@ -154,13 +154,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public IEnumerator ProcessWin(string playerName, int lastCardValue = -1)
+    public IEnumerator ProcessWin(string playerName, bool canWin)
     {
         yield return new WaitForSeconds(0.001f);
 
         if (!winner && playerHand != null)
         {
-            if (playerHand.GetCurrentCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10)
+            if (canWin && playerHand.GetCurrentCards().Count == 0)
             {
                 winMenu.gameObject.SetActive(true);
 
@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviour
 
                 winner = true;
             }
-            else if (aiHand.GetCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10)
+            else if (canWin && aiHand.GetCards().Count == 0)
             {
                 winMenu.gameObject.SetActive(true);
 

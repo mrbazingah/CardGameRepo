@@ -367,8 +367,11 @@ public class PlayerHand : MonoBehaviour
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
+        bool canWin = false;
+
         if (CanPlayCard(cardValue, isChanceCard, cardInHand))
         {
+            canWin = GetCurrentCards().Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
             if (!isChanceCard)
             {
                 audioManager.PlayCardSFX();
@@ -377,46 +380,53 @@ public class PlayerHand : MonoBehaviour
             RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
 
-            if (ShouldDiscard(cardValue))
+            if (GetCurrentCards().Count == 0 && (cardValue == 2 || cardValue == 10 || cardValue == 14))
             {
-                StartCoroutine(pile.DiscardCardsInPile());
-                savedCardValue = 0;
-                canEndTurn = false;
-            }
-
-            if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10 || hasDiscarded)
-            {
-                if (HasSameValueCard(cardValue) && cardValue != 2 && cardValue != 10)
-                {
-                    savedCardValue = cardValue;
-                    canEndTurn = true;
-                }
-
-                hasDiscarded = false;
-                
-                if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0 && !isChanceCard)
-                {
-                    cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
-                }
+                PickUpPile(cardInHand);
             }
             else
             {
-                savedCardValue = 0;
-                canEndTurn = false;
-                gameManager.NextTurn(cardInHand);
-                CheckTurn();
-
-                if (!isChanceCard)
+                if (ShouldDiscard(cardValue))
                 {
-                    cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+                    StartCoroutine(pile.DiscardCardsInPile());
+                    savedCardValue = 0;
+                    canEndTurn = false;
                 }
-            }
 
-            SortHandCards();
+                if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10 || hasDiscarded)
+                {
+                    if (HasSameValueCard(cardValue) && cardValue != 2 && cardValue != 10)
+                    {
+                        savedCardValue = cardValue;
+                        canEndTurn = true;
+                    }
+
+                    hasDiscarded = false;
+
+                    if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0 && !isChanceCard)
+                    {
+                        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+                    }
+                }
+                else
+                {
+                    savedCardValue = 0;
+                    canEndTurn = false;
+                    gameManager.NextTurn(cardInHand);
+                    CheckTurn();
+
+                    if (!isChanceCard)
+                    {
+                        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+                    }
+                }
+
+                SortHandCards();
+            }
         }
         else if (isChanceCard)
         {
-            RemoveCardFromList(cardInHand); 
+            RemoveCardFromList(cardInHand);
             PickUpPile(cardInHand);
         }
         else if (!isChanceCard)
@@ -438,7 +448,7 @@ public class PlayerHand : MonoBehaviour
                     PickUpPile(cardInHand);
                 }
             }
-            else 
+            else
             {
                 bool hasCardToPlay = HasCardToPlay(handCards);
 
@@ -451,7 +461,7 @@ public class PlayerHand : MonoBehaviour
             }
         }
 
-        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName"), cardValue));
+        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName"), canWin));
     }
 
     public void PlayChanceCard()

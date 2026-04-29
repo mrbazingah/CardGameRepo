@@ -111,7 +111,7 @@ public class AIBehaviourMCTS : MonoBehaviour
                     {
                         bool shouldDiscard = ShouldDiscard(val);
                         if (shouldDiscard) StartCoroutine(pile.DiscardCardsInPile());
-                        StartCoroutine(gameManager.ProcessWin("AI"));
+                        StartCoroutine(gameManager.ProcessWin("AI", val != 2 && val != 10 && val != 14));
                         if (!gameManager.GetWinner())
                         {
                             bool extraTurn = (val == 2 || shouldDiscard);
@@ -177,7 +177,7 @@ public class AIBehaviourMCTS : MonoBehaviour
 
             int playedVal = cardObj2.GetComponent<Card>().GetValue();
             PlayCard(cardObj2);
-            StartCoroutine(gameManager.ProcessWin("AI"));
+            StartCoroutine(gameManager.ProcessWin("AI", playedVal != 2 && playedVal != 10 && playedVal != 14));
             if (gameManager.GetWinner()) break;
 
             bool giveExtraTurn = (playedVal == 2 || ShouldDiscard(playedVal));
@@ -299,7 +299,7 @@ public class AIBehaviourMCTS : MonoBehaviour
         audioManager.PlayCardSFX();
         bool discard = ShouldDiscard(val);
         if (discard) StartCoroutine(pile.DiscardCardsInPile());
-        StartCoroutine(gameManager.ProcessWin("AI"));
+        StartCoroutine(gameManager.ProcessWin("AI", val != 2 && val != 10 && val != 14));
 
         if (val == 2 || discard) chanceGaveExtraTurn = true;
         else gameManager.NextTurn(chanceCard);
