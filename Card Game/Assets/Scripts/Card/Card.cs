@@ -4,6 +4,7 @@ public class Card : MonoBehaviour
 {
     [SerializeField] int cardValue;
     [SerializeField] GameObject back;
+    [SerializeField] GameObject highlight;
     [SerializeField] float handZeroPoint;
     [SerializeField] float sideZeroPoint;
 
@@ -18,6 +19,11 @@ public class Card : MonoBehaviour
     {
         myBoxCollider = GetComponent<BoxCollider2D>();
         player = FindFirstObjectByType<PlayerHand>();
+    }
+
+    void Start()
+    {
+        SetHighlight(false);
     }
 
     void Update()
@@ -61,6 +67,11 @@ public class Card : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(0, 0, rot);
         hasBeenTurned = b;
+    }
+
+    public void SetHighlight(bool b)
+    {
+        highlight.SetActive(b);
     }
 
     public GameObject GetBack()
