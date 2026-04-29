@@ -341,8 +341,6 @@ public class PlayerHand : MonoBehaviour
 
         if (hoveredCard != null && interactAction.WasPressedThisFrame())
         {
-            Debug.Log("Card Clicked: " + hoveredCard.name);
-
             if (handCards.Contains(hoveredCard) && !usingOverSideCards && !usingUnderSideCards ||
                 overSideCards.Contains(hoveredCard) && usingOverSideCards ||
                 underSideCards.Contains(hoveredCard) && usingUnderSideCards)
