@@ -51,7 +51,7 @@ public class NetworkLobbyUIHandler : NetworkLobby
             joinAction = playerInput.actions.FindAction("Join");
         }
 
-        if (joinAction.IsPressed() && codePanel.activeInHierarchy)
+        if (joinAction.WasPressedThisFrame() && codePanel.activeInHierarchy)
         {
             JoinLobby();
         }

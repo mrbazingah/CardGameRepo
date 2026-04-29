@@ -29,7 +29,7 @@ public class SceneLoader : MonoBehaviour
 
     void ReturnWithESC()
     {
-        if (returnAction.IsPressed() && returnButton != null)
+        if (returnAction.WasPressedThisFrame() && returnButton != null)
         {
             returnButton.onClick.Invoke();
         }

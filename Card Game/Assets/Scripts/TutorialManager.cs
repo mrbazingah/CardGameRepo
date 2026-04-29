@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
@@ -26,11 +27,12 @@ public class TutorialManager : MonoBehaviour
 
     void UpdatePages()
     {
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow))
+        Keyboard kb = Keyboard.current;
+        if (kb != null && (kb.eKey.wasPressedThisFrame || kb.rightArrowKey.wasPressedThisFrame))
         {
             GoRight();
         }
-        else if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (kb != null && (kb.qKey.wasPressedThisFrame || kb.leftArrowKey.wasPressedThisFrame))
         {
             GoLeft();
         }
