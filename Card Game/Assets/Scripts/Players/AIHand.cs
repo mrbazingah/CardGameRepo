@@ -383,6 +383,9 @@ public class AIHand : MonoBehaviour
 
                 if (cardValue == 2 || ShouldDiscard(cardValue) || HasSameValueCard(cardValue))
                 {
+                    if (handCards.Count < cardsPerPlayer && cardGenerator.GetDeck().Count > 0)
+                        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
+
                     yield return new WaitForSeconds(0.1f);
 
                     playAgain = true;
@@ -408,6 +411,9 @@ public class AIHand : MonoBehaviour
                         StartCoroutine(gameManager.ProcessWin("AI", canWIn));
                         gameManager.NextTurn(selectedCard);
                     }
+
+                    if (handCards.Count < cardsPerPlayer && cardGenerator.GetDeck().Count > 0)
+                        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
 
                     playAgain = false;
                 }
@@ -466,11 +472,6 @@ public class AIHand : MonoBehaviour
             if (ShouldDiscard(cardValue))
             {
                 StartCoroutine(pile.DiscardCardsInPile());
-            }
-
-            if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
-            {
-                cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
             }
 
             if (isChance && !ShouldDiscard(cardValue) && cardValue != 2)
