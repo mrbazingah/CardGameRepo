@@ -43,6 +43,8 @@ public class PlayerHand : MonoBehaviour
     bool isPaused;
 
     List<GameObject> selectedCards = new List<GameObject>(0);
+    GameObject selectedCard;
+    GameObject previousSelectedCard;
 
     Pile pile;
     CardGenerator cardGenerator;
@@ -227,6 +229,22 @@ public class PlayerHand : MonoBehaviour
 
     void ChangeSideCards()
     {
+        if (selectedCard != null && selectedCard != previousSelectedCard)
+        {
+            selectedCard.GetComponent<Card>().SetHighlight(true);
+
+            if (previousSelectedCard != null)
+            {
+                previousSelectedCard.GetComponent<Card>().SetHighlight(false);
+            }
+
+            previousSelectedCard = selectedCard;
+        }
+        else if (selectedCards.Count == 0 && previousSelectedCard != null)
+        {
+            previousSelectedCard.GetComponent<Card>().SetHighlight(false);
+        }
+
         if (gameManager.GetGameHasStarted() || selectedCards.Count != 2) { return; }
 
         GameObject handCard = null;
@@ -354,6 +372,7 @@ public class PlayerHand : MonoBehaviour
             if (!gameManager.GetGameHasStarted() && selectedCards.Count < 2)
             {
                 selectedCards.Add(hoveredCard);
+                selectedCard = hoveredCard;
             }
         }
     }

@@ -14,11 +14,15 @@ public class Card : MonoBehaviour
 
     BoxCollider2D myBoxCollider;
     PlayerHand player;
+    SpriteRenderer mySpriteRenderer;
+    SpriteRenderer highlightSpriteRenderer;
 
     void Awake()
     {
         myBoxCollider = GetComponent<BoxCollider2D>();
         player = FindFirstObjectByType<PlayerHand>();
+        mySpriteRenderer = GetComponent<SpriteRenderer>();
+        highlightSpriteRenderer = highlight.GetComponent<SpriteRenderer>();
     }
 
     void Start()
@@ -43,6 +47,8 @@ public class Card : MonoBehaviour
             float currentPosition = gameObject.transform.position.y;
             myBoxCollider.offset = new Vector2(myBoxCollider.offset.x, sideZeroPoint - currentPosition);
         }
+
+        highlightSpriteRenderer.sortingOrder = mySpriteRenderer.sortingOrder - 1;
     }
 
     public void SetValue(int value)
