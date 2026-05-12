@@ -176,18 +176,22 @@ public class PlayerHand : MonoBehaviour
         {
             cards[i].transform.SetParent(parent);
 
+            SpriteRenderer cardSpriteRenderer = cards[i].GetComponent<SpriteRenderer>();
+            Card cardScript = cards[i].GetComponent<Card>();
+
             if (cards == handCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                cardSpriteRenderer.sortingOrder = i;
+                cardScript.ChangeColor(isTurn || !gameHasStarted);
             }
             else if (cards == overSideCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+                cardSpriteRenderer.sortingOrder = i + 3;
             }
             else
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+                cardSpriteRenderer.sortingOrder = i;
+                cardScript.GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
 
             Vector2 cardPosition;

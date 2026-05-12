@@ -7,6 +7,8 @@ public class Card : MonoBehaviour
     [SerializeField] GameObject highlight;
     [SerializeField] float handZeroPoint;
     [SerializeField] float sideZeroPoint;
+    [Space]
+    [SerializeField] Color darkColor;
 
     public Vector2 basePosition;
 
@@ -78,6 +80,11 @@ public class Card : MonoBehaviour
     public void SetHighlight(bool b)
     {
         highlight.SetActive(b);
+    }
+
+    public void ChangeColor(bool active)
+    {
+        mySpriteRenderer.color = active ? Color.white : darkColor;
     }
 
     public GameObject GetBack()
