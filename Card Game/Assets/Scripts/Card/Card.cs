@@ -18,6 +18,7 @@ public class Card : MonoBehaviour
     PlayerHand player;
     SpriteRenderer mySpriteRenderer;
     SpriteRenderer highlightSpriteRenderer;
+    GameManager gameManager;
 
     void Awake()
     {
@@ -25,6 +26,7 @@ public class Card : MonoBehaviour
         player = FindFirstObjectByType<PlayerHand>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         highlightSpriteRenderer = highlight.GetComponent<SpriteRenderer>();
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
     void Start()
@@ -35,6 +37,11 @@ public class Card : MonoBehaviour
     void Update()
     {
         UpdateCollider();
+
+        if (gameManager.GetGameHasStarted())
+        {
+            SetHighlight(false);
+        }
     }
 
     void UpdateCollider()

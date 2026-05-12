@@ -319,11 +319,18 @@ public class PlayerHand : MonoBehaviour
             lastSelectedCard = selectedCards[1];
         }
 
+        if (previousSelectedCard != null) previousSelectedCard.GetComponent<Card>().SetHighlight(false);
+        if (handCard != null) handCard.GetComponent<Card>().SetHighlight(false);
+        if (sideCard != null) sideCard.GetComponent<Card>().SetHighlight(false);
+
         selectedCards = new List<GameObject>(0);
+        previousSelectedCard = null;
+        selectedCard = null;
 
         if (lastSelectedCard != null)
         {
             selectedCards.Add(lastSelectedCard);
+            selectedCard = lastSelectedCard;
         }
     }
     #endregion
@@ -404,7 +411,6 @@ public class PlayerHand : MonoBehaviour
                 audioManager.PlayCardSFX();
             }
 
-            RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
 
             if (GetCurrentCards().Count == 0 && (cardValue == 2 || cardValue == 10 || cardValue == 14))
