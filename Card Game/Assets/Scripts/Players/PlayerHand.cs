@@ -182,7 +182,7 @@ public class PlayerHand : MonoBehaviour
             if (cards == handCards)
             {
                 cardSpriteRenderer.sortingOrder = i;
-                cardScript.ChangeColor(isTurn || !gameHasStarted);
+                ChangeCardColors(cards[i], cardScript);
             }
             else if (cards == overSideCards)
             {
@@ -229,6 +229,12 @@ public class PlayerHand : MonoBehaviour
                 lerpSpeed * Time.deltaTime
             );
         }
+    }
+
+    void ChangeCardColors(GameObject card, Card cardScript)
+    {
+        float cardValue = cardScript.GetValue();
+        cardScript.ChangeColor((isTurn && CanPlayCard(cardValue, false, card, false)) || !gameHasStarted);
     }
 
     void ChangeSideCards()
@@ -580,17 +586,17 @@ public class PlayerHand : MonoBehaviour
         return false;
     }
 
-    public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand)
+    public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand, bool removeCard = true)
     {
         if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2)
         {
-            if (cardInHand != null)
+            if (cardInHand != null && removeCard)
             {
                 GetCurrentCards().Remove(cardInHand);
                 UpdateSideUsage();
             }
 
-                return true;
+            return true;
         }
 
         return false;
