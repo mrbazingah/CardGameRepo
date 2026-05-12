@@ -59,7 +59,9 @@ public class Pile : MonoBehaviour
 
         for (int i = 0; i < cardsBefore.Count; i++)
         {
-            cardsBefore[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+            SpriteRenderer cardSR = cardsBefore[i].GetComponent<SpriteRenderer>();
+            cardSR.sortingOrder = i;
+            cardSR.color = Color.white;
 
             for (int ii = 0; ii < cardsBefore.Count; ii++)
             {
