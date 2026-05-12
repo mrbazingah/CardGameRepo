@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -20,12 +21,15 @@ public class GameManager : MonoBehaviour
 
     PlayerHand playerHand;
     AIHand aiHand;
+    PlayerInput playerInput;
+    InputAction pauseAction;
     #endregion
 
     void Awake()
     {
         aiHand = FindFirstObjectByType<AIHand>();
         playerHand = FindFirstObjectByType<PlayerHand>();
+        playerInput = GetComponent<PlayerInput>();
     }
 
     void Start()
@@ -33,6 +37,17 @@ public class GameManager : MonoBehaviour
         winMenu.gameObject.SetActive(false);
         pauseMenu.gameObject.SetActive(false);
         score = PlayerPrefs.GetInt("Score");
+    }
+
+    void Update()
+    {
+        if (playerInput == null || pauseAction == null)
+        {
+            playerInput = InputManager.Instance.GetPlayerInput();
+            pauseAction = playerInput.actions.FindAction("Return");
+        }
+
+        ProcessPauseMenu();
     }
 
     #region Game Start
@@ -84,20 +99,18 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region PauseMenu
-    void Update()
-    {
-        ProcessPauseMenu();
-    }
-
     void ProcessPauseMenu()
     {
-        if (!isOpen && Input.GetKeyDown(KeyCode.Escape))
+        if (pauseAction.WasPressedThisFrame())
         {
-            OpenMenu();
-        }
-        else if (isOpen && Input.GetKeyDown(KeyCode.Escape))
-        {
-            CloseMenu();
+            if (!isOpen)
+            {
+                OpenMenu();
+            }
+            else
+            {
+                CloseMenu();
+            }
         }
 
         pauseMenu.SetActive(isOpen);
@@ -141,13 +154,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public IEnumerator ProcessWin(string playerName, int lastCardValue = -1)
+    public IEnumerator ProcessWin(string playerName, bool canWin)
     {
         yield return new WaitForSeconds(0.001f);
 
         if (!winner && playerHand != null)
         {
-            if (playerHand.GetCurrentCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10)
+            if (canWin && playerHand.GetCurrentCards().Count == 0)
             {
                 winMenu.gameObject.SetActive(true);
 
@@ -156,7 +169,7 @@ public class GameManager : MonoBehaviour
 
                 winner = true;
             }
-            else if (aiHand.GetCards().Count == 0 && lastCardValue != 2 && lastCardValue != 10)
+            else if (canWin && aiHand.GetCards().Count == 0)
             {
                 winMenu.gameObject.SetActive(true);
 

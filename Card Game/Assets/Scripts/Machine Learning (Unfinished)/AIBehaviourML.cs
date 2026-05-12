@@ -85,7 +85,7 @@ public class AIBehaviourML : MonoBehaviour
                     {
                         bool shouldDiscard = ShouldDiscard(val);
                         if (shouldDiscard) StartCoroutine(pile.DiscardCardsInPile());
-                        StartCoroutine(gameManager.ProcessWin("AI"));
+                        StartCoroutine(gameManager.ProcessWin("AI", val != 2 && val != 10 && val != 14));
                         if (!gameManager.GetWinner())
                         {
                             bool extraTurn = (val == 2 || shouldDiscard);
@@ -167,7 +167,7 @@ public class AIBehaviourML : MonoBehaviour
 
             int playedVal = cardObj2.GetComponent<Card>().GetValue();
             PlayCard(cardObj2);
-            StartCoroutine(gameManager.ProcessWin("AI"));
+            StartCoroutine(gameManager.ProcessWin("AI", playedVal != 2 && playedVal != 10 && playedVal != 14));
 
             if (gameManager.GetWinner()) break;
 
@@ -342,7 +342,7 @@ public class AIBehaviourML : MonoBehaviour
         bool discard = ShouldDiscard(val);
         if (discard) StartCoroutine(pile.DiscardCardsInPile());
 
-        StartCoroutine(gameManager.ProcessWin("AI"));
+        StartCoroutine(gameManager.ProcessWin("AI", val != 2 && val != 10 && val != 14));
 
         // val==2 or pile cleared both give an extra turn (mirrors SimGame)
         if (val == 2 || discard)

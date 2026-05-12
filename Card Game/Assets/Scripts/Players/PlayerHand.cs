@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerHand : MonoBehaviour
 {
@@ -42,11 +43,15 @@ public class PlayerHand : MonoBehaviour
     bool isPaused;
 
     List<GameObject> selectedCards = new List<GameObject>(0);
+    GameObject selectedCard;
+    GameObject previousSelectedCard;
 
     Pile pile;
     CardGenerator cardGenerator;
     GameManager gameManager;
     AudioManager audioManager;
+    PlayerInput playerInput;
+    InputAction interactAction;
     #endregion
 
     void Awake()
@@ -91,6 +96,12 @@ public class PlayerHand : MonoBehaviour
 
     void Update()
     {
+        if (playerInput == null || interactAction == null)
+        {
+            playerInput = InputManager.Instance.GetPlayerInput();
+            interactAction = playerInput.actions.FindAction("Interact");
+        }
+
         isPaused = Time.timeScale == 0f;
         if (isPaused) { return; }    
 
@@ -165,18 +176,22 @@ public class PlayerHand : MonoBehaviour
         {
             cards[i].transform.SetParent(parent);
 
+            SpriteRenderer cardSpriteRenderer = cards[i].GetComponent<SpriteRenderer>();
+            Card cardScript = cards[i].GetComponent<Card>();
+
             if (cards == handCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                cardSpriteRenderer.sortingOrder = i;
+                ChangeCardColors(cards[i], cardScript);
             }
             else if (cards == overSideCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+                cardSpriteRenderer.sortingOrder = i + 3;
             }
             else
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+                cardSpriteRenderer.sortingOrder = i;
+                cardScript.GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
 
             Vector2 cardPosition;
@@ -216,8 +231,30 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
+    void ChangeCardColors(GameObject card, Card cardScript)
+    {
+        float cardValue = cardScript.GetValue();
+        cardScript.ChangeColor((isTurn && CanPlayCard(cardValue, false, card, false)) || !gameHasStarted);
+    }
+
     void ChangeSideCards()
     {
+        if (selectedCard != null && selectedCard != previousSelectedCard)
+        {
+            selectedCard.GetComponent<Card>().SetHighlight(true);
+
+            if (previousSelectedCard != null)
+            {
+                previousSelectedCard.GetComponent<Card>().SetHighlight(false);
+            }
+
+            previousSelectedCard = selectedCard;
+        }
+        else if (selectedCards.Count == 0 && previousSelectedCard != null)
+        {
+            previousSelectedCard.GetComponent<Card>().SetHighlight(false);
+        }
+
         if (gameManager.GetGameHasStarted() || selectedCards.Count != 2) { return; }
 
         GameObject handCard = null;
@@ -282,11 +319,18 @@ public class PlayerHand : MonoBehaviour
             lastSelectedCard = selectedCards[1];
         }
 
+        if (previousSelectedCard != null) previousSelectedCard.GetComponent<Card>().SetHighlight(false);
+        if (handCard != null) handCard.GetComponent<Card>().SetHighlight(false);
+        if (sideCard != null) sideCard.GetComponent<Card>().SetHighlight(false);
+
         selectedCards = new List<GameObject>(0);
+        previousSelectedCard = null;
+        selectedCard = null;
 
         if (lastSelectedCard != null)
         {
             selectedCards.Add(lastSelectedCard);
+            selectedCard = lastSelectedCard;
         }
     }
     #endregion
@@ -323,14 +367,14 @@ public class PlayerHand : MonoBehaviour
     #endregion
 
     #region Play
-    void DetectHover()
+    void DetectHover(bool pressed = false)
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
 
         hoveredCard = hits.OrderByDescending(h => h.collider.GetComponent<SpriteRenderer>().sortingOrder).Select(h => h.collider.gameObject).FirstOrDefault();
 
-        if (hoveredCard != null && Input.GetKeyDown(KeyCode.Mouse0))
+        if (hoveredCard != null && interactAction.WasPressedThisFrame())
         {
             if (handCards.Contains(hoveredCard) && !usingOverSideCards && !usingUnderSideCards ||
                 overSideCards.Contains(hoveredCard) && usingOverSideCards ||
@@ -345,6 +389,7 @@ public class PlayerHand : MonoBehaviour
             if (!gameManager.GetGameHasStarted() && selectedCards.Count < 2)
             {
                 selectedCards.Add(hoveredCard);
+                selectedCard = hoveredCard;
             }
         }
     }
@@ -356,56 +401,65 @@ public class PlayerHand : MonoBehaviour
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
         if (!isTurn || gameManager.GetWinner() || (savedCardValue != 0 && savedCardValue != cardValue)) return;
 
+        bool canWin = false;
+
         if (CanPlayCard(cardValue, isChanceCard, cardInHand))
         {
+            canWin = GetCurrentCards().Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
             if (!isChanceCard)
             {
                 audioManager.PlayCardSFX();
             }
 
-            RemoveCardFromList(cardInHand);
             pile.AddCardsToPile(cardInHand);
 
-            if (ShouldDiscard(cardValue))
+            if (GetCurrentCards().Count == 0 && (cardValue == 2 || cardValue == 10 || cardValue == 14))
             {
-                StartCoroutine(pile.DiscardCardsInPile());
-                savedCardValue = 0;
-                canEndTurn = false;
-            }
-
-            if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10 || hasDiscarded)
-            {
-                if (HasSameValueCard(cardValue) && cardValue != 2 && cardValue != 10)
-                {
-                    savedCardValue = cardValue;
-                    canEndTurn = true;
-                }
-
-                hasDiscarded = false;
-                
-                if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0 && !isChanceCard)
-                {
-                    cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
-                }
+                PickUpPile(cardInHand);
             }
             else
             {
-                savedCardValue = 0;
-                canEndTurn = false;
-                gameManager.NextTurn(cardInHand);
-                CheckTurn();
-
-                if (!isChanceCard)
+                if (ShouldDiscard(cardValue))
                 {
-                    cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+                    StartCoroutine(pile.DiscardCardsInPile());
+                    savedCardValue = 0;
+                    canEndTurn = false;
                 }
-            }
 
-            SortHandCards();
+                if (HasSameValueCard(cardValue) || cardValue == 2 || cardValue == 10 || hasDiscarded)
+                {
+                    if (HasSameValueCard(cardValue) && cardValue != 2 && cardValue != 10)
+                    {
+                        savedCardValue = cardValue;
+                        canEndTurn = true;
+                    }
+
+                    hasDiscarded = false;
+
+                    if (handCards.Count > 0 && cardGenerator.GetDeck().Count > 0 && !isChanceCard)
+                    {
+                        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+                    }
+                }
+                else
+                {
+                    savedCardValue = 0;
+                    canEndTurn = false;
+                    gameManager.NextTurn(cardInHand);
+                    CheckTurn();
+
+                    if (!isChanceCard)
+                    {
+                        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, true);
+                    }
+                }
+
+                SortHandCards();
+            }
         }
         else if (isChanceCard)
         {
-            RemoveCardFromList(cardInHand); 
+            RemoveCardFromList(cardInHand);
             PickUpPile(cardInHand);
         }
         else if (!isChanceCard)
@@ -427,7 +481,7 @@ public class PlayerHand : MonoBehaviour
                     PickUpPile(cardInHand);
                 }
             }
-            else 
+            else
             {
                 bool hasCardToPlay = HasCardToPlay(handCards);
 
@@ -440,7 +494,7 @@ public class PlayerHand : MonoBehaviour
             }
         }
 
-        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName"), cardValue));
+        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName"), canWin));
     }
 
     public void PlayChanceCard()
@@ -538,17 +592,17 @@ public class PlayerHand : MonoBehaviour
         return false;
     }
 
-    public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand)
+    public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand, bool removeCard = true)
     {
         if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2)
         {
-            if (cardInHand != null)
+            if (cardInHand != null && removeCard)
             {
                 GetCurrentCards().Remove(cardInHand);
                 UpdateSideUsage();
             }
 
-                return true;
+            return true;
         }
 
         return false;

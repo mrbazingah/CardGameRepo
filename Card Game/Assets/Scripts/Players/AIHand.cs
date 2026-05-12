@@ -211,6 +211,7 @@ public class AIHand : MonoBehaviour
         if (cards.Count == 0) return;
 
         float cardSpacing = Mathf.Min(spacing, maxWidth / cards.Count);
+        bool gameHasStarted = gameManager.GetGameHasStarted();
 
         for (int i = 0; i < cards.Count; i++)
         {
@@ -227,18 +228,48 @@ public class AIHand : MonoBehaviour
             }
 
             Vector2 cardPosition;
-            if (cards.Count > 1)
+
+            if (cards == handCards)
             {
-                float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
-                float normalizedPosition = 2f * i / (cards.Count - 1) - 1f;
-                cardPosition = new Vector2(horizontalOffset + offset, offset);
+                if (cards.Count > 1)
+                {
+                    float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
+                    cardPosition = new Vector2(horizontalOffset + offset, offset);
+                }
+                else
+                {
+                    cardPosition = new Vector2(offset, offset);
+                }
             }
             else
             {
-                cardPosition = new Vector2(offset, offset);
+                var cardComp = cards[i].GetComponent<Card>();
+
+                if (!gameHasStarted)
+                {
+                    if (cards.Count > 1)
+                    {
+                        float horizontalOffset = cardSpacing * (i - (cards.Count - 1) / 2f);
+                        cardPosition = new Vector2(horizontalOffset + offset, offset);
+                        cardComp.basePosition = new Vector2(horizontalOffset + offset, offset);
+                    }
+                    else
+                    {
+                        cardPosition = new Vector2(offset, offset);
+                        cardComp.basePosition = new Vector2(offset, offset);
+                    }
+                }
+                else
+                {
+                    cardPosition = cardComp.basePosition;
+                }
             }
 
-            cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, cardPosition, lerpSpeed * Time.deltaTime);
+            cards[i].transform.localPosition = Vector2.Lerp(
+                cards[i].transform.localPosition,
+                cardPosition,
+                lerpSpeed * Time.deltaTime
+            );
 
             GameObject child = cards[i].GetComponent<Card>().GetBack();
             if (handCards.Contains(cards[i]) && child != null)
@@ -348,8 +379,13 @@ public class AIHand : MonoBehaviour
                 PlayCard(selectedCard, false);
 
                 int cardValue = selectedCard.GetComponent<Card>().GetValue();
+                bool canWIn = GetCards().Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
+
                 if (cardValue == 2 || ShouldDiscard(cardValue) || HasSameValueCard(cardValue))
                 {
+                    if (handCards.Count < cardsPerPlayer && cardGenerator.GetDeck().Count > 0)
+                        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
+
                     yield return new WaitForSeconds(0.1f);
 
                     playAgain = true;
@@ -360,7 +396,7 @@ public class AIHand : MonoBehaviour
                         PickUpPile(selectedCard);
                     }
 
-                    StartCoroutine(gameManager.ProcessWin("AI", cardValue));
+                    StartCoroutine(gameManager.ProcessWin("AI", canWIn));
 
                     yield return new WaitForSeconds(playDelay);
                 }
@@ -372,9 +408,12 @@ public class AIHand : MonoBehaviour
                     }
                     else
                     {
-                        StartCoroutine(gameManager.ProcessWin("AI", cardValue));
+                        StartCoroutine(gameManager.ProcessWin("AI", canWIn));
                         gameManager.NextTurn(selectedCard);
                     }
+
+                    if (handCards.Count < cardsPerPlayer && cardGenerator.GetDeck().Count > 0)
+                        cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
 
                     playAgain = false;
                 }
@@ -433,11 +472,6 @@ public class AIHand : MonoBehaviour
             if (ShouldDiscard(cardValue))
             {
                 StartCoroutine(pile.DiscardCardsInPile());
-            }
-
-            if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
-            {
-                cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
             }
 
             if (isChance && !ShouldDiscard(cardValue) && cardValue != 2)
@@ -598,8 +632,8 @@ public class AIHand : MonoBehaviour
     public int GetHandCount() => handCards.Count;
     public int GetOverSideCount() => overSideCards.Count;
     public int GetUnderSideCount() => underSideCards.Count;
-    public List<GameObject> GetHandCards()      => handCards;
-    public List<GameObject> GetOverSideCards()  => overSideCards;
+    public List<GameObject> GetHandCards() => handCards;
+    public List<GameObject> GetOverSideCards() => overSideCards;
     public List<GameObject> GetUnderSideCards() => underSideCards;
     public void RemoveCard(GameObject card) => RemoveCardFromList(card);
     public void AddCardsToHand(List<GameObject> cards) => handCards.AddRange(cards);

@@ -4,8 +4,11 @@ public class Card : MonoBehaviour
 {
     [SerializeField] int cardValue;
     [SerializeField] GameObject back;
+    [SerializeField] GameObject highlight;
     [SerializeField] float handZeroPoint;
     [SerializeField] float sideZeroPoint;
+    [Space]
+    [SerializeField] Color darkColor;
 
     public Vector2 basePosition;
 
@@ -13,16 +16,32 @@ public class Card : MonoBehaviour
 
     BoxCollider2D myBoxCollider;
     PlayerHand player;
+    SpriteRenderer mySpriteRenderer;
+    SpriteRenderer highlightSpriteRenderer;
+    GameManager gameManager;
 
     void Awake()
     {
         myBoxCollider = GetComponent<BoxCollider2D>();
         player = FindFirstObjectByType<PlayerHand>();
+        mySpriteRenderer = GetComponent<SpriteRenderer>();
+        highlightSpriteRenderer = highlight.GetComponent<SpriteRenderer>();
+        gameManager = FindFirstObjectByType<GameManager>();
+    }
+
+    void Start()
+    {
+        SetHighlight(false);
     }
 
     void Update()
     {
         UpdateCollider();
+
+        if (gameManager.GetGameHasStarted())
+        {
+            SetHighlight(false);
+        }
     }
 
     void UpdateCollider()
@@ -37,6 +56,8 @@ public class Card : MonoBehaviour
             float currentPosition = gameObject.transform.position.y;
             myBoxCollider.offset = new Vector2(myBoxCollider.offset.x, sideZeroPoint - currentPosition);
         }
+
+        highlightSpriteRenderer.sortingOrder = mySpriteRenderer.sortingOrder - 1;
     }
 
     public void SetValue(int value)
@@ -61,6 +82,16 @@ public class Card : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(0, 0, rot);
         hasBeenTurned = b;
+    }
+
+    public void SetHighlight(bool b)
+    {
+        highlight.SetActive(b);
+    }
+
+    public void ChangeColor(bool active)
+    {
+        mySpriteRenderer.color = active ? Color.white : darkColor;
     }
 
     public GameObject GetBack()
