@@ -13,6 +13,8 @@ public class RelayManager : MonoBehaviour
     public static RelayManager Instance { get; private set; }
 
     public bool IsConnected { get; private set; }
+    public int CardsPerPlayer { get; private set; }
+    public bool CanChance { get; private set; }
 
     void Awake()
     {
@@ -24,7 +26,8 @@ public class RelayManager : MonoBehaviour
     {
         if (NetworkLobby.Instance == null)
         {
-            Debug.LogError("RelayManager: NetworkLobby not found. Cannot start session.");
+            Debug.LogError("RelayManager: NetworkLobby not found. Cannot start session. Loading Start Scene...");
+            SceneManager.LoadScene("Start Scene");
             return;
         }
 
@@ -37,6 +40,12 @@ public class RelayManager : MonoBehaviour
 
             IsConnected = true;
             RegisterNetworkCallbacks();
+
+            CardsPerPlayer = NetworkLobby.Instance.LobbyCardsPerPlayer;
+            CanChance = NetworkLobby.Instance.LobbyCanChance;
+
+            NetworkLobby.Instance.StopAllCoroutines();
+            Destroy(NetworkLobby.Instance.gameObject);
         }
         catch (Exception e)
         {

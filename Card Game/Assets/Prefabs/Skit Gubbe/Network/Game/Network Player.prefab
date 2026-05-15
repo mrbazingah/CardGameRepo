@@ -512,8 +512,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 172543183
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 1128735119
+  InScenePlacedSourceGlobalObjectIdHash: 1877514941
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
@@ -538,6 +538,74 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerHand
   ShowTopMostFoldoutHeaderGroup: 1
+  cardPrefab: {fileID: 5382036135344471940, guid: 850aedc5b11ef784c8045f1005ce33e7, type: 3}
+  backCardPrefab: {fileID: 7026026696460662456, guid: 1052b894db63bc0469195cb9e5bb6c7e, type: 3}
+  cardSprites:
+  - {fileID: 94438014, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -646759100, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -41876505, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 738240590, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -851037098, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1174048532, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1136199239, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -1065546373, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1238517253, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1533751913, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -243516092, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -1217866150, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -861292487, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -1324670253, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 585681104, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -1498058026, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -102383988, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -895292452, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -971502487, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -870054127, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -1254943801, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1002504158, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 629091363, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -25745300, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -958709703, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -2031619715, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -717607839, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -310335764, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -182815855, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -670063951, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -298602678, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1354357749, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -1137138294, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -2126777593, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -900097529, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -1469193732, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1865220336, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1028987416, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 488054491, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 867127539, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 612683656, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -218130021, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 662131758, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 796902873, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -708741231, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1596025392, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -643478211, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -2144397466, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -1010974199, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: -191300639, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 584433776, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  - {fileID: 1442643606, guid: 651d84548816e7d4e9947970a5781a76, type: 3}
+  cardParent: {fileID: 0}
+  handTransform: {fileID: 2039816094374354033}
+  underSideTransform: {fileID: 7136047727970070749}
+  overSideTransform: {fileID: 1398745530484684878}
+  baseCardSpacing: 0.7
+  maxHandWidth: 8
+  popUpHeight: 0.5
+  sideBaseCardSpacing: 1.5
+  sideMaxHandWidth: 15
+  overSideOffset: 0.15
+  isTurnPos: {x: 0, y: -4}
+  isNotTurnPos: {x: 0, y: -4.7}
+  lerpSpeed: 15
 --- !u!1 &3153749809156430740
 GameObject:
   m_ObjectHideFlags: 0

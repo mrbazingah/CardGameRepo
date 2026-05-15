@@ -124,7 +124,7 @@ public class NetworkLobbyUIHandler : NetworkLobby
     {
         loadingPanel.SetActive(true);
 
-        while (true)
+        while (loadingText != null)
         {
             loadingText.text = "Loading...";
 

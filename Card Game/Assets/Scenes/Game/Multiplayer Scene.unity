@@ -1766,6 +1766,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -83}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!4 &2135291439 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2377220405234015122, guid: 011bf979094319c4386286297c3cd755, type: 3}
+  m_PrefabInstance: {fileID: 7353217442346571600}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &60215727613705821
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2548,10 +2553,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 3949105906
       objectReference: {fileID: 0}
-    - target: {fileID: 8501094175553664526, guid: af922f5c04998ff40b55feccc81b91f8, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 2458323957
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2865,13 +2866,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4110383132605686420, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
+      propertyPath: cardParent
+      value: 
+      objectReference: {fileID: 2135291439}
     - target: {fileID: 6999970226552323002, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1128735119
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999970226552323002, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 1877514941
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3878,6 +3879,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1580299682109786449, guid: 011bf979094319c4386286297c3cd755, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2617593145
+      objectReference: {fileID: 0}
+    - target: {fileID: 1580299682109786449, guid: 011bf979094319c4386286297c3cd755, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 1380481996
+      objectReference: {fileID: 0}
     - target: {fileID: 5030000727423276156, guid: 011bf979094319c4386286297c3cd755, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3925,41 +3934,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6241148367250829651, guid: 011bf979094319c4386286297c3cd755, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 7353217442346571602}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 011bf979094319c4386286297c3cd755, type: 3}
---- !u!1 &7353217442346571601 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6241148367250829651, guid: 011bf979094319c4386286297c3cd755, type: 3}
-  m_PrefabInstance: {fileID: 7353217442346571600}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7353217442346571602
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7353217442346571601}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4161757152
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 0
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!222 &7411299193062943604
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4355,10 +4331,6 @@ PrefabInstance:
     - target: {fileID: 4836263641453246772, guid: 413a76edef073ab428c0de0c26b25491, type: 3}
       propertyPath: m_Name
       value: Audio Manager
-      objectReference: {fileID: 0}
-    - target: {fileID: 4836263641453246772, guid: 413a76edef073ab428c0de0c26b25491, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

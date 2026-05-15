@@ -357,8 +357,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2918946592
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 3949105906
+  InScenePlacedSourceGlobalObjectIdHash: 2458323957
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
@@ -383,6 +383,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerHand
   ShowTopMostFoldoutHeaderGroup: 1
+  cardPrefab: {fileID: 0}
+  backCardPrefab: {fileID: 0}
+  cardSprites: []
+  cardParent: {fileID: 0}
+  handTransform: {fileID: 0}
+  underSideTransform: {fileID: 0}
+  overSideTransform: {fileID: 0}
+  baseCardSpacing: 150
+  maxHandWidth: 1000
+  popUpHeight: 50
+  sideBaseCardSpacing: 150
+  sideMaxHandWidth: 1000
+  overSideOffset: 0
+  isTurnPos: {x: 0, y: 0}
+  isNotTurnPos: {x: 0, y: 0}
+  lerpSpeed: 0
 --- !u!1 &2166110113386748108
 GameObject:
   m_ObjectHideFlags: 0
