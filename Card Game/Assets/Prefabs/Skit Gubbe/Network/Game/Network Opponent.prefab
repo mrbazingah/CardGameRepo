@@ -280,9 +280,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7546995514546484305}
-  - component: {fileID: 3906877381868842162}
   - component: {fileID: 8501094175553664526}
-  - component: {fileID: 6838862772908448614}
+  - component: {fileID: 5721433588338821273}
   m_Layer: 0
   m_Name: Network Opponent
   m_TagString: Untagged
@@ -309,42 +308,6 @@ Transform:
   - {fileID: 1829531192270125566}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3906877381868842162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1359334941516815329}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81e9f22d10fb4ed4ab266017adf5c87d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handCards: []
-  underSideCards: []
-  overSideCards: []
-  handTransform: {fileID: 7735516760703559524}
-  baseCardSpacing: 0.7
-  maxHandWidth: 8
-  popUpHeight: 0.5
-  underSideTransform: {fileID: 2213630868733774591}
-  overSideTransform: {fileID: 6359910481966311846}
-  sideBaseCardSpacing: 1.5
-  sideMaxHandWidth: 15
-  overSideOffset: 0.15
-  isTurnPos: {x: 0, y: -4}
-  isNotTurnPos: {x: 0, y: -4.7}
-  isTurn: 0
-  canEndTurn: 0
-  turnNumber: 0
-  endTurnButton: {fileID: 0}
-  playChanceDelay: 0.5
-  canChance: 0
-  chanceNotice: {fileID: 0}
-  lerpSpeed: 15
-  cardAmountText: {fileID: 3760689725465615204}
-  cardAmountTextOffset: {x: -1, y: 1.2}
 --- !u!114 &8501094175553664526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -370,7 +333,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &6838862772908448614
+--- !u!114 &5721433588338821273
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -379,26 +342,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1359334941516815329}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc7edd305466c594781dbaf22a73a77f, type: 3}
+  m_Script: {fileID: 11500000, guid: 98313dfd5f49c524f92ab781db479f40, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerHand
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkOpponentHand
   ShowTopMostFoldoutHeaderGroup: 1
-  cardPrefab: {fileID: 0}
-  backCardPrefab: {fileID: 0}
-  cardSprites: []
+  cardPrefab: {fileID: 5382036135344471940, guid: 850aedc5b11ef784c8045f1005ce33e7, type: 3}
+  backCardPrefab: {fileID: 7026026696460662456, guid: 1052b894db63bc0469195cb9e5bb6c7e, type: 3}
   cardParent: {fileID: 0}
-  handTransform: {fileID: 0}
-  underSideTransform: {fileID: 0}
-  overSideTransform: {fileID: 0}
-  baseCardSpacing: 150
-  maxHandWidth: 1000
-  popUpHeight: 50
-  sideBaseCardSpacing: 150
-  sideMaxHandWidth: 1000
-  overSideOffset: 0
-  isTurnPos: {x: 0, y: 0}
-  isNotTurnPos: {x: 0, y: 0}
-  lerpSpeed: 0
+  handTransform: {fileID: 7735516760703559524}
+  underSideTransform: {fileID: 2213630868733774591}
+  overSideTransform: {fileID: 6359910481966311846}
+  baseCardSpacing: 0.7
+  maxHandWidth: 8
+  sideBaseCardSpacing: 1.5
+  sideMaxHandWidth: 15
+  overSideOffset: 0.15
+  lerpSpeed: 15
 --- !u!1 &2166110113386748108
 GameObject:
   m_ObjectHideFlags: 0

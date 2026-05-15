@@ -18,26 +18,30 @@ public class NetworkPlayerHand : NetworkBehaviour
     [SerializeField] Vector2 isTurnPos, isNotTurnPos;
     [SerializeField] float lerpSpeed;
 
-    List<GameObject> handCards    = new List<GameObject>();
-    List<GameObject> underSideCards = new List<GameObject>();
-    List<GameObject> overSideCards  = new List<GameObject>();
+    [SerializeField] List<GameObject> handCards = new List<GameObject>();
+    [SerializeField] List<GameObject> underSideCards = new List<GameObject>();
+    [SerializeField] List<GameObject> overSideCards = new List<GameObject>();
 
     bool usingOverSideCards, usingUnderSideCards;
 
-    // -------------------------------------------------------------------------
     // Deal receive
-    // -------------------------------------------------------------------------
-
     public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide, CardNetData[] overSide)
     {
+        Debug.Log($"[NPH] ReceiveDeal — hand={hand.Length} under={underSide.Length} over={overSide.Length}");
         foreach (CardNetData data in hand)
+        {
             handCards.Add(SpawnCard(data, false));
+        }
 
         foreach (CardNetData data in underSide)
+        {
             underSideCards.Add(SpawnCard(data, true));
+        }
 
         foreach (CardNetData data in overSide)
+        {
             overSideCards.Add(SpawnCard(data, false));
+        }
 
         SortHandCards();
     }
@@ -66,28 +70,23 @@ public class NetworkPlayerHand : NetworkBehaviour
         return card;
     }
 
-    // -------------------------------------------------------------------------
     // Sorting & layout
-    // -------------------------------------------------------------------------
-
     public void SortHandCards()
     {
-        handCards.Sort((a, b) =>
-            a.GetComponent<NetworkCard>().GetValue()
-             .CompareTo(b.GetComponent<NetworkCard>().GetValue()));
+        handCards.Sort((a, b) => a.GetComponent<NetworkCard>().GetValue().CompareTo(b.GetComponent<NetworkCard>().GetValue()));
     }
 
     void Update()
     {
         UpdateSideUsage();
-        ArrangeCards(handCards,      handTransform,      baseCardSpacing, maxHandWidth);
-        ArrangeCards(overSideCards,  overSideTransform,  sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
+        ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
+        ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
     }
 
     void UpdateSideUsage()
     {
-        usingOverSideCards  = handCards.Count == 0 && overSideCards.Count > 0;
+        usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
         usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
     }
 
@@ -102,7 +101,7 @@ public class NetworkPlayerHand : NetworkBehaviour
             cards[i].transform.SetParent(parent);
 
             SpriteRenderer sr = cards[i].GetComponent<SpriteRenderer>();
-            NetworkCard nc    = cards[i].GetComponent<NetworkCard>();
+            NetworkCard nc = cards[i].GetComponent<NetworkCard>();
 
             if (cards == handCards)
             {
@@ -112,45 +111,41 @@ public class NetworkPlayerHand : NetworkBehaviour
             {
                 sr.sortingOrder = i + 3;
             }
-            else // underSide
+            else
             {
                 sr.sortingOrder = i;
                 if (nc.GetBack() != null)
+                {
                     nc.GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+                }
             }
 
-            float horizontalOffset = cards.Count > 1
-                ? cardSpacing * (i - (cards.Count - 1) / 2f)
-                : 0f;
+            float horizontalOffset = cards.Count > 1 ? cardSpacing * (i - (cards.Count - 1) / 2f) : 0f;
 
             Vector2 targetPos = new Vector2(horizontalOffset + offset, offset);
 
             if (cards != handCards)
+            {
                 nc.basePosition = targetPos;
+            }
 
-            cards[i].transform.localPosition = Vector2.Lerp(
-                cards[i].transform.localPosition,
-                targetPos,
-                lerpSpeed * Time.deltaTime);
+            cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, targetPos, lerpSpeed * Time.deltaTime);
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Getters
-    // -------------------------------------------------------------------------
-
+    // Gets
     public List<GameObject> GetCurrentCards()
     {
-        if (usingOverSideCards)  return overSideCards;
+        if (usingOverSideCards) return overSideCards;
         if (usingUnderSideCards) return underSideCards;
         return handCards;
     }
 
-    public List<GameObject> GetHandCards()      => handCards;
-    public List<GameObject> GetOverSideCards()  => overSideCards;
+    public List<GameObject> GetHandCards() => handCards;
+    public List<GameObject> GetOverSideCards() => overSideCards;
     public List<GameObject> GetUnderSideCards() => underSideCards;
 
     // Implemented when game loop is wired up
     public bool CanChance() => false;
-    public bool GetTurn()   => false;
+    public bool GetTurn() => false;
 }

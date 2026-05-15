@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 8432049089526173443}
   - component: {fileID: 183210742844525795}
   - component: {fileID: 9089343447465945189}
-  - component: {fileID: 1643178745643145202}
+  - component: {fileID: -2521067376309984975}
   m_Layer: 0
   m_Name: Network Card
   m_TagString: Untagged
@@ -259,22 +259,23 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.5191345, y: 2.2125053}
   m_EdgeRadius: 0
---- !u!114 &1643178745643145202
+--- !u!114 &-2521067376309984975
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5382036135344471940}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3aeda818d336cfd4c9aef731387f0b4f, type: 3}
+  m_Script: {fileID: 11500000, guid: d8fe2097a9cbb4d42a569ea59d78997f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkCard
   cardValue: 0
+  cardId: 0
   back: {fileID: 0}
   highlight: {fileID: 2046599792611971074}
   handZeroPoint: -3.6
   sideZeroPoint: -0.7
-  darkColor: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
+  darkColor: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 1}
   basePosition: {x: 0, y: 0}

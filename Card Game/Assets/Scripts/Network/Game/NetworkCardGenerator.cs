@@ -13,12 +13,9 @@ public class NetworkCardGenerator : NetworkBehaviour
     [Header("Debugging")]
     [SerializeField] bool removeSpecialCards;
 
-    // Remaining draw pile — server only
     List<CardNetData> logicalDeck = new List<CardNetData>();
 
-    // Synced so clients can check deck size (e.g. for CanChance, deck image)
-    NetworkVariable<int> remainingDeckCount = new NetworkVariable<int>(0,
-        NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    NetworkVariable<int> remainingDeckCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     void Awake()
     {
@@ -28,14 +25,26 @@ public class NetworkCardGenerator : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsServer) return;
+        Debug.Log($"[NCG] OnNetworkSpawn — IsServer={IsServer} IsClient={IsClient} IsHost={IsHost}");
+        if (!IsServer) { return; }
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+    }
 
-        cardsPerPlayer = RelayManager.Instance != null
-            ? RelayManager.Instance.CardsPerPlayer
-            : PlayerPrefs.GetInt("CardsPerPlayer", 3);
-
+    void OnClientConnected(ulong clientId)
+    {
+        Debug.Log($"[NCG] OnClientConnected — clientId={clientId} LocalClientId={NetworkManager.Singleton.LocalClientId}");
+        if (clientId == NetworkManager.Singleton.LocalClientId) { return; }
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        cardsPerPlayer = RelayManager.Instance != null ? RelayManager.Instance.CardsPerPlayer : PlayerPrefs.GetInt("CardsPerPlayer", 3);
+        Debug.Log($"[NCG] Dealing — cardsPerPlayer={cardsPerPlayer} ConnectedCount={NetworkManager.Singleton.ConnectedClientsIds.Count}");
         GenerateLogicalDeck();
         DealToPlayers();
+    }
+
+    public override void OnDestroy()
+    {
+        if (NetworkManager.Singleton != null) { NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected; }
+        base.OnDestroy();
     }
 
     // -------------------------------------------------------------------------
@@ -52,12 +61,11 @@ public class NetworkCardGenerator : NetworkBehaviour
             int rawValue = (i % 13) + 1;
             int value = rawValue == 1 ? 14 : rawValue;
 
-            if ((value == 2 || value == 10) && removeSpecialCards) continue;
+            if ((value == 2 || value == 10) && removeSpecialCards) { continue; }
 
             logicalDeck.Add(new CardNetData { CardId = i, Value = value, Suit = suit });
         }
 
-        // Fisher-Yates shuffle
         for (int i = logicalDeck.Count - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
@@ -97,39 +105,42 @@ public class NetworkCardGenerator : NetworkBehaviour
             if (id != localId) { remoteId = id; break; }
         }
 
-        CardNetData[] localHand  = TakeFromDeck(cardsPerPlayer);
+        Debug.Log($"[NCG] DealToPlayers — localId={localId} remoteId={remoteId}");
+
+        CardNetData[] localHand = TakeFromDeck(cardsPerPlayer);
         CardNetData[] localUnder = TakeFromDeck(3);
-        CardNetData[] localOver  = TakeFromDeck(3);
+        CardNetData[] localOver = TakeFromDeck(3);
 
-        CardNetData[] remoteHand  = TakeFromDeck(cardsPerPlayer);
+        CardNetData[] remoteHand = TakeFromDeck(cardsPerPlayer);
         CardNetData[] remoteUnder = TakeFromDeck(3);
-        CardNetData[] remoteOver  = TakeFromDeck(3);
+        CardNetData[] remoteOver = TakeFromDeck(3);
 
-        var localParams  = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { localId } } };
+        var localParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { localId } } };
         var remoteParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { remoteId } } };
 
-        DealHandClientRpc(
-            localHand,  localUnder,  localOver,
-            remoteHand.Length, remoteUnder.Length, remoteOver.Length,
-            localParams);
+        DealPlayerCardsClientRpc(localHand, localUnder, localOver, localParams);
+        DealPlayerCardsClientRpc(remoteHand, remoteUnder, remoteOver, remoteParams);
 
-        DealHandClientRpc(
-            remoteHand,  remoteUnder,  remoteOver,
-            localHand.Length, localUnder.Length, localOver.Length,
-            remoteParams);
+        DealOpponentInfoClientRpc(remoteHand.Length, remoteUnder.Length, remoteOver, localParams);
+        DealOpponentInfoClientRpc(localHand.Length, localUnder.Length, localOver, remoteParams);
     }
 
     [ClientRpc]
-    void DealHandClientRpc(
-        CardNetData[] hand, CardNetData[] underSide, CardNetData[] overSide,
-        int opponentHandCount, int opponentUnderCount, int opponentOverCount,
-        ClientRpcParams rpcParams = default)
+    void DealPlayerCardsClientRpc(CardNetData[] hand, CardNetData[] underSide, CardNetData[] overSide, ClientRpcParams rpcParams = default)
     {
-        NetworkPlayerHand playerHand   = FindFirstObjectByType<NetworkPlayerHand>();
-        NetworkOpponentHand opponentHand = FindFirstObjectByType<NetworkOpponentHand>();
-
+        Debug.Log($"[NCG] DealPlayerCardsClientRpc received — hand={hand.Length} under={underSide.Length} over={overSide.Length}");
+        NetworkPlayerHand playerHand = FindFirstObjectByType<NetworkPlayerHand>();
+        if (playerHand == null) { Debug.LogError("[NCG] NetworkPlayerHand NOT FOUND"); return; }
         playerHand.ReceiveDeal(hand, underSide, overSide);
-        opponentHand.ReceiveDeal(opponentHandCount, opponentUnderCount, opponentOverCount);
+    }
+
+    [ClientRpc]
+    void DealOpponentInfoClientRpc(int opponentHandCount, int opponentUnderCount, CardNetData[] opponentOverSide, ClientRpcParams rpcParams = default)
+    {
+        Debug.Log($"[NCG] DealOpponentInfoClientRpc received — handCount={opponentHandCount} underCount={opponentUnderCount} over={opponentOverSide.Length}");
+        NetworkOpponentHand opponentHand = FindFirstObjectByType<NetworkOpponentHand>();
+        if (opponentHand == null) { Debug.LogError("[NCG] NetworkOpponentHand NOT FOUND"); return; }
+        opponentHand.ReceiveDeal(opponentHandCount, opponentUnderCount, opponentOverSide);
     }
 
     // -------------------------------------------------------------------------
@@ -138,7 +149,7 @@ public class NetworkCardGenerator : NetworkBehaviour
 
     public CardNetData[] DrawCards(int count)
     {
-        if (!IsServer) return null;
+        if (!IsServer) { return null; }
         return TakeFromDeck(count);
     }
 
@@ -148,8 +159,7 @@ public class NetworkCardGenerator : NetworkBehaviour
 
     void Update()
     {
-        if (deckImage != null && remainingDeckCount.Value == 0)
-            Destroy(deckImage);
+        if (deckImage != null && remainingDeckCount.Value == 0) { Destroy(deckImage); }
     }
 
     public int GetCardsPerPlayer() => cardsPerPlayer;
