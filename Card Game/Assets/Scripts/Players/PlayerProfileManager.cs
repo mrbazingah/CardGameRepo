@@ -23,8 +23,6 @@ public class PlayerProfileManager : MonoBehaviour
         displayNameInputField.text = displayName;
 
         Close();
-
-        Screen.SetResolution(960, 600, false);
     }
 
     public void OnChange()
