@@ -48,7 +48,8 @@ public class NetworkPlayerHand : NetworkBehaviour
 
     GameObject SpawnCard(CardNetData data, bool covered)
     {
-        GameObject card = Instantiate(cardPrefab, cardParent);
+        GameObject card = Instantiate(cardPrefab);
+        card.transform.parent = cardParent;
         card.transform.localPosition = Vector3.zero;
 
         NetworkCard nc = card.GetComponent<NetworkCard>();
@@ -61,7 +62,8 @@ public class NetworkPlayerHand : NetworkBehaviour
 
         if (covered)
         {
-            GameObject back = Instantiate(backCardPrefab, card.transform);
+            GameObject back = Instantiate(backCardPrefab);
+            back.transform.parent = cardParent;
             back.transform.localPosition = Vector3.zero;
             back.GetComponent<SpriteRenderer>().sortingOrder = sr.sortingOrder + 1;
             nc.ApplyChild(back);

@@ -16,6 +16,9 @@ public class RelayManager : MonoBehaviour
     public int CardsPerPlayer { get; private set; }
     public bool CanChance { get; private set; }
 
+    string errorMessage = "";
+    string statusMessage = "init";
+
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -24,6 +27,7 @@ public class RelayManager : MonoBehaviour
 
     async void Start()
     {
+        statusMessage = "checking lobby";
         if (NetworkLobby.Instance == null)
         {
             Debug.LogError("RelayManager: NetworkLobby not found. Cannot start session. Loading Start Scene...");
@@ -33,23 +37,29 @@ public class RelayManager : MonoBehaviour
 
         try
         {
+            statusMessage = NetworkLobby.Instance.IsHost ? "starting host" : "starting client";
             if (NetworkLobby.Instance.IsHost)
                 await StartAsHost();
             else
                 await StartAsClient();
 
+            statusMessage = "registering callbacks";
             IsConnected = true;
             RegisterNetworkCallbacks();
 
+            statusMessage = "reading lobby data";
             CardsPerPlayer = NetworkLobby.Instance.LobbyCardsPerPlayer;
             CanChance = NetworkLobby.Instance.LobbyCanChance;
 
+            statusMessage = "destroying lobby";
             NetworkLobby.Instance.StopAllCoroutines();
             Destroy(NetworkLobby.Instance.gameObject);
+            statusMessage = "done";
         }
         catch (Exception e)
         {
-            Debug.LogError("RelayManager failed to connect: " + e.Message);
+            Debug.LogError("RelayManager failed to connect: " + e.Message + "\n" + e.StackTrace);
+            errorMessage = "[at: " + statusMessage + "] " + e.Message;
         }
     }
 
@@ -87,14 +97,17 @@ public class RelayManager : MonoBehaviour
 
     async Task StartAsClient()
     {
+        statusMessage = "waiting for relay code";
         string joinCode = await WaitForRelayCode();
 
+        statusMessage = "joining relay allocation code=" + joinCode;
         JoinAllocation allocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
-        // Point NGO's transport at the same relay server the host is on
+        statusMessage = "setting transport";
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, "dtls"));
 
+        statusMessage = "calling StartClient";
         NetworkManager.Singleton.StartClient();
 
         Debug.Log("NGO session started as Client.");
@@ -113,6 +126,14 @@ public class RelayManager : MonoBehaviour
         {
             try
             {
+                if (LobbyService.Instance == null)
+                {
+                    Debug.LogWarning("RelayManager: LobbyService.Instance is null, retrying...");
+                    await Task.Delay(2000);
+                    elapsed += 2f;
+                    continue;
+                }
+
                 var lobby = await LobbyService.Instance.GetLobbyAsync(lobbyId);
 
                 if (lobby.Data != null &&
@@ -126,6 +147,10 @@ public class RelayManager : MonoBehaviour
             catch (LobbyServiceException e)
             {
                 Debug.LogWarning("RelayManager: Lobby poll failed: " + e.Reason);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("RelayManager: Unexpected error polling for relay code: " + e.Message);
             }
 
             await Task.Delay(2000);
@@ -143,6 +168,11 @@ public class RelayManager : MonoBehaviour
     {
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
         NetworkManager.Singleton.OnTransportFailure += OnTransportFailure;
+        if (NetworkManager.Singleton.IsServer)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += (id) => Debug.Log($"[RM] Client connected id={id} totalCount={NetworkManager.Singleton.ConnectedClientsIds.Count}");
+            NetworkManager.Singleton.OnClientDisconnectCallback += (id) => { if (NetworkManager.Singleton.IsServer) { Debug.Log($"[RM] Client disconnected id={id}"); } };
+        }
     }
 
     void UnregisterNetworkCallbacks()
@@ -184,5 +214,11 @@ public class RelayManager : MonoBehaviour
         }
 
         SceneManager.LoadScene("Start Scene");
+    }
+
+    void OnGUI()
+    {
+        GUI.Label(new Rect(10, 10, Screen.width - 20, 40), "Status: " + statusMessage);
+        if (!string.IsNullOrEmpty(errorMessage)) { GUI.Label(new Rect(10, 50, Screen.width - 20, 200), "RELAY ERROR: " + errorMessage); }
     }
 }

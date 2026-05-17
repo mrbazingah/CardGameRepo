@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2770956486987287751}
   - component: {fileID: 2632914788629799316}
-  - component: {fileID: 192887520553543228}
   - component: {fileID: 7567810664341699943}
   m_Layer: 0
   m_Name: Network Manager
@@ -61,7 +60,7 @@ MonoBehaviour:
     EnableTimeResync: 0
     TimeResyncInterval: 30
     EnsureNetworkVariableLengthSafety: 0
-    EnableSceneManagement: 1
+    EnableSceneManagement: 0
     ForceSamePrefabs: 1
     RecycleNetworkIds: 1
     NetworkIdRecycleDelay: 120
@@ -77,18 +76,6 @@ MonoBehaviour:
     OldPrefabList: []
   RunInBackground: 1
   LogLevel: 1
---- !u!114 &192887520553543228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 349253620706886885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7dd596c4e68db74b9763c3cb9c88ad1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RelayManager
 --- !u!114 &7567810664341699943
 MonoBehaviour:
   m_ObjectHideFlags: 0

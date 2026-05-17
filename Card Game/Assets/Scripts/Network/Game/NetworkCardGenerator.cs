@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
@@ -27,24 +28,28 @@ public class NetworkCardGenerator : NetworkBehaviour
     {
         Debug.Log($"[NCG] OnNetworkSpawn — IsServer={IsServer} IsClient={IsClient} IsHost={IsHost}");
         if (!IsServer) { return; }
-        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        StartCoroutine(WaitForSecondPlayerAndDeal());
     }
 
-    void OnClientConnected(ulong clientId)
+    IEnumerator WaitForSecondPlayerAndDeal()
     {
-        Debug.Log($"[NCG] OnClientConnected — clientId={clientId} LocalClientId={NetworkManager.Singleton.LocalClientId}");
-        if (clientId == NetworkManager.Singleton.LocalClientId) { return; }
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        Debug.Log("[NCG] Waiting for second player...");
+        float t = 0f;
+        while (NetworkManager.Singleton.ConnectedClientsIds.Count < 2)
+        {
+            t += Time.deltaTime;
+            if (t >= 2f) 
+            { 
+                Debug.Log($"[NCG] Still waiting — count={NetworkManager.Singleton.ConnectedClientsIds.Count} IsServer={IsServer}"); 
+                t = 0f; 
+            }
+
+            yield return null;
+        }
         cardsPerPlayer = RelayManager.Instance != null ? RelayManager.Instance.CardsPerPlayer : PlayerPrefs.GetInt("CardsPerPlayer", 3);
-        Debug.Log($"[NCG] Dealing — cardsPerPlayer={cardsPerPlayer} ConnectedCount={NetworkManager.Singleton.ConnectedClientsIds.Count}");
+        Debug.Log($"[NCG] Second player detected — cardsPerPlayer={cardsPerPlayer} count={NetworkManager.Singleton.ConnectedClientsIds.Count}");
         GenerateLogicalDeck();
         DealToPlayers();
-    }
-
-    public override void OnDestroy()
-    {
-        if (NetworkManager.Singleton != null) { NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected; }
-        base.OnDestroy();
     }
 
     // -------------------------------------------------------------------------
@@ -105,7 +110,7 @@ public class NetworkCardGenerator : NetworkBehaviour
             if (id != localId) { remoteId = id; break; }
         }
 
-        Debug.Log($"[NCG] DealToPlayers — localId={localId} remoteId={remoteId}");
+        Debug.Log($"[NCG] DealToPlayers — localId={localId} remoteId={remoteId} cardsPerPlayer={cardsPerPlayer}");
 
         CardNetData[] localHand = TakeFromDeck(cardsPerPlayer);
         CardNetData[] localUnder = TakeFromDeck(3);
@@ -118,11 +123,16 @@ public class NetworkCardGenerator : NetworkBehaviour
         var localParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { localId } } };
         var remoteParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { remoteId } } };
 
+        string remoteOverLog = ""; foreach (CardNetData c in remoteOver) { remoteOverLog += $"id={c.CardId} v={c.Value} "; }
+        string localOverLog = ""; foreach (CardNetData c in localOver) { localOverLog += $"id={c.CardId} v={c.Value} "; }
+        Debug.Log($"[NCG] remoteOver before RPC: {remoteOverLog}");
+        Debug.Log($"[NCG] localOver before RPC: {localOverLog}");
+
         DealPlayerCardsClientRpc(localHand, localUnder, localOver, localParams);
         DealPlayerCardsClientRpc(remoteHand, remoteUnder, remoteOver, remoteParams);
 
-        DealOpponentInfoClientRpc(remoteHand.Length, remoteUnder.Length, remoteOver, localParams);
-        DealOpponentInfoClientRpc(localHand.Length, localUnder.Length, localOver, remoteParams);
+        DealOpponentInfoClientRpc(remoteHand, remoteUnder, remoteOver, localParams);
+        DealOpponentInfoClientRpc(localHand, localUnder, localOver, remoteParams);
     }
 
     [ClientRpc]
@@ -135,12 +145,13 @@ public class NetworkCardGenerator : NetworkBehaviour
     }
 
     [ClientRpc]
-    void DealOpponentInfoClientRpc(int opponentHandCount, int opponentUnderCount, CardNetData[] opponentOverSide, ClientRpcParams rpcParams = default)
+    void DealOpponentInfoClientRpc(CardNetData[] opponentHand, CardNetData[] opponentUnderSide, CardNetData[] opponentOverSide, ClientRpcParams rpcParams = default)
     {
-        Debug.Log($"[NCG] DealOpponentInfoClientRpc received — handCount={opponentHandCount} underCount={opponentUnderCount} over={opponentOverSide.Length}");
-        NetworkOpponentHand opponentHand = FindFirstObjectByType<NetworkOpponentHand>();
-        if (opponentHand == null) { Debug.LogError("[NCG] NetworkOpponentHand NOT FOUND"); return; }
-        opponentHand.ReceiveDeal(opponentHandCount, opponentUnderCount, opponentOverSide);
+        string overLog = ""; foreach (CardNetData c in opponentOverSide) { overLog += $"id={c.CardId} v={c.Value} "; }
+        Debug.Log($"[NCG] DealOpponentInfoClientRpc received — hand={opponentHand.Length} under={opponentUnderSide.Length} over={opponentOverSide.Length} values=[{overLog}]");
+        NetworkOpponentHand opponentHand2 = FindFirstObjectByType<NetworkOpponentHand>();
+        if (opponentHand2 == null) { Debug.LogError("[NCG] NetworkOpponentHand NOT FOUND"); return; }
+        opponentHand2.ReceiveDeal(opponentHand, opponentUnderSide, opponentOverSide);
     }
 
     // -------------------------------------------------------------------------

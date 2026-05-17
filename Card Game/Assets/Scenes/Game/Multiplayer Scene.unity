@@ -716,10 +716,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SceneLoader
       objectReference: {fileID: 0}
-    - target: {fileID: 5603682862182298929, guid: b1f8ae20c9705d44c9f05d1d7878aa9f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3944,10 +3940,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 2617593145
       objectReference: {fileID: 0}
-    - target: {fileID: 1580299682109786449, guid: 011bf979094319c4386286297c3cd755, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 1380481996
-      objectReference: {fileID: 0}
     - target: {fileID: 5030000727423276156, guid: 011bf979094319c4386286297c3cd755, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4202,8 +4194,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 192887520553543228, guid: 2b41a0fc985be034da459ec499bf572b, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

@@ -23,37 +23,19 @@ public class NetworkOpponentHand : NetworkBehaviour
 
     bool usingOverSideCards, usingUnderSideCards;
 
-    // -------------------------------------------------------------------------
     // Deal receive — only counts arrive, not card values
-    // -------------------------------------------------------------------------
-
-    public void ReceiveDeal(int handCount, int underCount, CardNetData[] opponentOverSide)
+    public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide, CardNetData[] opponentOverSide)
     {
-        Debug.Log($"[NOH] ReceiveDeal — handCount={handCount} underCount={underCount} over={opponentOverSide.Length}");
-        for (int i = 0; i < handCount; i++) { handCards.Add(SpawnCoveredCard()); }
-        for (int i = 0; i < underCount; i++) { underSideCards.Add(SpawnCoveredCard()); }
+        Debug.Log($"[NOH] ReceiveDeal — hand={hand.Length} under={underSide.Length} over={opponentOverSide.Length}");
+        foreach (CardNetData data in hand) { handCards.Add(SpawnCoveredCard(data)); }
+        foreach (CardNetData data in underSide) { underSideCards.Add(SpawnCoveredCard(data)); }
         foreach (CardNetData data in opponentOverSide) { overSideCards.Add(SpawnFaceCard(data)); }
     }
 
-    GameObject SpawnCoveredCard()
+    GameObject SpawnCoveredCard(CardNetData data = default)
     {
-        GameObject card = Instantiate(cardPrefab, cardParent);
-        card.transform.localPosition = Vector3.zero;
-
-        SpriteRenderer sr = card.GetComponent<SpriteRenderer>();
-
-        GameObject back = Instantiate(backCardPrefab, card.transform);
-        back.transform.localPosition = Vector3.zero;
-        back.GetComponent<SpriteRenderer>().sortingOrder = sr.sortingOrder + 1;
-
-        card.GetComponent<NetworkCard>().ApplyChild(back);
-
-        return card;
-    }
-
-    GameObject SpawnFaceCard(CardNetData data)
-    {
-        GameObject card = Instantiate(cardPrefab, cardParent);
+        GameObject card = Instantiate(cardPrefab);
+        card.transform.parent = cardParent;
         card.transform.localPosition = Vector3.zero;
 
         NetworkCard nc = card.GetComponent<NetworkCard>();
@@ -61,8 +43,41 @@ public class NetworkOpponentHand : NetworkBehaviour
         nc.SetValue(data.Value);
 
         SpriteRenderer sr = card.GetComponent<SpriteRenderer>();
-        sr.sprite = cardSprites[data.CardId];
-        sr.color = Color.white;
+        if (cardSprites != null && data.CardId < cardSprites.Count)
+        {
+            sr.sprite = cardSprites[data.CardId];
+            sr.color = Color.white;
+        }
+
+        GameObject back = Instantiate(backCardPrefab);
+        back.transform.parent = card.transform;
+        back.transform.localPosition = Vector3.zero;
+        back.GetComponent<SpriteRenderer>().sortingOrder = sr.sortingOrder + 1;
+        nc.ApplyChild(back);
+
+        return card;
+    }
+
+    GameObject SpawnFaceCard(CardNetData data)
+    {
+        GameObject card = Instantiate(cardPrefab);
+        card.transform.parent = cardParent;
+        card.transform.localPosition = Vector3.zero;
+
+        NetworkCard nc = card.GetComponent<NetworkCard>();
+        nc.SetCardId(data.CardId);
+        nc.SetValue(data.Value);
+
+        SpriteRenderer sr = card.GetComponent<SpriteRenderer>();
+        if (cardSprites != null && data.CardId < cardSprites.Count)
+        {
+            sr.sprite = cardSprites[data.CardId];
+            sr.color = Color.white;
+        }
+        else
+        {
+            Debug.LogWarning($"[NOH] cardSprites not set or CardId {data.CardId} out of range — assign sprites to the NetworkOpponent prefab.");
+        }
 
         return card;
     }
@@ -107,7 +122,8 @@ public class NetworkOpponentHand : NetworkBehaviour
                 sr.sortingOrder = i;
             }
 
-            if (nc.GetBack() != null) { nc.GetBack().GetComponent<SpriteRenderer>().sortingOrder = sr.sortingOrder + 1; }
+            if (nc.GetBack() != null) 
+            { nc.GetBack().GetComponent<SpriteRenderer>().sortingOrder = sr.sortingOrder + 1; }
 
             float horizontalOffset = cards.Count > 1 ? cardSpacing * (i - (cards.Count - 1) / 2f) : 0f;
 
@@ -115,10 +131,7 @@ public class NetworkOpponentHand : NetworkBehaviour
         }
     }
 
-    // -------------------------------------------------------------------------
     // Called when opponent plays a card — removes one card from the display
-    // -------------------------------------------------------------------------
-
     public void RemoveCardFromDisplay(bool fromHand = true)
     {
         List<GameObject> source = fromHand ? handCards : GetCurrentCards();
@@ -131,9 +144,9 @@ public class NetworkOpponentHand : NetworkBehaviour
         UpdateSideUsage();
     }
 
-    public void AddCardToDisplay()
+    public void AddCardToDisplay(CardNetData data = default)
     {
-        handCards.Add(SpawnCoveredCard());
+        handCards.Add(SpawnCoveredCard(data));
     }
 
     // -------------------------------------------------------------------------
