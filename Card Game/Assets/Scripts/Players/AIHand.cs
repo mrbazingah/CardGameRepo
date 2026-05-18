@@ -216,15 +216,18 @@ public class AIHand : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
             cards[i].transform.SetParent(parent);
+            
+            SpriteRenderer cardSpriteRenderer = cards[i].GetComponent<SpriteRenderer>();
+            Card cardScript = cards[i].GetComponent<Card>();
 
             if (cards == handCards || cards == underSideCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+                cardSpriteRenderer.sortingOrder = i;
+                cardScript.GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
             else if (cards == overSideCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 5;
+                cardSpriteRenderer.sortingOrder = i + 5;
             }
 
             Vector2 cardPosition;
@@ -271,10 +274,11 @@ public class AIHand : MonoBehaviour
                 lerpSpeed * Time.deltaTime
             );
 
-            GameObject child = cards[i].GetComponent<Card>().GetBack();
-            if (handCards.Contains(cards[i]) && child != null)
+            GameObject child = cardScript.GetBack();
+            SpriteRenderer childSR = child.GetComponent<SpriteRenderer>();
+            if (handCards.Contains(cards[i]) && childSR != null)
             {
-                child.GetComponent<SpriteRenderer>().sortingLayerName = "BackCard";
+                childSR.sortingLayerName = "BackCard";
             }
         }
     }
