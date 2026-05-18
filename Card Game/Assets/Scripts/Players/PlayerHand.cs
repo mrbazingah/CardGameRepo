@@ -186,7 +186,7 @@ public class PlayerHand : MonoBehaviour
             }
             else if (cards == overSideCards)
             {
-                cardSpriteRenderer.sortingOrder = i + 3;
+                cardSpriteRenderer.sortingOrder = i + 5;
             }
             else
             {

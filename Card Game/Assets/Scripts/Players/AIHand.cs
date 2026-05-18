@@ -224,7 +224,7 @@ public class AIHand : MonoBehaviour
             }
             else if (cards == overSideCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 5;
             }
 
             Vector2 cardPosition;
