@@ -275,10 +275,9 @@ public class AIHand : MonoBehaviour
             );
 
             GameObject child = cardScript.GetBack();
-            SpriteRenderer childSR = child.GetComponent<SpriteRenderer>();
-            if (handCards.Contains(cards[i]) && childSR != null)
+            if (handCards.Contains(cards[i]) && child != null)
             {
-                childSR.sortingLayerName = "BackCard";
+                child.GetComponent<SpriteRenderer>().sortingLayerName = "BackCard";
             }
         }
     }
