@@ -156,7 +156,7 @@ public class AIHand : MonoBehaviour
                 currentCardScript.RemoveChild();
             }
 
-            overSideCards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+            overSideCards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 5;
         }
     }
     #endregion

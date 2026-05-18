@@ -13,10 +13,10 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] List<GameObject> underSideCards, overSideCards;
     [Header("Transform and Spacing")]
     [SerializeField] Transform handTransform;
-    [SerializeField] float baseCardSpacing = 150f, maxHandWidth = 1000f, popUpHeight = 50f;
+    [SerializeField] float baseCardSpacing, maxHandWidth, popUpHeight;
     [Space]
     [SerializeField] Transform underSideTransform, overSideTransform;
-    [SerializeField] float sideBaseCardSpacing = 150f, sideMaxHandWidth = 1000f, overSideOffset;
+    [SerializeField] float sideBaseCardSpacing, sideMaxHandWidth, overSideOffset;
     [Space]
     [SerializeField] Vector2 isTurnPos, isNotTurnPos;
     [Header("Turn and Play")]
@@ -32,6 +32,7 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] float lerpSpeed;
     [SerializeField] TextMeshProUGUI cardAmountText;
     [SerializeField] Vector2 cardAmountTextOffset;
+    [SerializeField] LayerMask cardLayer;
 
     GameObject hoveredCard;
     bool usingOverSideCards, usingUnderSideCards;
@@ -42,9 +43,12 @@ public class PlayerHand : MonoBehaviour
     bool gameHasStarted;
     bool isPaused;
 
+    Coroutine currentChanceRoutine;
+
     List<GameObject> selectedCards = new List<GameObject>(0);
     GameObject selectedCard;
     GameObject previousSelectedCard;
+    Camera mainCam;
 
     Pile pile;
     CardGenerator cardGenerator;
@@ -52,6 +56,7 @@ public class PlayerHand : MonoBehaviour
     AudioManager audioManager;
     PlayerInput playerInput;
     InputAction interactAction;
+    PlayerProfile playerProfile;
     #endregion
 
     void Awake()
@@ -60,11 +65,16 @@ public class PlayerHand : MonoBehaviour
         cardGenerator = FindFirstObjectByType<CardGenerator>();
         gameManager = FindFirstObjectByType<GameManager>();
         audioManager = FindFirstObjectByType<AudioManager>();
+        playerProfile = FindFirstObjectByType<PlayerProfile>();
+        mainCam = Camera.main;
     }
 
     void Start()
     {
         cardsPerPlayer = cardGenerator.GetCardsPerPlayer();
+
+        playerInput = InputManager.Instance.GetPlayerInput();
+        interactAction = playerInput.actions.FindAction("Interact");
     }
 
     #region SetCards
@@ -96,12 +106,6 @@ public class PlayerHand : MonoBehaviour
 
     void Update()
     {
-        if (playerInput == null || interactAction == null)
-        {
-            playerInput = InputManager.Instance.GetPlayerInput();
-            interactAction = playerInput.actions.FindAction("Interact");
-        }
-
         isPaused = Time.timeScale == 0f;
         if (isPaused) { return; }    
 
@@ -110,12 +114,18 @@ public class PlayerHand : MonoBehaviour
         UpdateSideUsage();
         UpdateColliders();
         SortCards();
-        CanEndTurn();
+        SetEndTurnButton();
         CheckTurn();
         DetectHover();
 
         chanceNotice.SetActive(CanChance());
         gameHasStarted = gameManager.GetGameHasStarted();
+
+        if (currentChanceRoutine != null && !isTurn)
+        {
+            StopCoroutine(currentChanceRoutine);
+            currentChanceRoutine = null;
+        }
     }
 
     #region Sorting
@@ -257,64 +267,9 @@ public class PlayerHand : MonoBehaviour
 
         if (gameManager.GetGameHasStarted() || selectedCards.Count != 2) { return; }
 
-        GameObject handCard = null;
-        GameObject sideCard = null;
         GameObject lastSelectedCard = null;
 
-        if (handCards.Contains(selectedCards[0]) && overSideCards.Contains(selectedCards[1]))
-        {
-            handCard = selectedCards[0];
-            sideCard = selectedCards[1];
-
-            for (int i = 0; i < handCards.Count; i++)
-            {
-                if (handCards[i] == handCard)
-                {
-                    handCards[i] = sideCard;
-                    break;
-                }
-            }
-
-            for (int i = 0; i < overSideCards.Count; i++)
-            {
-                if (overSideCards[i] == sideCard)
-                {
-                    overSideCards[i] = handCard;
-                    break;
-                }
-            }
-
-            audioManager.PlayCardSFX();
-            SortHandCards();
-        }
-        else if (handCards.Contains(selectedCards[1]) && overSideCards.Contains(selectedCards[0]))
-        {
-            handCard = selectedCards[1];
-            sideCard = selectedCards[0];
-
-            for (int i = 0; i < handCards.Count; i++)
-            {
-                if (handCards[i] == handCard)
-                {
-                    handCards[i] = sideCard;
-                    break;
-                }
-            }
-
-            for (int i = 0; i < overSideCards.Count; i++)
-            {
-                if (overSideCards[i] == sideCard)
-                {
-                    overSideCards[i] = handCard;
-                    break;
-                }
-            }
-
-            audioManager.PlayCardSFX();
-
-            SortHandCards();
-        }
-        else
+        if (!SwapHandAndSideCard(out GameObject handCard, out GameObject sideCard, 0, 1) && !SwapHandAndSideCard(out handCard, out sideCard, 1, 0))
         {
             lastSelectedCard = selectedCards[1];
         }
@@ -333,13 +288,46 @@ public class PlayerHand : MonoBehaviour
             selectedCard = lastSelectedCard;
         }
     }
+
+    bool SwapHandAndSideCard(out GameObject handCard, out GameObject sideCard, int handIndex, int sideIndex) 
+    {
+        if (handCards.Contains(selectedCards[handIndex]) && overSideCards.Contains(selectedCards[sideIndex]))
+        {
+            handCard = selectedCards[handIndex];
+            sideCard = selectedCards[sideIndex];
+
+            for (int i = 0; i < handCards.Count; i++)
+            {
+                if (handCards[i] == handCard)
+                {
+                    handCards[i] = sideCard;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < overSideCards.Count; i++)
+            {
+                if (overSideCards[i] == sideCard)
+                {
+                    overSideCards[i] = handCard;
+                    break;
+                }
+            }
+
+            audioManager.PlayCardSFX();
+            SortHandCards();
+
+            return true;
+        }
+
+        handCard = null;
+        sideCard = null;
+        return false;
+    }    
     #endregion
 
     #region Turn
-    public void SetTurnNumber(int i)
-    {
-        turnNumber = i;
-    }
+    public void SetTurnNumber(int i) => turnNumber = i;
 
     void CheckTurn()
     {
@@ -347,7 +335,7 @@ public class PlayerHand : MonoBehaviour
         isTurn = turnNumber == gameManager.GetTurn();
     }
 
-    void CanEndTurn()
+    void SetEndTurnButton()
     {
         endTurnButton.SetActive(canEndTurn);
     }
@@ -367,10 +355,10 @@ public class PlayerHand : MonoBehaviour
     #endregion
 
     #region Play
-    void DetectHover(bool pressed = false)
+    void DetectHover()
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+        Vector2 mousePos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero, cardLayer);
 
         hoveredCard = hits.OrderByDescending(h => h.collider.GetComponent<SpriteRenderer>().sortingOrder).Select(h => h.collider.gameObject).FirstOrDefault();
 
@@ -380,7 +368,8 @@ public class PlayerHand : MonoBehaviour
                 overSideCards.Contains(hoveredCard) && usingOverSideCards ||
                 underSideCards.Contains(hoveredCard) && usingUnderSideCards)
             {
-                if (hoveredCard != null && pile.GetCurrentCard(false) != 10 && !ShouldDiscard(0))
+                bool wouldDiscard = ShouldDiscard(0);
+                if (hoveredCard != null && pile.GetCurrentCard(false) != 10 && !wouldDiscard)
                 {
                     PlayCard(hoveredCard, false);
                 }
@@ -405,7 +394,10 @@ public class PlayerHand : MonoBehaviour
 
         if (CanPlayCard(cardValue, isChanceCard, cardInHand))
         {
-            canWin = GetCurrentCards().Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
+            GetCurrentCards().Remove(cardInHand);
+
+            bool hasAnyCardsLeft = handCards.Count > 0 || overSideCards.Count > 0 || underSideCards.Count > 0;
+            canWin = !hasAnyCardsLeft && cardValue != 2 && cardValue != 10 && cardValue != 14;
             if (!isChanceCard)
             {
                 audioManager.PlayCardSFX();
@@ -413,13 +405,14 @@ public class PlayerHand : MonoBehaviour
 
             pile.AddCardsToPile(cardInHand);
 
-            if (GetCurrentCards().Count == 0 && (cardValue == 2 || cardValue == 10 || cardValue == 14))
+            if (!hasAnyCardsLeft && (cardValue == 2 || cardValue == 10 || cardValue == 14))
             {
                 PickUpPile(cardInHand);
             }
             else
             {
-                if (ShouldDiscard(cardValue))
+                hasDiscarded = ShouldDiscard(cardValue);
+                if (hasDiscarded)
                 {
                     StartCoroutine(pile.DiscardCardsInPile());
                     savedCardValue = 0;
@@ -494,12 +487,12 @@ public class PlayerHand : MonoBehaviour
             }
         }
 
-        StartCoroutine(gameManager.ProcessWin(PlayerPrefs.GetString("DisplayName"), canWin));
+        StartCoroutine(gameManager.ProcessWin(playerProfile.GetDisplayName(), canWin));
     }
 
     public void PlayChanceCard()
     {
-        StartCoroutine(ProcessChanceCard());
+        currentChanceRoutine = StartCoroutine(ProcessChanceCard());
     }
 
     IEnumerator ProcessChanceCard()
@@ -510,6 +503,8 @@ public class PlayerHand : MonoBehaviour
         yield return new WaitForSeconds(playChanceDelay);
 
         PlayCard(cardFromDeck, true);
+
+        currentChanceRoutine = null;
     }
     #endregion
 
@@ -539,14 +534,17 @@ public class PlayerHand : MonoBehaviour
         if (usingOverSideCards)
         {
             overSideCards.Remove(cardInHand);
+            UpdateCardSortingOrder(overSideCards);
         }
         else if (usingUnderSideCards)
         {
             underSideCards.Remove(cardInHand);
+            UpdateCardSortingOrder(underSideCards);
         }
         else
         {
             handCards.Remove(cardInHand);
+            UpdateCardSortingOrder(handCards);
         }
     }
 
@@ -554,7 +552,6 @@ public class PlayerHand : MonoBehaviour
     {
         if (cardValue == 10 && (handCards.Count != 0 || overSideCards.Count != 0 || underSideCards.Count != 0))
         {
-            hasDiscarded = true;
             return true;
         }
 
@@ -577,28 +574,21 @@ public class PlayerHand : MonoBehaviour
                 }
             }
 
-            if (allSame)
+            if (allSame && cardValue != 0)
             {
-                if (cardValue != 0)
-                {
-                    hasDiscarded = true;
-                }
-
                 return true;
             }
         }
 
-        hasDiscarded = false;
         return false;
     }
 
-    public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand, bool removeCard = true)
+    public bool CanPlayCard(float cardValue, bool isChance, GameObject cardInHand, bool updateSide = true)
     {
         if (cardValue >= pile.GetCurrentCard(isChance) || cardValue == 10 || cardValue == 2)
         {
-            if (cardInHand != null && removeCard)
+            if (cardInHand != null && updateSide)
             {
-                GetCurrentCards().Remove(cardInHand);
                 UpdateSideUsage();
             }
 
@@ -635,42 +625,22 @@ public class PlayerHand : MonoBehaviour
         return hasCardToPlay;
     }
 
-    public bool CanChance()
-    {
-        if (PlayerPrefs.HasKey("HasOpenedSettings"))
-        {
-            return canChance || (isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards) && cardGenerator.GetDeck().Count != 0 && PlayerPrefs.HasKey("CanChance"));
-        }
-        else
-        {
-            return canChance || (isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards) && cardGenerator.GetDeck().Count != 0);
-        }
-        
-    }
+    public bool CanChance() => canChance || (isTurn && !gameManager.GetWinner() && !HasCardToPlay(handCards) && cardGenerator.GetDeck().Count != 0 && PlayerPrefs.HasKey("CanChance"));
     #endregion
 
     #region Get Cards
     public List<GameObject> GetCurrentCards()
     {
+        UpdateSideUsage();
+
         if (usingOverSideCards) return overSideCards;
         if (usingUnderSideCards) return underSideCards;
         return handCards;
     }
 
-    public List<GameObject> GetHandCards()
-    {
-        return handCards;
-    }
-
-    public List<GameObject> GetOverSideCards()
-    {
-        return overSideCards;
-    }
-
-    public List<GameObject> GetUnderSideCards()
-    {
-        return underSideCards;
-    }
+    public List<GameObject> GetHandCards() => handCards;
+    public List<GameObject> GetOverSideCards() => overSideCards;
+    public List<GameObject> GetUnderSideCards() => underSideCards;
 
     public int GetCardsIndex()
     {
