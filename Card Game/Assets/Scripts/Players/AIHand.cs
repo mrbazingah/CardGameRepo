@@ -478,7 +478,7 @@ public class AIHand : MonoBehaviour
 
         CheckTurn();
 
-        if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
+        if (handCards.Count < cardsPerPlayer && cardGenerator.GetDeck().Count != 0)
         {
             cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
         }
