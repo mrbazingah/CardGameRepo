@@ -494,14 +494,14 @@ public class AIHand : MonoBehaviour
                 audioManager.PlayCardSFX();
             }
 
-            if (ShouldDiscard(cardValue))
-            {
-                StartCoroutine(pile.DiscardCardsInPile());
+            bool shouldDiscard = ShouldDiscard(cardValue);
+            if (shouldDiscard) 
+            { 
+                StartCoroutine(pile.DiscardCardsInPile()); 
             }
-
-            if (isChance && !ShouldDiscard(cardValue) && cardValue != 2)
-            {
-                gameManager.NextTurn(cardInHand);
+            if (isChance && !shouldDiscard && cardValue != 2) 
+            { 
+                gameManager.NextTurn(cardInHand); 
             }
         }
         else if (isChance)
