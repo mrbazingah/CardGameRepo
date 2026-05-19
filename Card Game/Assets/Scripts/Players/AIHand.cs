@@ -222,7 +222,12 @@ public class AIHand : MonoBehaviour
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
 
         Vector2 currentPos = isTurn || !gameManager.GetGameHasStarted() ? isTurnPos : isNotTurnPos;
-        handTransform.position = Vector2.Lerp(handTransform.position, currentPos, lerpSpeed * Time.deltaTime);
+        Vector2 currentHandPos = handTransform.position;
+        if ((Vector2)handTransform.position != currentPos)
+        {
+            Vector2 nextHandPos = Vector2.Lerp(currentHandPos, currentPos, lerpSpeed * Time.deltaTime);
+            handTransform.position = Vector2.SqrMagnitude(nextHandPos - currentPos) < 0.00001f ? currentPos : nextHandPos;
+        }
     }
 
     void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
@@ -234,7 +239,8 @@ public class AIHand : MonoBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
-            cards[i].transform.SetParent(parent);
+            if (cards[i].transform.parent != parent)
+                cards[i].transform.SetParent(parent);
 
             SpriteRenderer cardSpriteRenderer = cards[i].GetComponent<SpriteRenderer>();
             Card cardScript = cards[i].GetComponent<Card>();
@@ -287,11 +293,12 @@ public class AIHand : MonoBehaviour
                 }
             }
 
-            cards[i].transform.localPosition = Vector2.Lerp(
-                cards[i].transform.localPosition,
-                cardPosition,
-                lerpSpeed * Time.deltaTime
-            );
+            Vector2 currentCardPos = cards[i].transform.localPosition;
+            if (currentCardPos != cardPosition)
+            {
+                Vector2 nextCardPos = Vector2.Lerp(currentCardPos, cardPosition, lerpSpeed * Time.deltaTime);
+                cards[i].transform.localPosition = Vector2.SqrMagnitude(nextCardPos - cardPosition) < 0.00001f ? cardPosition : nextCardPos;
+            }
 
             GameObject child = cardScript.GetBack();
             if (handCards.Contains(cards[i]) && child != null)
