@@ -26,6 +26,7 @@ public class AIHand : MonoBehaviour
     [SerializeField, Range(0, 100)] int playChancePercentage = 50;
     [Space]
     [SerializeField] float lerpSpeed;
+    Vector2 handTransformVelocity;
     [SerializeField] TextMeshProUGUI cardAmountText;
     [SerializeField] Vector2 cardAmountTextOffset;
 
@@ -222,12 +223,7 @@ public class AIHand : MonoBehaviour
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
 
         Vector2 currentPos = isTurn || !gameManager.GetGameHasStarted() ? isTurnPos : isNotTurnPos;
-        Vector2 currentHandPos = handTransform.position;
-        if ((Vector2)handTransform.position != currentPos)
-        {
-            Vector2 nextHandPos = Vector2.Lerp(currentHandPos, currentPos, lerpSpeed * Time.deltaTime);
-            handTransform.position = Vector2.SqrMagnitude(nextHandPos - currentPos) < 0.00001f ? currentPos : nextHandPos;
-        }
+        handTransform.position = Vector2.SmoothDamp(handTransform.position, currentPos, ref handTransformVelocity, 1f / lerpSpeed);
     }
 
     void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
@@ -293,12 +289,12 @@ public class AIHand : MonoBehaviour
                 }
             }
 
-            Vector2 currentCardPos = cards[i].transform.localPosition;
-            if (currentCardPos != cardPosition)
-            {
-                Vector2 nextCardPos = Vector2.Lerp(currentCardPos, cardPosition, lerpSpeed * Time.deltaTime);
-                cards[i].transform.localPosition = Vector2.SqrMagnitude(nextCardPos - cardPosition) < 0.00001f ? cardPosition : nextCardPos;
-            }
+            cards[i].transform.localPosition = Vector2.SmoothDamp(
+                cards[i].transform.localPosition,
+                cardPosition,
+                ref cardScript.smoothVelocity,
+                1f / lerpSpeed
+            );
 
             GameObject child = cardScript.GetBack();
             if (handCards.Contains(cards[i]) && child != null)
