@@ -23,7 +23,7 @@ public class AIHand : MonoBehaviour
     [SerializeField] int turnNumber;
     [SerializeField] float playDelay;
     [SerializeField] float chanceDelay;
-    [SerializeField, Range(0, 100)] int chanceToPlayChance = 50;
+    [SerializeField, Range(0, 100)] int playChancePercentage = 50;
     [Space]
     [SerializeField] float lerpSpeed;
     [SerializeField] TextMeshProUGUI cardAmountText;
@@ -35,6 +35,9 @@ public class AIHand : MonoBehaviour
     int cardsPerPlayer;
 
     bool isPaused;
+
+    Coroutine currentTurnRoutine;
+    Coroutine currentChanceRoutine;
 
     Pile pile;
     CardGenerator cardGenerator;
@@ -57,7 +60,7 @@ public class AIHand : MonoBehaviour
 
         if (PlayerPrefs.HasKey("AiChancePrecentage"))
         {
-            chanceToPlayChance = PlayerPrefs.GetInt("AiChancePrecentage");
+            playChancePercentage = PlayerPrefs.GetInt("AiChancePrecentage");
         }
     }
 
@@ -153,7 +156,7 @@ public class AIHand : MonoBehaviour
                 currentCardScript.RemoveChild();
             }
 
-            overSideCards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+            overSideCards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 5;
         }
     }
     #endregion
@@ -172,8 +175,24 @@ public class AIHand : MonoBehaviour
 
         if (isTurn && !isPlaying && !useMLBehaviour)
         {
-            StartCoroutine(PlayAITurnWithDelay());
+            isPlaying = true;
+            currentTurnRoutine = StartCoroutine(PlayAITurnWithDelay());
         }
+    }
+
+    void StopAllTurnRoutines()
+    {
+        if (currentTurnRoutine != null)
+        {
+            StopCoroutine(currentTurnRoutine);
+            currentTurnRoutine = null;
+        }
+        if (currentChanceRoutine != null)
+        {
+            StopCoroutine(currentChanceRoutine);
+            currentChanceRoutine = null;
+        }
+        isPlaying = false;
     }
 
     #region Sorting
@@ -217,14 +236,17 @@ public class AIHand : MonoBehaviour
         {
             cards[i].transform.SetParent(parent);
 
+            SpriteRenderer cardSpriteRenderer = cards[i].GetComponent<SpriteRenderer>();
+            Card cardScript = cards[i].GetComponent<Card>();
+
             if (cards == handCards || cards == underSideCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                cards[i].GetComponent<Card>().GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
+                cardSpriteRenderer.sortingOrder = i;
+                cardScript.GetBack().GetComponent<SpriteRenderer>().sortingOrder = i + 1;
             }
             else if (cards == overSideCards)
             {
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 3;
+                cardSpriteRenderer.sortingOrder = i + 5;
             }
 
             Vector2 cardPosition;
@@ -271,7 +293,7 @@ public class AIHand : MonoBehaviour
                 lerpSpeed * Time.deltaTime
             );
 
-            GameObject child = cards[i].GetComponent<Card>().GetBack();
+            GameObject child = cardScript.GetBack();
             if (handCards.Contains(cards[i]) && child != null)
             {
                 child.GetComponent<SpriteRenderer>().sortingLayerName = "BackCard";
@@ -283,15 +305,22 @@ public class AIHand : MonoBehaviour
     {
         if (handCards.Count == 0) { return; }
 
+        List<GameObject> duplicateCards = new List<GameObject>();
         for (int i = 0; i < handCards.Count; i++)
         {
             for (int ii = 0; ii < handCards.Count; ii++)
             {
                 if (handCards[i] == handCards[ii] && ii != i)
                 {
-                    handCards.Remove(handCards[ii]);
+                    duplicateCards.Add(handCards[ii]);
+                    Debug.LogWarning("Duplicate card found and removed: " + handCards[ii].name);
                 }
             }
+        }
+
+        foreach (GameObject card in duplicateCards)
+        {
+            handCards.Remove(card);
         }
     }
     #endregion
@@ -302,7 +331,12 @@ public class AIHand : MonoBehaviour
     void CheckTurn()
     {
         if (!gameManager.GetGameHasStarted()) return;
+        bool wasTurn = isTurn;
         isTurn = turnNumber == gameManager.GetTurn();
+        if (wasTurn && !isTurn)
+        {
+            StopAllTurnRoutines();
+        }
     }
 
     public bool GetTurn()
@@ -316,8 +350,6 @@ public class AIHand : MonoBehaviour
     {
         if (!gameManager.GetGameHasStarted()) yield break;
 
-        isPlaying = true;
-
         yield return new WaitForSeconds(playDelay);
 
         bool playAgain;
@@ -328,7 +360,7 @@ public class AIHand : MonoBehaviour
             playAgain = false;
             GameObject selectedCard = null;
 
-            List<GameObject> currentCards = GetCards();
+            List<GameObject> currentCards = GetCurrentCards();
 
             List<GameObject> playableCards = new List<GameObject>();
             List<GameObject> specialCards = new List<GameObject>();
@@ -376,12 +408,13 @@ public class AIHand : MonoBehaviour
 
             if (selectedCard != null)
             {
-                PlayCard(selectedCard, false);
+                PlayCard(selectedCard, false, out bool discarded);
 
                 int cardValue = selectedCard.GetComponent<Card>().GetValue();
-                bool canWIn = GetCards().Count == 0 && cardValue != 2 && cardValue != 10 && cardValue != 14;
+                bool hasAnyCardsLeft = handCards.Count > 0 || overSideCards.Count > 0 || underSideCards.Count > 0;
+                bool canWin = !hasAnyCardsLeft && cardValue != 2 && cardValue != 10 && cardValue != 14;
 
-                if (cardValue == 2 || ShouldDiscard(cardValue) || HasSameValueCard(cardValue))
+                if (cardValue == 2 || discarded || HasSameValueCard(cardValue))
                 {
                     if (handCards.Count < cardsPerPlayer && cardGenerator.GetDeck().Count > 0)
                         cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
@@ -390,25 +423,25 @@ public class AIHand : MonoBehaviour
 
                     playAgain = true;
 
-                    if (GetCards().Count == 0 && (cardValue == 2 || cardValue == 10))
+                    if (GetCurrentCards().Count == 0 && (cardValue == 2 || cardValue == 10))
                     {
                         playAgain = false;
                         PickUpPile(selectedCard);
                     }
 
-                    StartCoroutine(gameManager.ProcessWin("AI", canWIn));
+                    StartCoroutine(gameManager.ProcessWin("AI", canWin));
 
                     yield return new WaitForSeconds(playDelay);
                 }
                 else
                 {
-                    if (GetCards().Count == 0 && cardValue == 14)
+                    if (GetCurrentCards().Count == 0 && cardValue == 14)
                     {
                         PickUpPile(selectedCard);
                     }
                     else
                     {
-                        StartCoroutine(gameManager.ProcessWin("AI", canWIn));
+                        StartCoroutine(gameManager.ProcessWin("AI", canWin));
                         gameManager.NextTurn(selectedCard);
                     }
 
@@ -428,14 +461,13 @@ public class AIHand : MonoBehaviour
                         random = Random.Range(0, 101);
                     }
 
-                    if (random > chanceToPlayChance || cardGenerator.GetDeck().Count == 0)
+                    if (random > playChancePercentage || cardGenerator.GetDeck().Count == 0)
                     {
                         PickUpPile(null);
                     }
                     else
                     {
-                        playAgain = false;
-                        PlayChanceCard();
+                        yield return StartCoroutine(ProcessChanceCard());
                     }
                 }
 
@@ -446,16 +478,18 @@ public class AIHand : MonoBehaviour
 
         CheckTurn();
 
-        if (handCards.Count < 3 && cardGenerator.GetDeck().Count != 0)
+        if (handCards.Count < cardsPerPlayer && cardGenerator.GetDeck().Count != 0)
         {
             cardGenerator.DrawNewCard(cardsPerPlayer - handCards.Count, false);
         }
 
         isPlaying = false;
+        currentTurnRoutine = null;
     }
 
-    void PlayCard(GameObject cardInHand, bool isChance)
+    void PlayCard(GameObject cardInHand, bool isChance, out bool discarded)
     {
+        discarded = false;
         if (!isTurn || gameManager.GetWinner() || !gameManager.GetGameHasStarted()) return;
 
         int cardValue = cardInHand.GetComponent<Card>().GetValue();
@@ -469,14 +503,15 @@ public class AIHand : MonoBehaviour
                 audioManager.PlayCardSFX();
             }
 
-            if (ShouldDiscard(cardValue))
-            {
-                StartCoroutine(pile.DiscardCardsInPile());
+            bool shouldDiscard = ShouldDiscard(cardValue);
+            if (shouldDiscard) 
+            { 
+                StartCoroutine(pile.DiscardCardsInPile()); 
+                discarded = true;
             }
-
-            if (isChance && !ShouldDiscard(cardValue) && cardValue != 2)
-            {
-                gameManager.NextTurn(cardInHand);
+            if (isChance && !shouldDiscard && cardValue != 2) 
+            { 
+                gameManager.NextTurn(cardInHand); 
             }
         }
         else if (isChance)
@@ -494,7 +529,7 @@ public class AIHand : MonoBehaviour
 
     public void PlayChanceCard()
     {
-        StartCoroutine(ProcessChanceCard());
+        currentChanceRoutine = StartCoroutine(ProcessChanceCard());
     }
 
     IEnumerator ProcessChanceCard()
@@ -502,16 +537,19 @@ public class AIHand : MonoBehaviour
         if (!isTurn || !isPlaying) { yield break; }
 
         GameObject cardFromDeck = cardGenerator.GetChanceCard();
-        if (cardFromDeck == null) 
+        if (cardFromDeck == null)
         {
             isPlaying = false;
-            isTurn = false;
-            yield break; 
+            CheckTurn();
+            currentChanceRoutine = null;
+            yield break;
         }
 
         yield return new WaitForSeconds(chanceDelay);
 
-        PlayCard(cardFromDeck, true);
+        PlayCard(cardFromDeck, true, out bool discarded);
+
+        currentChanceRoutine = null;
     }
     #endregion
 
@@ -620,7 +658,7 @@ public class AIHand : MonoBehaviour
     #endregion
 
     #region Gets
-    public List<GameObject> GetCards()
+    public List<GameObject> GetCurrentCards()
     {
         UpdateSideUsage();
 
