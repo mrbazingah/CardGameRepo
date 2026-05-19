@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        List<GameObject> aiCards = aiHand.GetCards();
+        List<GameObject> aiCards = aiHand.GetCurrentCards();
         int aiLowest = 20;
 
         for (int i = 0; i < aiCards.Count; i++)
@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviour
 
                 winner = true;
             }
-            else if (canWin && aiHand.GetCards().Count == 0)
+            else if (canWin && aiHand.GetCurrentCards().Count == 0)
             {
                 winMenu.gameObject.SetActive(true);
 
