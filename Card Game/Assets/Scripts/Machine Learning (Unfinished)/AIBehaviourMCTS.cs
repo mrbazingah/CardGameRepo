@@ -95,7 +95,7 @@ public class AIBehaviourMCTS : MonoBehaviour
             // --- Underside phase: blind flip ---
             if (aiHand.GetHandCount() == 0 && aiHand.GetOverSideCount() == 0 && aiHand.GetUnderSideCount() > 0)
             {
-                var underCards = aiHand.GetCards();
+                var underCards = aiHand.GetCurrentCards();
                 if (underCards.Count > 0)
                 {
                     int  idx     = Random.Range(0, underCards.Count);
@@ -150,7 +150,7 @@ public class AIBehaviourMCTS : MonoBehaviour
 
             // --- Play a card ---
             int  pileTop2   = pile.GetCurrentCard(false);
-            var  cards      = aiHand.GetCards();
+            var  cards      = aiHand.GetCurrentCards();
             int  targetValue;
 
             if (action == SimGame.ACTION_REGULAR)

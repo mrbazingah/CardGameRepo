@@ -68,7 +68,7 @@ public class AIBehaviourML : MonoBehaviour
             // --- Underside phase: blind flip, no agent choice ---
             if (aiHand.GetHandCount() == 0 && aiHand.GetOverSideCount() == 0 && aiHand.GetUnderSideCount() > 0)
             {
-                var underCards = aiHand.GetCards();
+                var underCards = aiHand.GetCurrentCards();
                 if (underCards.Count > 0)
                 {
                     int  idx          = Random.Range(0, underCards.Count);
@@ -135,7 +135,7 @@ public class AIBehaviourML : MonoBehaviour
             // Map action to the card value we want to play
             int pileTop2   = pile.GetCurrentCard(false);
             int targetValue;
-            var cards       = aiHand.GetCards();
+            var cards       = aiHand.GetCurrentCards();
 
             if (action == SimGame.ACTION_REGULAR)
             {
@@ -192,7 +192,7 @@ public class AIBehaviourML : MonoBehaviour
     // State encoding — exactly mirrors SimGame.GetStateKey()
     string BuildStateKey()
     {
-        var  active   = aiHand.GetCards();
+        var  active   = aiHand.GetCurrentCards();
         int  pileTop  = pile.GetCurrentCard(false);
         int  handCnt  = aiHand.GetHandCount();
         int  overCnt  = aiHand.GetOverSideCount();
@@ -256,7 +256,7 @@ public class AIBehaviourML : MonoBehaviour
             return mask;
         }
 
-        var  cards = aiHand.GetCards();
+        var  cards = aiHand.GetCurrentCards();
         int  pileTop = pile.GetCurrentCard(false);
         bool hasPlayable = false;
 
