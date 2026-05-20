@@ -72,6 +72,9 @@ MonoBehaviour:
   lerpSpeed: 15
   cardAmountText: {fileID: 7938488687534153862}
   cardAmountTextOffset: {x: -1, y: 1.2}
+  cardLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1442528388883264576
 GameObject:
   m_ObjectHideFlags: 0
