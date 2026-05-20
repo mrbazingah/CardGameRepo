@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Unity.Netcode;
 
 public class NetworkPlayerHand : NetworkBehaviour
@@ -22,7 +24,16 @@ public class NetworkPlayerHand : NetworkBehaviour
     [SerializeField] List<GameObject> underSideCards = new List<GameObject>();
     [SerializeField] List<GameObject> overSideCards = new List<GameObject>();
 
+    [SerializeField] LayerMask cardLayer;
+
     bool usingOverSideCards, usingUnderSideCards;
+    Camera mainCam;
+    GameObject hoveredCard;
+
+    void Awake()
+    {
+        mainCam = Camera.main;
+    }
 
     // Deal receive
     public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide, CardNetData[] overSide)
@@ -63,7 +74,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         if (covered)
         {
             GameObject back = Instantiate(backCardPrefab);
-            back.transform.parent = cardParent;
+            back.transform.parent = card.transform;
             back.transform.localPosition = Vector3.zero;
             back.GetComponent<SpriteRenderer>().sortingOrder = sr.sortingOrder + 1;
             nc.ApplyChild(back);
@@ -81,15 +92,35 @@ public class NetworkPlayerHand : NetworkBehaviour
     void Update()
     {
         UpdateSideUsage();
+        UpdateColliders();
+        DetectHover();
         ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
         ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
+    }
+
+    void DetectHover()
+    {
+        Vector2 mousePos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero, cardLayer);
+        hoveredCard = hits
+            .OrderByDescending(h => h.collider.GetComponent<SpriteRenderer>().sortingOrder)
+            .Select(h => h.collider.gameObject)
+            .FirstOrDefault();
     }
 
     void UpdateSideUsage()
     {
         usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
         usingUnderSideCards = handCards.Count == 0 && overSideCards.Count == 0 && underSideCards.Count > 0;
+    }
+
+    void UpdateColliders()
+    {
+        for (int i = 0; i < underSideCards.Count; i++)
+        {
+            underSideCards[i].GetComponent<BoxCollider2D>().enabled = usingUnderSideCards;
+        }
     }
 
     void ArrangeCards(List<GameObject> cards, Transform parent, float spacing, float maxWidth, float offset = 0)
@@ -123,15 +154,27 @@ public class NetworkPlayerHand : NetworkBehaviour
             }
 
             float horizontalOffset = cards.Count > 1 ? cardSpacing * (i - (cards.Count - 1) / 2f) : 0f;
+            bool isHovered = (cards[i] == hoveredCard);
 
-            Vector2 targetPos = new Vector2(horizontalOffset + offset, offset);
-
-            if (cards != handCards)
+            Vector2 targetPos;
+            if (cards == handCards)
             {
-                nc.basePosition = targetPos;
+                float verticalOffset = isHovered ? offset + popUpHeight : offset;
+                targetPos = new Vector2(horizontalOffset + offset, verticalOffset);
+            }
+            else
+            {
+                nc.basePosition = new Vector2(horizontalOffset + offset, offset);
+                float verticalOffset = isHovered ? offset + popUpHeight : offset;
+                targetPos = new Vector2(horizontalOffset + offset, verticalOffset);
             }
 
-            cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, targetPos, lerpSpeed * Time.deltaTime);
+            cards[i].transform.localPosition = Vector2.SmoothDamp(
+                cards[i].transform.localPosition,
+                targetPos,
+                ref nc.smoothVelocity,
+                1f / lerpSpeed
+            );
         }
     }
 

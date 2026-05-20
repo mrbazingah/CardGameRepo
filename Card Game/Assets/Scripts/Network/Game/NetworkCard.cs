@@ -12,6 +12,7 @@ public class NetworkCard : MonoBehaviour
     [SerializeField] Color darkColor;
 
     public Vector2 basePosition;
+    public Vector2 smoothVelocity;
 
     bool hasBeenTurned;
 

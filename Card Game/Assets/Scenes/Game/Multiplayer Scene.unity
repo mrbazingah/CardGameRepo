@@ -2927,6 +2927,10 @@ PrefabInstance:
       propertyPath: cardParent
       value: 
       objectReference: {fileID: 2135291439}
+    - target: {fileID: 4110383132605686420, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
+      propertyPath: cardLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 6999970226552323002, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1128735119
