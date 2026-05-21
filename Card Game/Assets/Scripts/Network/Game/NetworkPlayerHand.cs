@@ -30,9 +30,20 @@ public class NetworkPlayerHand : NetworkBehaviour
     Camera mainCam;
     GameObject hoveredCard;
 
+    List<GameObject> selectedCards = new List<GameObject>(0);
+    GameObject selectedCard;
+    GameObject previousSelectedCard;
+    InputAction interactAction;
+
     void Awake()
     {
         mainCam = Camera.main;
+    }
+
+    void Start()
+    {
+        PlayerInput playerInput = InputManager.Instance.GetPlayerInput();
+        interactAction = playerInput.actions.FindAction("Interact");
     }
 
     // Deal receive
@@ -94,6 +105,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         UpdateSideUsage();
         UpdateColliders();
         DetectHover();
+        ChangeSideCards();
         ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
         ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
@@ -107,6 +119,96 @@ public class NetworkPlayerHand : NetworkBehaviour
             .OrderByDescending(h => h.collider.GetComponent<SpriteRenderer>().sortingOrder)
             .Select(h => h.collider.gameObject)
             .FirstOrDefault();
+
+        bool gameStarted = NetworkGameManager.Instance != null && NetworkGameManager.Instance.GetGameHasStarted();
+        if (hoveredCard != null && interactAction != null && interactAction.WasPressedThisFrame() && !gameStarted && selectedCards.Count < 2)
+        {
+            selectedCards.Add(hoveredCard);
+            selectedCard = hoveredCard;
+        }
+    }
+
+    void ChangeSideCards()
+    {
+        if (selectedCard != null && selectedCard != previousSelectedCard)
+        {
+            selectedCard.GetComponent<NetworkCard>().SetHighlight(true);
+            if (previousSelectedCard != null)
+                previousSelectedCard.GetComponent<NetworkCard>().SetHighlight(false);
+            previousSelectedCard = selectedCard;
+        }
+        else if (selectedCards.Count == 0 && previousSelectedCard != null)
+        {
+            previousSelectedCard.GetComponent<NetworkCard>().SetHighlight(false);
+        }
+
+        bool gameStarted = NetworkGameManager.Instance != null && NetworkGameManager.Instance.GetGameHasStarted();
+        if (gameStarted || selectedCards.Count != 2) return;
+
+        GameObject lastSelectedCard = null;
+
+        if (!SwapHandAndOverSideCard(out GameObject handCard, out GameObject sideCard, 0, 1) &&
+            !SwapHandAndOverSideCard(out handCard, out sideCard, 1, 0))
+        {
+            lastSelectedCard = selectedCards[1];
+        }
+
+        if (previousSelectedCard != null) previousSelectedCard.GetComponent<NetworkCard>().SetHighlight(false);
+        if (handCard != null) handCard.GetComponent<NetworkCard>().SetHighlight(false);
+        if (sideCard != null) sideCard.GetComponent<NetworkCard>().SetHighlight(false);
+
+        selectedCards = new List<GameObject>(0);
+        previousSelectedCard = null;
+        selectedCard = null;
+
+        if (lastSelectedCard != null)
+        {
+            selectedCards.Add(lastSelectedCard);
+            selectedCard = lastSelectedCard;
+        }
+    }
+
+    bool SwapHandAndOverSideCard(out GameObject handCard, out GameObject sideCard, int handIndex, int sideIndex)
+    {
+        if (handCards.Contains(selectedCards[handIndex]) && overSideCards.Contains(selectedCards[sideIndex]))
+        {
+            handCard = selectedCards[handIndex];
+            sideCard = selectedCards[sideIndex];
+
+            CardNetData movedToOverSide = handCard.GetComponent<NetworkCard>().GetCardNetData();
+            CardNetData movedToHand = sideCard.GetComponent<NetworkCard>().GetCardNetData();
+
+            for (int i = 0; i < handCards.Count; i++)
+            {
+                if (handCards[i] == handCard) { handCards[i] = sideCard; break; }
+            }
+
+            for (int i = 0; i < overSideCards.Count; i++)
+            {
+                if (overSideCards[i] == sideCard) { overSideCards[i] = handCard; break; }
+            }
+
+            SortHandCards();
+
+            if (NetworkCardGenerator.Instance != null)
+            {
+                CardNetData[] newOverSide = overSideCards
+                    .Select(go => go.GetComponent<NetworkCard>().GetCardNetData())
+                    .ToArray();
+                Debug.Log($"[NPH] Calling SwapCardsServerRpc — newOverSideCount={newOverSide.Length}");
+                NetworkCardGenerator.Instance.SwapCardsServerRpc(newOverSide);
+            }
+            else
+            {
+                Debug.LogError("[NPH] SwapCardsServerRpc skipped — NetworkCardGenerator.Instance is null");
+            }
+
+            return true;
+        }
+
+        handCard = null;
+        sideCard = null;
+        return false;
     }
 
     void UpdateSideUsage()

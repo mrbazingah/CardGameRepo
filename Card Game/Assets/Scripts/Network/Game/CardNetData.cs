@@ -1,6 +1,6 @@
 using Unity.Netcode;
 
-public struct CardNetData : INetworkSerializable
+public struct CardNetData : INetworkSerializable, System.IEquatable<CardNetData>
 {
     public int CardId;  // index into shared ordered card sprite list (0–51)
     public int Value;   // 2–14 (14 = Ace)
@@ -12,4 +12,6 @@ public struct CardNetData : INetworkSerializable
         serializer.SerializeValue(ref Value);
         serializer.SerializeValue(ref Suit);
     }
+
+    public bool Equals(CardNetData other) => CardId == other.CardId && Value == other.Value && Suit == other.Suit;
 }

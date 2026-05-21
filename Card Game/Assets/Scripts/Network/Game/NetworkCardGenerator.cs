@@ -18,6 +18,10 @@ public class NetworkCardGenerator : NetworkBehaviour
 
     NetworkVariable<int> remainingDeckCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+    // Authoritative overSide state per player — replicated automatically to all clients
+    public NetworkList<CardNetData> player0OverSide = new NetworkList<CardNetData>();
+    public NetworkList<CardNetData> player1OverSide = new NetworkList<CardNetData>();
+
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -152,6 +156,20 @@ public class NetworkCardGenerator : NetworkBehaviour
         NetworkOpponentHand opponentHand2 = FindFirstObjectByType<NetworkOpponentHand>();
         if (opponentHand2 == null) { Debug.LogError("[NCG] NetworkOpponentHand NOT FOUND"); return; }
         opponentHand2.ReceiveDeal(opponentHand, opponentUnderSide, opponentOverSide);
+    }
+
+    // -------------------------------------------------------------------------
+    // Card swap — server updates the authoritative NetworkList, which auto-replicates
+    // -------------------------------------------------------------------------
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SwapCardsServerRpc(CardNetData[] newOverSide, ServerRpcParams rpcParams = default)
+    {
+        ulong senderId = rpcParams.Receive.SenderClientId;
+        NetworkList<CardNetData> list = senderId == 0 ? player0OverSide : player1OverSide;
+        list.Clear();
+        foreach (CardNetData data in newOverSide) list.Add(data);
+        Debug.Log($"[NCG] SwapCardsServerRpc — senderId={senderId} overSideCount={newOverSide.Length}");
     }
 
     // -------------------------------------------------------------------------

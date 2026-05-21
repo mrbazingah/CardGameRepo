@@ -59,6 +59,7 @@ public class NetworkCard : MonoBehaviour
 
     public void SetCardId(int id) => cardId = id;
     public int GetCardId() => cardId;
+    public CardNetData GetCardNetData() => new CardNetData { CardId = cardId, Value = cardValue, Suit = cardId / 13 };
 
     public void SetValue(int value) => cardValue = value;
     public int GetValue() => cardValue;

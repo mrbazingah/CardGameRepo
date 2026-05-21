@@ -22,6 +22,8 @@ public class NetworkOpponentHand : NetworkBehaviour
     List<GameObject> overSideCards = new List<GameObject>();
 
     bool usingOverSideCards, usingUnderSideCards;
+    NetworkList<CardNetData> subscribedOverSide;
+    bool overSideDirty;
 
     // Deal receive — only counts arrive, not card values
     public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide, CardNetData[] opponentOverSide)
@@ -30,6 +32,22 @@ public class NetworkOpponentHand : NetworkBehaviour
         foreach (CardNetData data in hand) { handCards.Add(SpawnCoveredCard(data)); }
         foreach (CardNetData data in underSide) { underSideCards.Add(SpawnCoveredCard(data)); }
         foreach (CardNetData data in opponentOverSide) { overSideCards.Add(SpawnFaceCard(data)); }
+
+        // Subscribe to the opponent's overSide NetworkList — changes auto-replicate from server
+        if (NetworkCardGenerator.Instance != null)
+        {
+            ulong localId = NetworkManager.Singleton.LocalClientId;
+            subscribedOverSide = localId == 0
+                ? NetworkCardGenerator.Instance.player1OverSide
+                : NetworkCardGenerator.Instance.player0OverSide;
+            subscribedOverSide.OnListChanged += _ => overSideDirty = true;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (subscribedOverSide != null)
+            subscribedOverSide.OnListChanged -= _ => overSideDirty = true;
     }
 
     GameObject SpawnCoveredCard(CardNetData data = default)
@@ -89,9 +107,26 @@ public class NetworkOpponentHand : NetworkBehaviour
     void Update()
     {
         UpdateSideUsage();
+
+        if (overSideDirty)
+        {
+            RebuildOverSide();
+            overSideDirty = false;
+        }
+
         ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
         ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
+    }
+
+    void RebuildOverSide()
+    {
+        if (subscribedOverSide == null) return;
+        foreach (GameObject card in overSideCards) Destroy(card);
+        overSideCards.Clear();
+        foreach (CardNetData data in subscribedOverSide)
+            overSideCards.Add(SpawnFaceCard(data));
+        Debug.Log($"[NOH] RebuildOverSide — {overSideCards.Count} cards");
     }
 
     void UpdateSideUsage()
@@ -128,6 +163,48 @@ public class NetworkOpponentHand : NetworkBehaviour
             float horizontalOffset = cards.Count > 1 ? cardSpacing * (i - (cards.Count - 1) / 2f) : 0f;
 
             cards[i].transform.localPosition = Vector2.Lerp(cards[i].transform.localPosition, new Vector2(horizontalOffset + offset, offset), lerpSpeed * Time.deltaTime);
+        }
+    }
+
+    // Replaces the entire opponent overSide display from authoritative server data
+    public void SyncOverSide(CardNetData[] newOverSide)
+    {
+        Debug.Log($"[NOH] SyncOverSide — newCount={newOverSide.Length}");
+        foreach (GameObject card in overSideCards) Destroy(card);
+        overSideCards.Clear();
+        foreach (CardNetData data in newOverSide)
+            overSideCards.Add(SpawnFaceCard(data));
+    }
+
+    // Called when the opponent swaps a hand card with an overSide card
+    public void HandleOpponentSwap(CardNetData movedToOverSide, CardNetData movedToHand)
+    {
+        Debug.Log($"[NOH] HandleOpponentSwap — overSideCount={overSideCards.Count} handCount={handCards.Count} movedToOverSide={movedToOverSide.CardId} movedToHand={movedToHand.CardId}");
+
+        // Remove the face-up overSide card that moved into the opponent's hand (now covered)
+        for (int i = 0; i < overSideCards.Count; i++)
+        {
+            if (overSideCards[i].GetComponent<NetworkCard>().GetCardId() == movedToHand.CardId)
+            {
+                Destroy(overSideCards[i]);
+                overSideCards.RemoveAt(i);
+                break;
+            }
+        }
+
+        // Add the hand card that moved to overSide as a face-up card
+        overSideCards.Add(SpawnFaceCard(movedToOverSide));
+
+        // Update the covered hand card's data to reflect the new card occupying that slot
+        for (int i = 0; i < handCards.Count; i++)
+        {
+            if (handCards[i].GetComponent<NetworkCard>().GetCardId() == movedToOverSide.CardId)
+            {
+                NetworkCard nc = handCards[i].GetComponent<NetworkCard>();
+                nc.SetCardId(movedToHand.CardId);
+                nc.SetValue(movedToHand.Value);
+                break;
+            }
         }
     }
 
