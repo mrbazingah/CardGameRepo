@@ -42,10 +42,10 @@ public class NetworkCardGenerator : NetworkBehaviour
         while (NetworkManager.Singleton.ConnectedClientsIds.Count < 2)
         {
             t += Time.deltaTime;
-            if (t >= 2f) 
-            { 
-                Debug.Log($"[NCG] Still waiting — count={NetworkManager.Singleton.ConnectedClientsIds.Count} IsServer={IsServer}"); 
-                t = 0f; 
+            if (t >= 2f)
+            {
+                Debug.Log($"[NCG] Still waiting — count={NetworkManager.Singleton.ConnectedClientsIds.Count} IsServer={IsServer}");
+                t = 0f;
             }
 
             yield return null;
@@ -159,17 +159,45 @@ public class NetworkCardGenerator : NetworkBehaviour
     }
 
     // -------------------------------------------------------------------------
-    // Card swap — server updates the authoritative NetworkList, which auto-replicates
+    // Card swap — server updates authoritative state and notifies the opponent
     // -------------------------------------------------------------------------
 
     [ServerRpc(RequireOwnership = false)]
     public void SwapCardsServerRpc(CardNetData[] newOverSide, ServerRpcParams rpcParams = default)
     {
         ulong senderId = rpcParams.Receive.SenderClientId;
+
+        // Update the authoritative NetworkList for this player
         NetworkList<CardNetData> list = senderId == 0 ? player0OverSide : player1OverSide;
         list.Clear();
         foreach (CardNetData data in newOverSide) list.Add(data);
+
         Debug.Log($"[NCG] SwapCardsServerRpc — senderId={senderId} overSideCount={newOverSide.Length}");
+
+        // Defer one frame so the ClientRpc dispatches outside the ServerRpc call stack,
+        // ensuring it travels to remote clients and not just the host locally
+        StartCoroutine(SendSyncNextFrame(senderId, newOverSide));
+    }
+
+    IEnumerator SendSyncNextFrame(ulong senderId, CardNetData[] newOverSide)
+    {
+        yield return null;
+        Debug.Log($"[NCG] Sending SyncOpponentOverSideClientRpc — senderId={senderId}");
+        SyncOpponentOverSideClientRpc(senderId, newOverSide);
+    }
+
+    // Broadcast to all clients; each client ignores it if senderId is themselves
+    [ClientRpc]
+    void SyncOpponentOverSideClientRpc(ulong senderId, CardNetData[] newOverSide)
+    {
+        Debug.Log($"[NCG] SyncOpponentOverSideClientRpc arrived — senderId={senderId} localId={NetworkManager.Singleton.LocalClientId} overSideCount={newOverSide.Length}");
+
+        // Only the opponent (non-sender) should update their NetworkOpponentHand display
+        if (NetworkManager.Singleton.LocalClientId == senderId) { return; }
+
+        NetworkOpponentHand opponentHand = FindFirstObjectByType<NetworkOpponentHand>();
+        if (opponentHand == null) { Debug.LogError("[NCG] NetworkOpponentHand NOT FOUND for sync"); return; }
+        opponentHand.SyncOverSide(newOverSide);
     }
 
     // -------------------------------------------------------------------------

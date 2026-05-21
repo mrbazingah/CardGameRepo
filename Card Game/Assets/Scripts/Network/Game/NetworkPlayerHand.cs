@@ -24,8 +24,6 @@ public class NetworkPlayerHand : NetworkBehaviour
     [SerializeField] List<GameObject> underSideCards = new List<GameObject>();
     [SerializeField] List<GameObject> overSideCards = new List<GameObject>();
 
-    [SerializeField] LayerMask cardLayer;
-
     bool usingOverSideCards, usingUnderSideCards;
     Camera mainCam;
     GameObject hoveredCard;
@@ -114,7 +112,7 @@ public class NetworkPlayerHand : NetworkBehaviour
     void DetectHover()
     {
         Vector2 mousePos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero, cardLayer);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
         hoveredCard = hits
             .OrderByDescending(h => h.collider.GetComponent<SpriteRenderer>().sortingOrder)
             .Select(h => h.collider.gameObject)
@@ -271,11 +269,10 @@ public class NetworkPlayerHand : NetworkBehaviour
                 targetPos = new Vector2(horizontalOffset + offset, verticalOffset);
             }
 
-            cards[i].transform.localPosition = Vector2.SmoothDamp(
+            cards[i].transform.localPosition = Vector2.Lerp(
                 cards[i].transform.localPosition,
                 targetPos,
-                ref nc.smoothVelocity,
-                1f / lerpSpeed
+                lerpSpeed * Time.deltaTime
             );
         }
     }

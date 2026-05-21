@@ -22,8 +22,6 @@ public class NetworkOpponentHand : NetworkBehaviour
     List<GameObject> overSideCards = new List<GameObject>();
 
     bool usingOverSideCards, usingUnderSideCards;
-    NetworkList<CardNetData> subscribedOverSide;
-    bool overSideDirty;
 
     // Deal receive — only counts arrive, not card values
     public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide, CardNetData[] opponentOverSide)
@@ -32,22 +30,6 @@ public class NetworkOpponentHand : NetworkBehaviour
         foreach (CardNetData data in hand) { handCards.Add(SpawnCoveredCard(data)); }
         foreach (CardNetData data in underSide) { underSideCards.Add(SpawnCoveredCard(data)); }
         foreach (CardNetData data in opponentOverSide) { overSideCards.Add(SpawnFaceCard(data)); }
-
-        // Subscribe to the opponent's overSide NetworkList — changes auto-replicate from server
-        if (NetworkCardGenerator.Instance != null)
-        {
-            ulong localId = NetworkManager.Singleton.LocalClientId;
-            subscribedOverSide = localId == 0
-                ? NetworkCardGenerator.Instance.player1OverSide
-                : NetworkCardGenerator.Instance.player0OverSide;
-            subscribedOverSide.OnListChanged += _ => overSideDirty = true;
-        }
-    }
-
-    void OnDestroy()
-    {
-        if (subscribedOverSide != null)
-            subscribedOverSide.OnListChanged -= _ => overSideDirty = true;
     }
 
     GameObject SpawnCoveredCard(CardNetData data = default)
@@ -107,26 +89,9 @@ public class NetworkOpponentHand : NetworkBehaviour
     void Update()
     {
         UpdateSideUsage();
-
-        if (overSideDirty)
-        {
-            RebuildOverSide();
-            overSideDirty = false;
-        }
-
         ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
         ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
-    }
-
-    void RebuildOverSide()
-    {
-        if (subscribedOverSide == null) return;
-        foreach (GameObject card in overSideCards) Destroy(card);
-        overSideCards.Clear();
-        foreach (CardNetData data in subscribedOverSide)
-            overSideCards.Add(SpawnFaceCard(data));
-        Debug.Log($"[NOH] RebuildOverSide — {overSideCards.Count} cards");
     }
 
     void UpdateSideUsage()
@@ -157,7 +122,7 @@ public class NetworkOpponentHand : NetworkBehaviour
                 sr.sortingOrder = i;
             }
 
-            if (nc.GetBack() != null) 
+            if (nc.GetBack() != null)
             { nc.GetBack().GetComponent<SpriteRenderer>().sortingOrder = sr.sortingOrder + 1; }
 
             float horizontalOffset = cards.Count > 1 ? cardSpacing * (i - (cards.Count - 1) / 2f) : 0f;
@@ -166,7 +131,7 @@ public class NetworkOpponentHand : NetworkBehaviour
         }
     }
 
-    // Replaces the entire opponent overSide display from authoritative server data
+    // Called by SyncOpponentOverSideClientRpc on the opponent's client when the swapper's overSide changes
     public void SyncOverSide(CardNetData[] newOverSide)
     {
         Debug.Log($"[NOH] SyncOverSide — newCount={newOverSide.Length}");
