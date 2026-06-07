@@ -107,3 +107,11 @@ MonoBehaviour:
   cardsPerPlayer: 3
   numberOfCards: 52
   removeSpecialCards: 0
+  player0OverSide:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+  player1OverSide:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
