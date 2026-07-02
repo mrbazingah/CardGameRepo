@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
@@ -23,13 +24,72 @@ public class NetworkOpponentHand : NetworkBehaviour
 
     bool usingOverSideCards, usingUnderSideCards;
 
-    // Deal receive — only counts arrive, not card values
-    public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide, CardNetData[] opponentOverSide)
+    // IMPORTANT: this must NOT be a field of type NetworkList/NetworkVariable.
+    // NGO's codegen registers any NetworkVariableBase-typed field on a NetworkBehaviour
+    // as a network variable and requires it initialized at declaration. We only need a
+    // reference to the generator's list, so resolve it through a property instead.
+    bool subscribed;
+
+    NetworkList<CardNetData> OpponentList
     {
-        Debug.Log($"[NOH] ReceiveDeal — hand={hand.Length} under={underSide.Length} over={opponentOverSide.Length}");
+        get
+        {
+            NetworkCardGenerator gen = NetworkCardGenerator.Instance;
+            if (gen == null) { return null; }
+            return IsServer ? gen.player1OverSide : gen.player0OverSide;
+        }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        StartCoroutine(BindToOpponentList());
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (subscribed && OpponentList != null)
+        {
+            OpponentList.OnListChanged -= OnOpponentOverSideChanged;
+        }
+        subscribed = false;
+    }
+
+    // The generator may spawn after this object, so wait for Instance before binding.
+    IEnumerator BindToOpponentList()
+    {
+        while (OpponentList == null) { yield return null; }
+
+        OpponentList.OnListChanged += OnOpponentOverSideChanged;
+        subscribed = true;
+
+        Debug.Log($"[NOH] Bound to opponent overSide list — IsServer={IsServer}");
+
+        // Rebuild once in case the list was populated before we subscribed.
+        RebuildOverSideFromList();
+    }
+
+    void OnOpponentOverSideChanged(NetworkListEvent<CardNetData> _)
+    {
+        RebuildOverSideFromList();
+    }
+
+    void RebuildOverSideFromList()
+    {
+        NetworkList<CardNetData> list = OpponentList;
+        if (list == null) { return; }
+
+        CardNetData[] arr = new CardNetData[list.Count];
+        for (int i = 0; i < list.Count; i++) { arr[i] = list[i]; }
+
+        SyncOverSide(arr);
+    }
+
+    // Deal receive — hand + underSide only. OverSide is driven by the NetworkList.
+    public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide)
+    {
+        Debug.Log($"[NOH] ReceiveDeal — hand={hand.Length} under={underSide.Length}");
         foreach (CardNetData data in hand) { handCards.Add(SpawnCoveredCard(data)); }
         foreach (CardNetData data in underSide) { underSideCards.Add(SpawnCoveredCard(data)); }
-        foreach (CardNetData data in opponentOverSide) { overSideCards.Add(SpawnFaceCard(data)); }
     }
 
     GameObject SpawnCoveredCard(CardNetData data = default)
@@ -131,14 +191,18 @@ public class NetworkOpponentHand : NetworkBehaviour
         }
     }
 
-    // Called by SyncOpponentOverSideClientRpc on the opponent's client when the swapper's overSide changes
+    // Rebuilds the opponent's face-up overSide stack from authoritative data.
+    // Called via OnListChanged whenever the opponent's NetworkList changes
+    // (initial deal seed and every subsequent swap).
     public void SyncOverSide(CardNetData[] newOverSide)
     {
         Debug.Log($"[NOH] SyncOverSide — newCount={newOverSide.Length}");
-        foreach (GameObject card in overSideCards) Destroy(card);
+        foreach (GameObject card in overSideCards) { Destroy(card); }
         overSideCards.Clear();
         foreach (CardNetData data in newOverSide)
+        {
             overSideCards.Add(SpawnFaceCard(data));
+        }
     }
 
     // Called when the opponent swaps a hand card with an overSide card
@@ -146,7 +210,6 @@ public class NetworkOpponentHand : NetworkBehaviour
     {
         Debug.Log($"[NOH] HandleOpponentSwap — overSideCount={overSideCards.Count} handCount={handCards.Count} movedToOverSide={movedToOverSide.CardId} movedToHand={movedToHand.CardId}");
 
-        // Remove the face-up overSide card that moved into the opponent's hand (now covered)
         for (int i = 0; i < overSideCards.Count; i++)
         {
             if (overSideCards[i].GetComponent<NetworkCard>().GetCardId() == movedToHand.CardId)
@@ -157,10 +220,8 @@ public class NetworkOpponentHand : NetworkBehaviour
             }
         }
 
-        // Add the hand card that moved to overSide as a face-up card
         overSideCards.Add(SpawnFaceCard(movedToOverSide));
 
-        // Update the covered hand card's data to reflect the new card occupying that slot
         for (int i = 0; i < handCards.Count; i++)
         {
             if (handCards[i].GetComponent<NetworkCard>().GetCardId() == movedToOverSide.CardId)

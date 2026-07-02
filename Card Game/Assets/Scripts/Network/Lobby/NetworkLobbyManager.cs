@@ -173,12 +173,21 @@ public class NetworkLobbyManager : MonoBehaviour
             await NetworkLobby.Instance.LeaveLobby();
     }
 
+    // Start Game now kicks off the NGO connection in-place instead of loading a scene.
+    // RelayManager handles: relay allocation -> publish code -> StartHost -> wait for
+    // the client -> NGO scene load into the game scene for both players.
     public void StartGame()
     {
-        if (NetworkLobby.Instance != null && NetworkLobby.Instance.IsHost)
+        if (NetworkLobby.Instance == null || !NetworkLobby.Instance.IsHost) return;
+
+        if (RelayManager.Instance == null)
         {
-            NetworkLobby.Instance.StartGame();
+            Debug.LogError("[NLM] RelayManager not found in the lobby scene. Add the RelayManager object to Multiplayer Lobby Scene.");
+            return;
         }
+
+        startGameButton.SetActive(false);
+        RelayManager.Instance.BeginHostGame();
     }
 
     public void CheckCardsPerPlayer()

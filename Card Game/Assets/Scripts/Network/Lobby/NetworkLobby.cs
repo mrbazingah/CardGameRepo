@@ -32,6 +32,10 @@ public class NetworkLobby : MonoBehaviour
     public int LobbyCardsPerPlayer => GetLobbyInt("CardsPerPlayer", 3);
     public bool LobbyCanChance => GetLobbyInt("CanChance", 1) == 1;
 
+    // The relay join code published by the host when the game starts.
+    // RelayManager (client side) watches this via OnLobbyUpdated to know when to connect.
+    public string LobbyRelayCode => GetLobbyString("RelayCode");
+
     bool isHost;
     bool readyToQuit;
 
@@ -339,40 +343,12 @@ public class NetworkLobby : MonoBehaviour
                 consecutiveFailures = 0;
                 hostLobby = pollTask.Result;
                 PlayerCount = hostLobby.Players.Count;
+
+                // NOTE: no scene load here anymore. When the host publishes the relay code,
+                // RelayManager (subscribed to OnLobbyUpdated) connects via NGO, and the host
+                // then drives the scene transition through NetworkManager.SceneManager.
                 OnLobbyUpdated?.Invoke();
-
-                if (!isHost && GetLobbyInt("GameStarted", 0) == 1)
-                {
-                    SceneLoader.LoadScene("Multiplayer Scene");
-                    yield break;
-                }
             }
-        }
-    }
-
-    public async void StartGame()
-    {
-        if (!isHost || hostLobby == null) return;
-
-        try
-        {
-            UpdateLobbyOptions options = new UpdateLobbyOptions
-            {
-                Data = new Dictionary<string, DataObject>
-                {
-                    { "RoomCode", new DataObject(DataObject.VisibilityOptions.Public, RoomCode, DataObject.IndexOptions.S1) },
-                    { "CardsPerPlayer", new DataObject(DataObject.VisibilityOptions.Member, LobbyCardsPerPlayer.ToString()) },
-                    { "CanChance", new DataObject(DataObject.VisibilityOptions.Member, LobbyCanChance ? "1" : "0") },
-                    { "GameStarted", new DataObject(DataObject.VisibilityOptions.Member, "1") }
-                }
-            };
-
-            hostLobby = await LobbyService.Instance.UpdateLobbyAsync(hostLobby.Id, options);
-            SceneLoader.LoadScene("Multiplayer Scene");
-        }
-        catch (LobbyServiceException e)
-        {
-            Debug.Log(e);
         }
     }
 
@@ -433,23 +409,9 @@ public class NetworkLobby : MonoBehaviour
         return int.TryParse(hostLobby.Data[key].Value, out int v) ? v : fallback;
     }
 
-    /*
-    async Task ListLobbies()
+    string GetLobbyString(string key)
     {
-        try
-        {
-            QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync();
-
-            Debug.Log("Lobbies found: " + queryResponse.Results.Count);
-            foreach (Lobby lobby in queryResponse.Results)
-            {
-                Debug.Log("Lobby Name: " + lobby.Name + " Players: " + lobby.Players.Count);
-            }
-        }
-        catch (LobbyServiceException e)
-        {
-            Debug.Log(e);
-        }
+        if (hostLobby?.Data == null || !hostLobby.Data.TryGetValue(key, out var entry)) return null;
+        return entry.Value;
     }
-    */
 }

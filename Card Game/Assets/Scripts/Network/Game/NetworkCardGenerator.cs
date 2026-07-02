@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Netcode;
 
 public class NetworkCardGenerator : NetworkBehaviour
@@ -18,40 +18,51 @@ public class NetworkCardGenerator : NetworkBehaviour
 
     NetworkVariable<int> remainingDeckCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    // Authoritative overSide state per player — replicated automatically to all clients
+    // Authoritative overSide state per player — replicated automatically to all clients.
+    // player0 = host, player1 = client. NetworkOpponentHand reads the opponent's list.
     public NetworkList<CardNetData> player0OverSide = new NetworkList<CardNetData>();
     public NetworkList<CardNetData> player1OverSide = new NetworkList<CardNetData>();
 
-    void Awake()
-    {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-        Instance = this;
-    }
+    bool hasDealt;
 
+    // Singleton is bound to the network lifecycle so Instance always points at the
+    // spawned, RPC-bound replica. No Awake guard, no Destroy of duplicates.
     public override void OnNetworkSpawn()
     {
-        Debug.Log($"[NCG] OnNetworkSpawn — IsServer={IsServer} IsClient={IsClient} IsHost={IsHost}");
+        Instance = this;
+        Debug.Log($"[NCG] OnNetworkSpawn — netObjId={NetworkObjectId} IsServer={IsServer} IsClient={IsClient} IsHost={IsHost}");
+
         if (!IsServer) { return; }
-        StartCoroutine(WaitForSecondPlayerAndDeal());
+
+        // Both players are already connected before the game scene loads (Option 1 flow),
+        // so the deal trigger is NGO's scene-load completion: it fires only when ALL
+        // clients have finished loading the scene, guaranteeing NetworkPlayerHand and
+        // NetworkOpponentHand exist on both sides before the deal RPCs are sent.
+        NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoadCompleted;
     }
 
-    IEnumerator WaitForSecondPlayerAndDeal()
+    public override void OnNetworkDespawn()
     {
-        Debug.Log("[NCG] Waiting for second player...");
-        float t = 0f;
-        while (NetworkManager.Singleton.ConnectedClientsIds.Count < 2)
+        if (IsServer && NetworkManager != null && NetworkManager.SceneManager != null)
         {
-            t += Time.deltaTime;
-            if (t >= 2f)
-            {
-                Debug.Log($"[NCG] Still waiting — count={NetworkManager.Singleton.ConnectedClientsIds.Count} IsServer={IsServer}");
-                t = 0f;
-            }
-
-            yield return null;
+            NetworkManager.SceneManager.OnLoadEventCompleted -= OnSceneLoadCompleted;
         }
+
+        if (Instance == this) { Instance = null; }
+    }
+
+    void OnSceneLoadCompleted(string sceneName, LoadSceneMode loadMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        Debug.Log($"[NCG] OnLoadEventCompleted — scene={sceneName} completed={clientsCompleted.Count} timedOut={clientsTimedOut.Count}");
+
+        if (hasDealt) { return; }
+        hasDealt = true;
+
+        NetworkManager.SceneManager.OnLoadEventCompleted -= OnSceneLoadCompleted;
+
         cardsPerPlayer = RelayManager.Instance != null ? RelayManager.Instance.CardsPerPlayer : PlayerPrefs.GetInt("CardsPerPlayer", 3);
-        Debug.Log($"[NCG] Second player detected — cardsPerPlayer={cardsPerPlayer} count={NetworkManager.Singleton.ConnectedClientsIds.Count}");
+        Debug.Log($"[NCG] Dealing — cardsPerPlayer={cardsPerPlayer} connected={NetworkManager.Singleton.ConnectedClientsIds.Count}");
+
         GenerateLogicalDeck();
         DealToPlayers();
     }
@@ -124,19 +135,31 @@ public class NetworkCardGenerator : NetworkBehaviour
         CardNetData[] remoteUnder = TakeFromDeck(3);
         CardNetData[] remoteOver = TakeFromDeck(3);
 
+        // Seed the authoritative lists. local = host = player0, remote = client = player1.
+        // These lists are the single source of truth for the opponent overSide display,
+        // covering both the initial deal and every later swap.
+        SeedOverSideLists(localOver, remoteOver);
+
         var localParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { localId } } };
         var remoteParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { remoteId } } };
 
-        string remoteOverLog = ""; foreach (CardNetData c in remoteOver) { remoteOverLog += $"id={c.CardId} v={c.Value} "; }
-        string localOverLog = ""; foreach (CardNetData c in localOver) { localOverLog += $"id={c.CardId} v={c.Value} "; }
-        Debug.Log($"[NCG] remoteOver before RPC: {remoteOverLog}");
-        Debug.Log($"[NCG] localOver before RPC: {localOverLog}");
-
+        // Own-hand deal by targeted RPC (hand + both side stacks for the player themselves).
         DealPlayerCardsClientRpc(localHand, localUnder, localOver, localParams);
         DealPlayerCardsClientRpc(remoteHand, remoteUnder, remoteOver, remoteParams);
 
-        DealOpponentInfoClientRpc(remoteHand, remoteUnder, remoteOver, localParams);
-        DealOpponentInfoClientRpc(localHand, localUnder, localOver, remoteParams);
+        // Opponent info sends hand + underSide only. OverSide comes from the NetworkList,
+        // so it is not sent here (doing both would double up the display).
+        DealOpponentInfoClientRpc(remoteHand, remoteUnder, localParams);
+        DealOpponentInfoClientRpc(localHand, localUnder, remoteParams);
+    }
+
+    void SeedOverSideLists(CardNetData[] player0Over, CardNetData[] player1Over)
+    {
+        player0OverSide.Clear();
+        foreach (CardNetData d in player0Over) { player0OverSide.Add(d); }
+
+        player1OverSide.Clear();
+        foreach (CardNetData d in player1Over) { player1OverSide.Add(d); }
     }
 
     [ClientRpc]
@@ -149,17 +172,17 @@ public class NetworkCardGenerator : NetworkBehaviour
     }
 
     [ClientRpc]
-    void DealOpponentInfoClientRpc(CardNetData[] opponentHand, CardNetData[] opponentUnderSide, CardNetData[] opponentOverSide, ClientRpcParams rpcParams = default)
+    void DealOpponentInfoClientRpc(CardNetData[] opponentHand, CardNetData[] opponentUnderSide, ClientRpcParams rpcParams = default)
     {
-        string overLog = ""; foreach (CardNetData c in opponentOverSide) { overLog += $"id={c.CardId} v={c.Value} "; }
-        Debug.Log($"[NCG] DealOpponentInfoClientRpc received — hand={opponentHand.Length} under={opponentUnderSide.Length} over={opponentOverSide.Length} values=[{overLog}]");
+        Debug.Log($"[NCG] DealOpponentInfoClientRpc received — hand={opponentHand.Length} under={opponentUnderSide.Length} (overSide comes from NetworkList)");
         NetworkOpponentHand opponentHand2 = FindFirstObjectByType<NetworkOpponentHand>();
         if (opponentHand2 == null) { Debug.LogError("[NCG] NetworkOpponentHand NOT FOUND"); return; }
-        opponentHand2.ReceiveDeal(opponentHand, opponentUnderSide, opponentOverSide);
+        opponentHand2.ReceiveDeal(opponentHand, opponentUnderSide);
     }
 
     // -------------------------------------------------------------------------
-    // Card swap — server updates authoritative state and notifies the opponent
+    // Card swap — server writes the authoritative list; NetworkList replication
+    // and OnListChanged on the opponent's side handle the rest.
     // -------------------------------------------------------------------------
 
     [ServerRpc(RequireOwnership = false)]
@@ -167,37 +190,12 @@ public class NetworkCardGenerator : NetworkBehaviour
     {
         ulong senderId = rpcParams.Receive.SenderClientId;
 
-        // Update the authoritative NetworkList for this player
-        NetworkList<CardNetData> list = senderId == 0 ? player0OverSide : player1OverSide;
+        NetworkList<CardNetData> list = senderId == NetworkManager.ServerClientId ? player0OverSide : player1OverSide;
+
         list.Clear();
-        foreach (CardNetData data in newOverSide) list.Add(data);
+        foreach (CardNetData data in newOverSide) { list.Add(data); }
 
-        Debug.Log($"[NCG] SwapCardsServerRpc — senderId={senderId} overSideCount={newOverSide.Length}");
-
-        // Defer one frame so the ClientRpc dispatches outside the ServerRpc call stack,
-        // ensuring it travels to remote clients and not just the host locally
-        StartCoroutine(SendSyncNextFrame(senderId, newOverSide));
-    }
-
-    IEnumerator SendSyncNextFrame(ulong senderId, CardNetData[] newOverSide)
-    {
-        yield return null;
-        Debug.Log($"[NCG] Sending SyncOpponentOverSideClientRpc — senderId={senderId}");
-        SyncOpponentOverSideClientRpc(senderId, newOverSide);
-    }
-
-    // Broadcast to all clients; each client ignores it if senderId is themselves
-    [ClientRpc]
-    void SyncOpponentOverSideClientRpc(ulong senderId, CardNetData[] newOverSide)
-    {
-        Debug.Log($"[NCG] SyncOpponentOverSideClientRpc arrived — senderId={senderId} localId={NetworkManager.Singleton.LocalClientId} overSideCount={newOverSide.Length}");
-
-        // Only the opponent (non-sender) should update their NetworkOpponentHand display
-        if (NetworkManager.Singleton.LocalClientId == senderId) { return; }
-
-        NetworkOpponentHand opponentHand = FindFirstObjectByType<NetworkOpponentHand>();
-        if (opponentHand == null) { Debug.LogError("[NCG] NetworkOpponentHand NOT FOUND for sync"); return; }
-        opponentHand.SyncOverSide(newOverSide);
+        Debug.Log($"[NCG] SwapCardsServerRpc — senderId={senderId} wroteList={(senderId == NetworkManager.ServerClientId ? "player0" : "player1")} count={newOverSide.Length}");
     }
 
     // -------------------------------------------------------------------------
