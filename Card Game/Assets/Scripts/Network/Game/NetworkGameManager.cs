@@ -14,10 +14,7 @@ public class NetworkGameManager : NetworkBehaviour
 {
     public static NetworkGameManager Instance { get; private set; }
 
-    // ---------------------------------------------------------------------
     // Replicated state
-    // ---------------------------------------------------------------------
-
     NetworkVariable<bool> gameHasStarted = new NetworkVariable<bool>(
         false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
@@ -29,10 +26,7 @@ public class NetworkGameManager : NetworkBehaviour
     public bool IsMyTurn => gameHasStarted.Value && NetworkManager.Singleton != null
         && currentTurnClientId.Value == NetworkManager.Singleton.LocalClientId;
 
-    // ---------------------------------------------------------------------
     // Server-only state
-    // ---------------------------------------------------------------------
-
     class ServerPlayerState
     {
         public ulong clientId;
@@ -60,10 +54,7 @@ public class NetworkGameManager : NetworkBehaviour
         if (Instance == this) { Instance = null; }
     }
 
-    // ---------------------------------------------------------------------
     // Registration (server, called by NetworkCardGenerator after dealing)
-    // ---------------------------------------------------------------------
-
     public void ServerRegisterPlayer(ulong clientId, CardNetData[] hand, CardNetData[] under, CardNetData[] over)
     {
         if (!IsServer) { return; }
@@ -100,10 +91,7 @@ public class NetworkGameManager : NetworkBehaviour
         state.over.AddRange(newOverSide);
     }
 
-    // ---------------------------------------------------------------------
     // Game start
-    // ---------------------------------------------------------------------
-
     // Wire the in-scene Start button to this.
     public void RequestStartGame()
     {
@@ -152,10 +140,7 @@ public class NetworkGameManager : NetworkBehaviour
         return best;
     }
 
-    // ---------------------------------------------------------------------
     // Play requests
-    // ---------------------------------------------------------------------
-
     [ServerRpc(RequireOwnership = false)]
     public void PlayCardServerRpc(CardNetData card, ServerRpcParams p = default)
     {
@@ -261,10 +246,7 @@ public class NetworkGameManager : NetworkBehaviour
         SendTurnState(sender);
     }
 
-    // ---------------------------------------------------------------------
     // Rules (mirrors singleplayer PlayerHand)
-    // ---------------------------------------------------------------------
-
     static bool CanPlayOnPile(int value, int pileTop)
     {
         return value >= pileTop || value == 2 || value == 10;
@@ -301,10 +283,7 @@ public class NetworkGameManager : NetworkBehaviour
         return -1;
     }
 
-    // ---------------------------------------------------------------------
     // Turn / draw / pickup (server)
-    // ---------------------------------------------------------------------
-
     void AdvanceTurn()
     {
         foreach (ulong id in players.Keys)
@@ -372,10 +351,7 @@ public class NetworkGameManager : NetworkBehaviour
         return new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientId } } };
     }
 
-    // ---------------------------------------------------------------------
     // ClientRpcs — route results to the local hand / opponent displays
-    // ---------------------------------------------------------------------
-
     [ClientRpc]
     void ReceiveDrawnCardsClientRpc(CardNetData[] cards, ClientRpcParams rpcParams = default)
     {

@@ -78,10 +78,7 @@ public class NetworkPile : NetworkBehaviour
         }
     }
 
-    // ---------------------------------------------------------------------
     // Server API (called by NetworkGameManager)
-    // ---------------------------------------------------------------------
-
     public void ServerAddCard(CardNetData card, ulong byClientId)
     {
         if (!IsServer) { return; }
@@ -123,10 +120,7 @@ public class NetworkPile : NetworkBehaviour
         return true;
     }
 
-    // ---------------------------------------------------------------------
     // Shared reads
-    // ---------------------------------------------------------------------
-
     public int GetTopValue()
     {
         return pileCards.Count == 0 ? 0 : pileCards[pileCards.Count - 1].Value;
@@ -134,10 +128,7 @@ public class NetworkPile : NetworkBehaviour
 
     public int GetCount() => pileCards.Count;
 
-    // ---------------------------------------------------------------------
     // Visuals (diff against the replicated list)
-    // ---------------------------------------------------------------------
-
     void RebuildFromList()
     {
         // Cleared pile: animate everything out according to the clear reason.

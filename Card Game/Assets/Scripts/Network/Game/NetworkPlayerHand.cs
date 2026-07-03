@@ -56,10 +56,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         if (startGameButton != null) { startGameButton.SetActive(true); }
     }
 
-    // ---------------------------------------------------------------------
     // Deal / draw / pickup receiving
-    // ---------------------------------------------------------------------
-
     public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide, CardNetData[] overSide)
     {
         Debug.Log($"[NPH] ReceiveDeal — hand={hand.Length} under={underSide.Length} over={overSide.Length}");
@@ -121,10 +118,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         return card;
     }
 
-    // ---------------------------------------------------------------------
     // UI hooks
-    // ---------------------------------------------------------------------
-
     // Wire the in-scene Start button to this.
     public void OnStartGamePressed()
     {
@@ -141,10 +135,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         NetworkGameManager.Instance.EndTurnServerRpc();
     }
 
-    // ---------------------------------------------------------------------
     // Update loop
-    // ---------------------------------------------------------------------
-
     public void SortHandCards()
     {
         handCards.Sort((a, b) => a.GetComponent<NetworkCard>().GetValue().CompareTo(b.GetComponent<NetworkCard>().GetValue()));
@@ -192,10 +183,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         return value >= pileTop || value == 2 || value == 10;
     }
 
-    // ---------------------------------------------------------------------
     // Input
-    // ---------------------------------------------------------------------
-
     void DetectHover()
     {
         Vector2 mousePos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -278,10 +266,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         }
     }
 
-    // ---------------------------------------------------------------------
     // Pre-game side card swap (unchanged)
-    // ---------------------------------------------------------------------
-
     void ChangeSideCards()
     {
         if (selectedCard != null && selectedCard != previousSelectedCard)
@@ -360,10 +345,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         return false;
     }
 
-    // ---------------------------------------------------------------------
     // Layout
-    // ---------------------------------------------------------------------
-
     void UpdateSideUsage()
     {
         usingOverSideCards = handCards.Count == 0 && overSideCards.Count > 0;
@@ -432,10 +414,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         }
     }
 
-    // ---------------------------------------------------------------------
     // Gets
-    // ---------------------------------------------------------------------
-
     public List<GameObject> GetCurrentCards()
     {
         if (usingOverSideCards) return overSideCards;

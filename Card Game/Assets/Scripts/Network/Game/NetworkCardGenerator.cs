@@ -64,10 +64,7 @@ public class NetworkCardGenerator : NetworkBehaviour
         DealToPlayers();
     }
 
-    // -------------------------------------------------------------------------
     // Deck generation
-    // -------------------------------------------------------------------------
-
     void GenerateLogicalDeck()
     {
         logicalDeck = new List<CardNetData>(numberOfCards);
@@ -107,10 +104,7 @@ public class NetworkCardGenerator : NetworkBehaviour
         return taken;
     }
 
-    // -------------------------------------------------------------------------
     // Deal
-    // -------------------------------------------------------------------------
-
     void DealToPlayers()
     {
         var clientIds = NetworkManager.Singleton.ConnectedClientsIds;
@@ -184,11 +178,8 @@ public class NetworkCardGenerator : NetworkBehaviour
         opponentHand2.ReceiveDeal(opponentHand, opponentUnderSide);
     }
 
-    // -------------------------------------------------------------------------
     // Card swap — server writes the authoritative list; NetworkList replication
     // and OnListChanged on the opponent's side handle the rest.
-    // -------------------------------------------------------------------------
-
     [ServerRpc(RequireOwnership = false)]
     public void SwapCardsServerRpc(CardNetData[] newOverSide, ServerRpcParams rpcParams = default)
     {
@@ -238,20 +229,14 @@ public class NetworkCardGenerator : NetworkBehaviour
         }
     }
 
-    // -------------------------------------------------------------------------
     // Draw (server only, used by NetworkGameManager)
-    // -------------------------------------------------------------------------
-
     public CardNetData[] DrawCards(int count)
     {
         if (!IsServer) { return null; }
         return TakeFromDeck(count);
     }
 
-    // -------------------------------------------------------------------------
     // Misc
-    // -------------------------------------------------------------------------
-
     void Update()
     {
         if (deckImage != null && remainingDeckCount.Value == 0) { Destroy(deckImage); }

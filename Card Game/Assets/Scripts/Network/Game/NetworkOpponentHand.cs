@@ -90,10 +90,7 @@ public class NetworkOpponentHand : NetworkBehaviour
         SyncOverSide(arr);
     }
 
-    // ---------------------------------------------------------------------
     // Deal / play phase events
-    // ---------------------------------------------------------------------
-
     // Deal receive — hand + underSide only. OverSide is driven by the NetworkList.
     public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide)
     {
@@ -143,10 +140,7 @@ public class NetworkOpponentHand : NetworkBehaviour
         Destroy(card);
     }
 
-    // ---------------------------------------------------------------------
     // Card spawning
-    // ---------------------------------------------------------------------
-
     GameObject SpawnCoveredCard(CardNetData data = default)
     {
         GameObject card = Instantiate(cardPrefab);
@@ -197,10 +191,7 @@ public class NetworkOpponentHand : NetworkBehaviour
         return card;
     }
 
-    // ---------------------------------------------------------------------
     // Layout
-    // ---------------------------------------------------------------------
-
     void Update()
     {
         UpdateSideUsage();
@@ -248,9 +239,7 @@ public class NetworkOpponentHand : NetworkBehaviour
         }
     }
 
-    // ---------------------------------------------------------------------
     // OverSide sync + swap animation
-    // ---------------------------------------------------------------------
 
     // Diff-based rebuild of the opponent's face-up overSide stack.
     // Cards present in both old and new state keep their GameObject and position,
@@ -337,10 +326,7 @@ public class NetworkOpponentHand : NetworkBehaviour
         handCards.Add(SpawnCoveredCard(data));
     }
 
-    // ---------------------------------------------------------------------
-    // Getters
-    // ---------------------------------------------------------------------
-
+    // Gets
     public List<GameObject> GetCurrentCards()
     {
         if (usingOverSideCards) { return overSideCards; }
