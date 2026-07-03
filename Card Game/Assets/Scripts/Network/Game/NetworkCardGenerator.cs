@@ -25,8 +25,6 @@ public class NetworkCardGenerator : NetworkBehaviour
 
     bool hasDealt;
 
-    // Singleton is bound to the network lifecycle so Instance always points at the
-    // spawned, RPC-bound replica. No Awake guard, no Destroy of duplicates.
     public override void OnNetworkSpawn()
     {
         Instance = this;
@@ -34,10 +32,9 @@ public class NetworkCardGenerator : NetworkBehaviour
 
         if (!IsServer) { return; }
 
-        // Both players are already connected before the game scene loads (Option 1 flow),
-        // so the deal trigger is NGO's scene-load completion: it fires only when ALL
-        // clients have finished loading the scene, guaranteeing NetworkPlayerHand and
-        // NetworkOpponentHand exist on both sides before the deal RPCs are sent.
+        // Deal when all clients have finished loading the game scene, which
+        // guarantees NetworkPlayerHand and NetworkOpponentHand exist on both
+        // sides before any deal RPC fires.
         NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoadCompleted;
     }
 
@@ -136,19 +133,26 @@ public class NetworkCardGenerator : NetworkBehaviour
         CardNetData[] remoteOver = TakeFromDeck(3);
 
         // Seed the authoritative lists. local = host = player0, remote = client = player1.
-        // These lists are the single source of truth for the opponent overSide display,
-        // covering both the initial deal and every later swap.
         SeedOverSideLists(localOver, remoteOver);
+
+        // Register both players with the rules engine so it can validate plays.
+        if (NetworkGameManager.Instance != null)
+        {
+            NetworkGameManager.Instance.ServerRegisterPlayer(localId, localHand, localUnder, localOver);
+            NetworkGameManager.Instance.ServerRegisterPlayer(remoteId, remoteHand, remoteUnder, remoteOver);
+        }
+        else
+        {
+            Debug.LogError("[NCG] NetworkGameManager.Instance is null at deal time — play phase will not work.");
+        }
 
         var localParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { localId } } };
         var remoteParams = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { remoteId } } };
 
-        // Own-hand deal by targeted RPC (hand + both side stacks for the player themselves).
         DealPlayerCardsClientRpc(localHand, localUnder, localOver, localParams);
         DealPlayerCardsClientRpc(remoteHand, remoteUnder, remoteOver, remoteParams);
 
-        // Opponent info sends hand + underSide only. OverSide comes from the NetworkList,
-        // so it is not sent here (doing both would double up the display).
+        // Opponent info sends hand + underSide only. OverSide comes from the NetworkList.
         DealOpponentInfoClientRpc(remoteHand, remoteUnder, localParams);
         DealOpponentInfoClientRpc(localHand, localUnder, remoteParams);
     }
@@ -192,14 +196,50 @@ public class NetworkCardGenerator : NetworkBehaviour
 
         NetworkList<CardNetData> list = senderId == NetworkManager.ServerClientId ? player0OverSide : player1OverSide;
 
-        list.Clear();
-        foreach (CardNetData data in newOverSide) { list.Add(data); }
+        // A NetworkList replicates every operation as its own event, so Clear+Add
+        // would send the opponent intermediate states and break the swap animation.
+        // When the count is unchanged (a swap), write only the indices that differ.
+        if (list.Count == newOverSide.Length)
+        {
+            for (int i = 0; i < newOverSide.Length; i++)
+            {
+                if (!list[i].Equals(newOverSide[i])) { list[i] = newOverSide[i]; }
+            }
+        }
+        else
+        {
+            list.Clear();
+            foreach (CardNetData data in newOverSide) { list.Add(data); }
+        }
 
-        Debug.Log($"[NCG] SwapCardsServerRpc — senderId={senderId} wroteList={(senderId == NetworkManager.ServerClientId ? "player0" : "player1")} count={newOverSide.Length}");
+        // Keep the rules engine's hand/over state consistent with the swap.
+        if (NetworkGameManager.Instance != null)
+        {
+            NetworkGameManager.Instance.ServerApplySwap(senderId, newOverSide);
+        }
+
+        Debug.Log($"[NCG] SwapCardsServerRpc — senderId={senderId} count={newOverSide.Length}");
+    }
+
+    // Removes a played card from a player's replicated overSide list (play phase).
+    public void ServerRemoveFromOverSide(ulong clientId, int cardId)
+    {
+        if (!IsServer) { return; }
+
+        NetworkList<CardNetData> list = clientId == NetworkManager.ServerClientId ? player0OverSide : player1OverSide;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i].CardId == cardId)
+            {
+                list.RemoveAt(i);
+                return;
+            }
+        }
     }
 
     // -------------------------------------------------------------------------
-    // Draw (called via ServerRpc from NetworkPlayerHand when implemented)
+    // Draw (server only, used by NetworkGameManager)
     // -------------------------------------------------------------------------
 
     public CardNetData[] DrawCards(int count)

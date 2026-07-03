@@ -18,6 +18,9 @@ public class NetworkOpponentHand : NetworkBehaviour
     [SerializeField] float sideBaseCardSpacing = 150f, sideMaxHandWidth = 1000f, overSideOffset;
     [SerializeField] float lerpSpeed;
 
+    [Header("Play Phase")]
+    [SerializeField] Transform pilePoint;   // pile position; pickup cards animate from here
+
     List<GameObject> handCards = new List<GameObject>();
     List<GameObject> underSideCards = new List<GameObject>();
     List<GameObject> overSideCards = new List<GameObject>();
@@ -29,6 +32,7 @@ public class NetworkOpponentHand : NetworkBehaviour
     // as a network variable and requires it initialized at declaration. We only need a
     // reference to the generator's list, so resolve it through a property instead.
     bool subscribed;
+    bool overSideDirty;
 
     NetworkList<CardNetData> OpponentList
     {
@@ -54,7 +58,6 @@ public class NetworkOpponentHand : NetworkBehaviour
         subscribed = false;
     }
 
-    // The generator may spawn after this object, so wait for Instance before binding.
     IEnumerator BindToOpponentList()
     {
         while (OpponentList == null) { yield return null; }
@@ -63,13 +66,19 @@ public class NetworkOpponentHand : NetworkBehaviour
         subscribed = true;
 
         Debug.Log($"[NOH] Bound to opponent overSide list — IsServer={IsServer}");
-
-        // Rebuild once in case the list was populated before we subscribed.
         RebuildOverSideFromList();
     }
 
     void OnOpponentOverSideChanged(NetworkListEvent<CardNetData> _)
     {
+        // Coalesce multiple list events in a frame into one rebuild (see LateUpdate).
+        overSideDirty = true;
+    }
+
+    void LateUpdate()
+    {
+        if (!overSideDirty) { return; }
+        overSideDirty = false;
         RebuildOverSideFromList();
     }
 
@@ -84,6 +93,10 @@ public class NetworkOpponentHand : NetworkBehaviour
         SyncOverSide(arr);
     }
 
+    // ---------------------------------------------------------------------
+    // Deal / play phase events
+    // ---------------------------------------------------------------------
+
     // Deal receive — hand + underSide only. OverSide is driven by the NetworkList.
     public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide)
     {
@@ -91,6 +104,51 @@ public class NetworkOpponentHand : NetworkBehaviour
         foreach (CardNetData data in hand) { handCards.Add(SpawnCoveredCard(data)); }
         foreach (CardNetData data in underSide) { underSideCards.Add(SpawnCoveredCard(data)); }
     }
+
+    // The opponent played a card. Their hand/under displays lose one covered card;
+    // their overSide display is driven by the generator's NetworkList and updates
+    // automatically when the server removes the played card from it.
+    public void OnOpponentPlayedCard(CardNetData card)
+    {
+        if (handCards.Count > 0)
+        {
+            RemoveOneCoveredCard(handCards);
+        }
+        else if (overSideCards.Count > 0)
+        {
+            // Handled by the NetworkList sync — nothing to do here.
+        }
+        else if (underSideCards.Count > 0)
+        {
+            RemoveOneCoveredCard(underSideCards);
+        }
+    }
+
+    public void OnOpponentDrewCards(int count)
+    {
+        for (int i = 0; i < count; i++) { handCards.Add(SpawnCoveredCard()); }
+    }
+
+    public void OnOpponentPickedUpPile(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            GameObject card = SpawnCoveredCard();
+            if (pilePoint != null) { card.transform.position = pilePoint.position; }
+            handCards.Add(card);
+        }
+    }
+
+    void RemoveOneCoveredCard(List<GameObject> list)
+    {
+        GameObject card = list[list.Count - 1];
+        list.RemoveAt(list.Count - 1);
+        Destroy(card);
+    }
+
+    // ---------------------------------------------------------------------
+    // Card spawning
+    // ---------------------------------------------------------------------
 
     GameObject SpawnCoveredCard(CardNetData data = default)
     {
@@ -142,9 +200,9 @@ public class NetworkOpponentHand : NetworkBehaviour
         return card;
     }
 
-    // -------------------------------------------------------------------------
+    // ---------------------------------------------------------------------
     // Layout
-    // -------------------------------------------------------------------------
+    // ---------------------------------------------------------------------
 
     void Update()
     {
@@ -168,6 +226,8 @@ public class NetworkOpponentHand : NetworkBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
+            if (cards[i] == null) { continue; }
+
             cards[i].transform.SetParent(parent);
 
             SpriteRenderer sr = cards[i].GetComponent<SpriteRenderer>();
@@ -191,47 +251,75 @@ public class NetworkOpponentHand : NetworkBehaviour
         }
     }
 
-    // Rebuilds the opponent's face-up overSide stack from authoritative data.
-    // Called via OnListChanged whenever the opponent's NetworkList changes
-    // (initial deal seed and every subsequent swap).
+    // ---------------------------------------------------------------------
+    // OverSide sync + swap animation
+    // ---------------------------------------------------------------------
+
+    // Diff-based rebuild of the opponent's face-up overSide stack.
+    // Cards present in both old and new state keep their GameObject and position,
+    // so an unrelated card never moves. A card that left the overSide animates
+    // toward the hand and is destroyed on arrival. A card that entered the
+    // overSide spawns at the hand position and lerps to its slot.
     public void SyncOverSide(CardNetData[] newOverSide)
     {
         Debug.Log($"[NOH] SyncOverSide — newCount={newOverSide.Length}");
-        foreach (GameObject card in overSideCards) { Destroy(card); }
-        overSideCards.Clear();
+
+        bool initialDeal = overSideCards.Count == 0;
+
+        List<GameObject> updated = new List<GameObject>(newOverSide.Length);
+        List<GameObject> leftovers = new List<GameObject>(overSideCards);
+
         foreach (CardNetData data in newOverSide)
         {
-            overSideCards.Add(SpawnFaceCard(data));
+            GameObject existing = leftovers.Find(go => go != null && go.GetComponent<NetworkCard>().GetCardId() == data.CardId);
+            if (existing != null)
+            {
+                leftovers.Remove(existing);
+                updated.Add(existing);
+            }
+            else
+            {
+                GameObject card = SpawnFaceCard(data);
+                card.transform.SetParent(overSideTransform);
+
+                if (!initialDeal)
+                {
+                    card.transform.position = handTransform.position;
+                }
+
+                updated.Add(card);
+            }
         }
+
+        foreach (GameObject removed in leftovers)
+        {
+            if (removed != null)
+            {
+                // During the play phase a card leaving the overSide went to the
+                // pile, not the hand — animate toward the pile in that case.
+                bool gameStarted = NetworkGameManager.Instance != null && NetworkGameManager.Instance.GetGameHasStarted();
+                Vector3 target = gameStarted && pilePoint != null ? pilePoint.position : handTransform.position;
+                StartCoroutine(AnimateAwayAndDestroy(removed, target));
+            }
+        }
+
+        overSideCards = updated;
     }
 
-    // Called when the opponent swaps a hand card with an overSide card
-    public void HandleOpponentSwap(CardNetData movedToOverSide, CardNetData movedToHand)
+    IEnumerator AnimateAwayAndDestroy(GameObject card, Vector3 target)
     {
-        Debug.Log($"[NOH] HandleOpponentSwap — overSideCount={overSideCards.Count} handCount={handCards.Count} movedToOverSide={movedToOverSide.CardId} movedToHand={movedToHand.CardId}");
+        card.transform.SetParent(cardParent);
 
-        for (int i = 0; i < overSideCards.Count; i++)
+        SpriteRenderer sr = card.GetComponent<SpriteRenderer>();
+        if (sr != null) { sr.sortingOrder = 50; }
+
+        while (card != null && (card.transform.position - target).sqrMagnitude > 1f)
         {
-            if (overSideCards[i].GetComponent<NetworkCard>().GetCardId() == movedToHand.CardId)
-            {
-                Destroy(overSideCards[i]);
-                overSideCards.RemoveAt(i);
-                break;
-            }
+            card.transform.position = Vector3.Lerp(card.transform.position, target, lerpSpeed * Time.deltaTime);
+            yield return null;
         }
 
-        overSideCards.Add(SpawnFaceCard(movedToOverSide));
-
-        for (int i = 0; i < handCards.Count; i++)
-        {
-            if (handCards[i].GetComponent<NetworkCard>().GetCardId() == movedToOverSide.CardId)
-            {
-                NetworkCard nc = handCards[i].GetComponent<NetworkCard>();
-                nc.SetCardId(movedToHand.CardId);
-                nc.SetValue(movedToHand.Value);
-                break;
-            }
-        }
+        if (card != null) { Destroy(card); }
     }
 
     // Called when opponent plays a card — removes one card from the display
@@ -252,9 +340,9 @@ public class NetworkOpponentHand : NetworkBehaviour
         handCards.Add(SpawnCoveredCard(data));
     }
 
-    // -------------------------------------------------------------------------
+    // ---------------------------------------------------------------------
     // Getters
-    // -------------------------------------------------------------------------
+    // ---------------------------------------------------------------------
 
     public List<GameObject> GetCurrentCards()
     {
@@ -269,7 +357,9 @@ public class NetworkOpponentHand : NetworkBehaviour
     public List<GameObject> GetUnderSideCards() => underSideCards;
 
     public bool CanChance() => false;
-    public bool GetTurn() => false;
+    public bool GetTurn() => NetworkGameManager.Instance != null
+        && NetworkGameManager.Instance.GetGameHasStarted()
+        && !NetworkGameManager.Instance.IsMyTurn;
 
     public void AddHandCards(GameObject card) => handCards.Add(card);
     public void SetUnderSideCards(List<GameObject> newCards) => underSideCards = newCards;

@@ -20,6 +20,11 @@ public class NetworkPlayerHand : NetworkBehaviour
     [SerializeField] Vector2 isTurnPos, isNotTurnPos;
     [SerializeField] float lerpSpeed;
 
+    [Header("Play Phase")]
+    [SerializeField] GameObject startGameButton;
+    [SerializeField] GameObject endTurnButton;
+    [SerializeField] Transform pileSpawnPoint;   // where picked-up pile cards spawn from
+
     [SerializeField] List<GameObject> handCards = new List<GameObject>();
     [SerializeField] List<GameObject> underSideCards = new List<GameObject>();
     [SerializeField] List<GameObject> overSideCards = new List<GameObject>();
@@ -33,6 +38,11 @@ public class NetworkPlayerHand : NetworkBehaviour
     GameObject previousSelectedCard;
     InputAction interactAction;
 
+    // Local mirror of turn state, fed by NetworkGameManager's targeted RPCs.
+    bool canEndTurn;
+    int savedCardValue;
+    Vector2 handTransformVelocity;
+
     void Awake()
     {
         mainCam = Camera.main;
@@ -42,28 +52,48 @@ public class NetworkPlayerHand : NetworkBehaviour
     {
         PlayerInput playerInput = InputManager.Instance.GetPlayerInput();
         interactAction = playerInput.actions.FindAction("Interact");
+
+        if (endTurnButton != null) { endTurnButton.SetActive(false); }
+        if (startGameButton != null) { startGameButton.SetActive(true); }
     }
 
-    // Deal receive
+    // ---------------------------------------------------------------------
+    // Deal / draw / pickup receiving
+    // ---------------------------------------------------------------------
+
     public void ReceiveDeal(CardNetData[] hand, CardNetData[] underSide, CardNetData[] overSide)
     {
         Debug.Log($"[NPH] ReceiveDeal — hand={hand.Length} under={underSide.Length} over={overSide.Length}");
-        foreach (CardNetData data in hand)
-        {
-            handCards.Add(SpawnCard(data, false));
-        }
-
-        foreach (CardNetData data in underSide)
-        {
-            underSideCards.Add(SpawnCard(data, true));
-        }
-
-        foreach (CardNetData data in overSide)
-        {
-            overSideCards.Add(SpawnCard(data, false));
-        }
+        foreach (CardNetData data in hand) { handCards.Add(SpawnCard(data, false)); }
+        foreach (CardNetData data in underSide) { underSideCards.Add(SpawnCard(data, true)); }
+        foreach (CardNetData data in overSide) { overSideCards.Add(SpawnCard(data, false)); }
 
         SortHandCards();
+    }
+
+    // Server-confirmed draws after a play.
+    public void ReceiveDrawnCards(CardNetData[] cards)
+    {
+        foreach (CardNetData data in cards) { handCards.Add(SpawnCard(data, false)); }
+        SortHandCards();
+    }
+
+    // Server-confirmed pile pickup: cards spawn at the pile and lerp into the hand.
+    public void ReceivePileCards(CardNetData[] cards)
+    {
+        foreach (CardNetData data in cards)
+        {
+            GameObject card = SpawnCard(data, false);
+            if (pileSpawnPoint != null) { card.transform.position = pileSpawnPoint.position; }
+            handCards.Add(card);
+        }
+        SortHandCards();
+    }
+
+    public void SetTurnState(bool endTurnAllowed, int savedValue)
+    {
+        canEndTurn = endTurnAllowed;
+        savedCardValue = savedValue;
     }
 
     GameObject SpawnCard(CardNetData data, bool covered)
@@ -92,7 +122,30 @@ public class NetworkPlayerHand : NetworkBehaviour
         return card;
     }
 
-    // Sorting & layout
+    // ---------------------------------------------------------------------
+    // UI hooks
+    // ---------------------------------------------------------------------
+
+    // Wire the in-scene Start button to this.
+    public void OnStartGamePressed()
+    {
+        if (NetworkGameManager.Instance == null) { return; }
+        if (startGameButton != null) { startGameButton.SetActive(false); }
+        NetworkGameManager.Instance.RequestStartGame();
+    }
+
+    // Wire the in-scene End Turn button to this.
+    public void OnEndTurnPressed()
+    {
+        if (NetworkGameManager.Instance == null || !canEndTurn) { return; }
+        canEndTurn = false;
+        NetworkGameManager.Instance.EndTurnServerRpc();
+    }
+
+    // ---------------------------------------------------------------------
+    // Update loop
+    // ---------------------------------------------------------------------
+
     public void SortHandCards()
     {
         handCards.Sort((a, b) => a.GetComponent<NetworkCard>().GetValue().CompareTo(b.GetComponent<NetworkCard>().GetValue()));
@@ -104,10 +157,45 @@ public class NetworkPlayerHand : NetworkBehaviour
         UpdateColliders();
         DetectHover();
         ChangeSideCards();
+        UpdateTurnUI();
         ArrangeCards(handCards, handTransform, baseCardSpacing, maxHandWidth);
         ArrangeCards(overSideCards, overSideTransform, sideBaseCardSpacing, sideMaxHandWidth, overSideOffset);
         ArrangeCards(underSideCards, underSideTransform, sideBaseCardSpacing, sideMaxHandWidth);
     }
+
+    bool GameStarted => NetworkGameManager.Instance != null && NetworkGameManager.Instance.GetGameHasStarted();
+    bool IsMyTurn => NetworkGameManager.Instance != null && NetworkGameManager.Instance.IsMyTurn;
+
+    void UpdateTurnUI()
+    {
+        if (endTurnButton != null) { endTurnButton.SetActive(GameStarted && IsMyTurn && canEndTurn); }
+        if (startGameButton != null && GameStarted && startGameButton.activeSelf) { startGameButton.SetActive(false); }
+
+        // Slide the hand up on your turn, down otherwise (mirrors singleplayer).
+        if (handTransform != null)
+        {
+            Vector2 target = (IsMyTurn || !GameStarted) ? isTurnPos : isNotTurnPos;
+            handTransform.position = Vector2.SmoothDamp(handTransform.position, target, ref handTransformVelocity, 1f / Mathf.Max(lerpSpeed, 0.01f));
+        }
+
+        // Gray out unplayable hand cards during your turn.
+        int pileTop = NetworkPile.Instance != null ? NetworkPile.Instance.GetTopValue() : 0;
+        foreach (GameObject card in handCards)
+        {
+            NetworkCard nc = card.GetComponent<NetworkCard>();
+            bool playable = CanPlayValue(nc.GetValue(), pileTop) && (savedCardValue == 0 || nc.GetValue() == savedCardValue);
+            nc.ChangeColor(!GameStarted || !IsMyTurn || playable);
+        }
+    }
+
+    static bool CanPlayValue(int value, int pileTop)
+    {
+        return value >= pileTop || value == 2 || value == 10;
+    }
+
+    // ---------------------------------------------------------------------
+    // Input
+    // ---------------------------------------------------------------------
 
     void DetectHover()
     {
@@ -118,13 +206,82 @@ public class NetworkPlayerHand : NetworkBehaviour
             .Select(h => h.collider.gameObject)
             .FirstOrDefault();
 
-        bool gameStarted = NetworkGameManager.Instance != null && NetworkGameManager.Instance.GetGameHasStarted();
-        if (hoveredCard != null && interactAction != null && interactAction.WasPressedThisFrame() && !gameStarted && selectedCards.Count < 2)
+        if (hoveredCard == null || interactAction == null || !interactAction.WasPressedThisFrame()) { return; }
+
+        if (!GameStarted)
         {
-            selectedCards.Add(hoveredCard);
-            selectedCard = hoveredCard;
+            // Pre-game: clicking selects cards for the side-card swap.
+            if (selectedCards.Count < 2)
+            {
+                selectedCards.Add(hoveredCard);
+                selectedCard = hoveredCard;
+            }
+            return;
+        }
+
+        TryRequestPlay(hoveredCard);
+    }
+
+    void TryRequestPlay(GameObject card)
+    {
+        if (!IsMyTurn || NetworkGameManager.Instance == null) { return; }
+
+        // Only cards in the currently active pile are clickable.
+        bool inActive =
+            (handCards.Contains(card) && !usingOverSideCards && !usingUnderSideCards) ||
+            (overSideCards.Contains(card) && usingOverSideCards) ||
+            (underSideCards.Contains(card) && usingUnderSideCards);
+        if (!inActive) { return; }
+
+        NetworkCard nc = card.GetComponent<NetworkCard>();
+        int value = nc.GetValue();
+        int pileTop = NetworkPile.Instance != null ? NetworkPile.Instance.GetTopValue() : 0;
+
+        // Underside cards are played blind — always send.
+        if (!usingUnderSideCards)
+        {
+            if (savedCardValue != 0 && value != savedCardValue) { return; }
+
+            bool playable = CanPlayValue(value, pileTop);
+            if (!playable)
+            {
+                // Dumping an unplayable card (and picking up the pile) is only
+                // legal when nothing in the active pile can be played.
+                List<GameObject> active = GetCurrentCards();
+                foreach (GameObject c in active)
+                {
+                    if (CanPlayValue(c.GetComponent<NetworkCard>().GetValue(), pileTop)) { return; }
+                }
+            }
+        }
+
+        Debug.Log($"[NPH] Requesting play — id={nc.GetCardId()} value={value}");
+        NetworkGameManager.Instance.PlayCardServerRpc(nc.GetCardNetData());
+    }
+
+    // Called from NetworkGameManager when the server confirms our own play
+    // (routed through OpponentActionClientRpc being skipped for the actor —
+    // the actor removes the card here via the targeted confirmation path).
+    public void RemovePlayedCard(CardNetData card)
+    {
+        List<GameObject>[] lists = { handCards, overSideCards, underSideCards };
+        foreach (List<GameObject> list in lists)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].GetComponent<NetworkCard>().GetCardId() == card.CardId)
+                {
+                    Destroy(list[i]);
+                    list.RemoveAt(i);
+                    return;
+                }
+            }
         }
     }
+
+    // ---------------------------------------------------------------------
+    // Pre-game side card swap (unchanged)
+    // ---------------------------------------------------------------------
 
     void ChangeSideCards()
     {
@@ -140,8 +297,7 @@ public class NetworkPlayerHand : NetworkBehaviour
             previousSelectedCard.GetComponent<NetworkCard>().SetHighlight(false);
         }
 
-        bool gameStarted = NetworkGameManager.Instance != null && NetworkGameManager.Instance.GetGameHasStarted();
-        if (gameStarted || selectedCards.Count != 2) return;
+        if (GameStarted || selectedCards.Count != 2) return;
 
         GameObject lastSelectedCard = null;
 
@@ -173,9 +329,6 @@ public class NetworkPlayerHand : NetworkBehaviour
             handCard = selectedCards[handIndex];
             sideCard = selectedCards[sideIndex];
 
-            CardNetData movedToOverSide = handCard.GetComponent<NetworkCard>().GetCardNetData();
-            CardNetData movedToHand = sideCard.GetComponent<NetworkCard>().GetCardNetData();
-
             for (int i = 0; i < handCards.Count; i++)
             {
                 if (handCards[i] == handCard) { handCards[i] = sideCard; break; }
@@ -193,7 +346,6 @@ public class NetworkPlayerHand : NetworkBehaviour
                 CardNetData[] newOverSide = overSideCards
                     .Select(go => go.GetComponent<NetworkCard>().GetCardNetData())
                     .ToArray();
-                Debug.Log($"[NPH] Calling SwapCardsServerRpc — newOverSideCount={newOverSide.Length}");
                 NetworkCardGenerator.Instance.SwapCardsServerRpc(newOverSide);
             }
             else
@@ -208,6 +360,10 @@ public class NetworkPlayerHand : NetworkBehaviour
         sideCard = null;
         return false;
     }
+
+    // ---------------------------------------------------------------------
+    // Layout
+    // ---------------------------------------------------------------------
 
     void UpdateSideUsage()
     {
@@ -277,7 +433,10 @@ public class NetworkPlayerHand : NetworkBehaviour
         }
     }
 
+    // ---------------------------------------------------------------------
     // Gets
+    // ---------------------------------------------------------------------
+
     public List<GameObject> GetCurrentCards()
     {
         if (usingOverSideCards) return overSideCards;
@@ -289,7 +448,6 @@ public class NetworkPlayerHand : NetworkBehaviour
     public List<GameObject> GetOverSideCards() => overSideCards;
     public List<GameObject> GetUnderSideCards() => underSideCards;
 
-    // Implemented when game loop is wired up
     public bool CanChance() => false;
-    public bool GetTurn() => false;
+    public bool GetTurn() => IsMyTurn;
 }
