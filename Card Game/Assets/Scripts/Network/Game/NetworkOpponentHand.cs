@@ -9,7 +9,7 @@ public class NetworkOpponentHand : NetworkBehaviour
     [SerializeField] GameObject cardPrefab;
     [SerializeField] GameObject backCardPrefab;
     [SerializeField] List<Sprite> cardSprites;
-    [SerializeField] Transform cardParent;
+    [SerializeField] Transform deckTransform;
 
     [Header("Transform and Spacing")]
     [SerializeField] Transform handTransform;
@@ -17,9 +17,6 @@ public class NetworkOpponentHand : NetworkBehaviour
     [SerializeField] float baseCardSpacing = 150f, maxHandWidth = 1000f;
     [SerializeField] float sideBaseCardSpacing = 150f, sideMaxHandWidth = 1000f, overSideOffset;
     [SerializeField] float lerpSpeed;
-
-    [Header("Play Phase")]
-    [SerializeField] Transform pilePoint;   // pile position; pickup cards animate from here
 
     List<GameObject> handCards = new List<GameObject>();
     List<GameObject> underSideCards = new List<GameObject>();
@@ -134,7 +131,7 @@ public class NetworkOpponentHand : NetworkBehaviour
         for (int i = 0; i < count; i++)
         {
             GameObject card = SpawnCoveredCard();
-            if (pilePoint != null) { card.transform.position = pilePoint.position; }
+            if (deckTransform != null) { card.transform.position = deckTransform.position; }
             handCards.Add(card);
         }
     }
@@ -153,7 +150,7 @@ public class NetworkOpponentHand : NetworkBehaviour
     GameObject SpawnCoveredCard(CardNetData data = default)
     {
         GameObject card = Instantiate(cardPrefab);
-        card.transform.parent = cardParent;
+        card.transform.parent = deckTransform;
         card.transform.localPosition = Vector3.zero;
 
         NetworkCard nc = card.GetComponent<NetworkCard>();
@@ -179,7 +176,7 @@ public class NetworkOpponentHand : NetworkBehaviour
     GameObject SpawnFaceCard(CardNetData data)
     {
         GameObject card = Instantiate(cardPrefab);
-        card.transform.parent = cardParent;
+        card.transform.parent = deckTransform;
         card.transform.localPosition = Vector3.zero;
 
         NetworkCard nc = card.GetComponent<NetworkCard>();
@@ -298,7 +295,7 @@ public class NetworkOpponentHand : NetworkBehaviour
                 // During the play phase a card leaving the overSide went to the
                 // pile, not the hand — animate toward the pile in that case.
                 bool gameStarted = NetworkGameManager.Instance != null && NetworkGameManager.Instance.GetGameHasStarted();
-                Vector3 target = gameStarted && pilePoint != null ? pilePoint.position : handTransform.position;
+                Vector3 target = gameStarted && deckTransform != null ? deckTransform.position : handTransform.position;
                 StartCoroutine(AnimateAwayAndDestroy(removed, target));
             }
         }
@@ -308,7 +305,7 @@ public class NetworkOpponentHand : NetworkBehaviour
 
     IEnumerator AnimateAwayAndDestroy(GameObject card, Vector3 target)
     {
-        card.transform.SetParent(cardParent);
+        card.transform.SetParent(deckTransform);
 
         SpriteRenderer sr = card.GetComponent<SpriteRenderer>();
         if (sr != null) { sr.sortingOrder = 50; }

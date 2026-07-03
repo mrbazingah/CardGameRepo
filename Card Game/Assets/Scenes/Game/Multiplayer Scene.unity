@@ -2427,9 +2427,13 @@ PrefabInstance:
     - target: {fileID: 5721433588338821273, guid: af922f5c04998ff40b55feccc81b91f8, type: 3}
       propertyPath: pilePoint
       value: 
-      objectReference: {fileID: 4599880407780673300}
+      objectReference: {fileID: 0}
     - target: {fileID: 5721433588338821273, guid: af922f5c04998ff40b55feccc81b91f8, type: 3}
       propertyPath: cardParent
+      value: 
+      objectReference: {fileID: 2135291439}
+    - target: {fileID: 5721433588338821273, guid: af922f5c04998ff40b55feccc81b91f8, type: 3}
+      propertyPath: deckTransform
       value: 
       objectReference: {fileID: 2135291439}
     - target: {fileID: 7546995514546484305, guid: af922f5c04998ff40b55feccc81b91f8, type: 3}
@@ -2799,13 +2803,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2135291439}
     - target: {fileID: 4110383132605686420, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
+      propertyPath: deckTransform
+      value: 
+      objectReference: {fileID: 2135291439}
+    - target: {fileID: 4110383132605686420, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
       propertyPath: endTurnButton
       value: 
       objectReference: {fileID: 7674555494128962743}
     - target: {fileID: 4110383132605686420, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
       propertyPath: pileSpawnPoint
       value: 
-      objectReference: {fileID: 4599880407780673300}
+      objectReference: {fileID: 0}
     - target: {fileID: 4110383132605686420, guid: b38f5e849258d044cba2b42f644e3fd2, type: 3}
       propertyPath: startGameButton
       value: 
@@ -3073,10 +3081,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7252762507537612354, guid: c965aa8c1af82994bba1c6e4fb3aef41, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.66
-      objectReference: {fileID: 0}
     - target: {fileID: 7793549974568094289, guid: c965aa8c1af82994bba1c6e4fb3aef41, type: 3}
       propertyPath: m_Name
       value: Network Pile
@@ -3094,11 +3098,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c965aa8c1af82994bba1c6e4fb3aef41, type: 3}
---- !u!4 &4599880407780673300 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1634923598578956228, guid: c965aa8c1af82994bba1c6e4fb3aef41, type: 3}
-  m_PrefabInstance: {fileID: 4599880407780673299}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4631525606528595636
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3997,6 +3996,10 @@ PrefabInstance:
     - target: {fileID: 1580299682109786449, guid: 011bf979094319c4386286297c3cd755, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2617593145
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377220405234015122, guid: 011bf979094319c4386286297c3cd755, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.34
       objectReference: {fileID: 0}
     - target: {fileID: 5030000727423276156, guid: 011bf979094319c4386286297c3cd755, type: 3}
       propertyPath: m_LocalPosition.x

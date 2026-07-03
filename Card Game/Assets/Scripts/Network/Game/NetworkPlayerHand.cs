@@ -10,7 +10,7 @@ public class NetworkPlayerHand : NetworkBehaviour
     [SerializeField] GameObject cardPrefab;      // prefab with NetworkCard component
     [SerializeField] GameObject backCardPrefab;
     [SerializeField] List<Sprite> cardSprites;   // 52 sprites in deck order (matches CardId)
-    [SerializeField] Transform cardParent;
+    [SerializeField] Transform deckTransform;
 
     [Header("Transform and Spacing")]
     [SerializeField] Transform handTransform;
@@ -23,7 +23,6 @@ public class NetworkPlayerHand : NetworkBehaviour
     [Header("Play Phase")]
     [SerializeField] GameObject startGameButton;
     [SerializeField] GameObject endTurnButton;
-    [SerializeField] Transform pileSpawnPoint;   // where picked-up pile cards spawn from
 
     [SerializeField] List<GameObject> handCards = new List<GameObject>();
     [SerializeField] List<GameObject> underSideCards = new List<GameObject>();
@@ -84,7 +83,7 @@ public class NetworkPlayerHand : NetworkBehaviour
         foreach (CardNetData data in cards)
         {
             GameObject card = SpawnCard(data, false);
-            if (pileSpawnPoint != null) { card.transform.position = pileSpawnPoint.position; }
+            if (deckTransform != null) { card.transform.position = deckTransform.position; }
             handCards.Add(card);
         }
         SortHandCards();
@@ -99,7 +98,7 @@ public class NetworkPlayerHand : NetworkBehaviour
     GameObject SpawnCard(CardNetData data, bool covered)
     {
         GameObject card = Instantiate(cardPrefab);
-        card.transform.parent = cardParent;
+        card.transform.parent = deckTransform;
         card.transform.localPosition = Vector3.zero;
 
         NetworkCard nc = card.GetComponent<NetworkCard>();

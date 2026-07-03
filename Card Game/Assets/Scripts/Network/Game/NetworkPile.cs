@@ -18,7 +18,6 @@ public class NetworkPile : NetworkBehaviour
     [Header("Prefabs")]
     [SerializeField] GameObject cardPrefab;
     [SerializeField] List<Sprite> cardSprites;
-    [SerializeField] Transform cardParent;
 
     [Header("Points")]
     [SerializeField] Transform pileTransform;
@@ -178,7 +177,7 @@ public class NetworkPile : NetworkBehaviour
     GameObject SpawnPileCard(CardNetData data, int stackIndex)
     {
         GameObject card = Instantiate(cardPrefab);
-        card.transform.SetParent(cardParent != null ? cardParent : transform);
+        card.transform.SetParent(pileTransform != null ? pileTransform : transform);
 
         bool playedByMe = lastActorClientId.Value == NetworkManager.Singleton.LocalClientId;
         Transform origin = playedByMe ? playerHandPoint : opponentHandPoint;
